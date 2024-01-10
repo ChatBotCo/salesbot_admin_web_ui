@@ -5,6 +5,9 @@
   "licence": "MIT",
   "homepage": "https://devias.io",
   "private": false,
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "scripts": {
     "dev": "next",
     "build": "next build",
