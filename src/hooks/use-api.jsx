@@ -2,11 +2,14 @@ import {createContext, useContext, useEffect, useState} from "react";
 
 const ApiContext = createContext();
 
+let initialized = false
+
 export const ApiProvider = ({ children }) => {
   const [debugging, setDebugging] = useState()
   const [backendUrl, setBackendUrl] = useState("https://salesbot-001.azurewebsites.net")
   const [loading, setLoading] = useState(false)
   const [conversationsByDate, setConversationsByDate] = useState([])
+  const [conversationsForBlackTie, setConversationsForBlackTie] = useState([])
 
   const transformDataForChart = conversations => {
     // Step 1: Group by company_id
@@ -69,18 +72,25 @@ export const ApiProvider = ({ children }) => {
         setBackendUrl(_backendUrl)
       }
 
-      // setLoading(true)
-      // fetch(`${_backendUrl}/api/get_latest_conversations`, {method: "GET"})
-      //   .then(data=>data.json())
-      //   .then(latestConvos => {
-      //     const last30DayDates = getLast30DaysDates()
-      //     console.log(latestConvos)
-      //     console.log(transformDataForChart(latestConvos))
-      //     // console.log(getUniqueSortedEpochDays(latestConvos))
-      //     // console.log(getUniqueSortedEpochDays(latestConvos).map(epochDate=>epochDate))
-      //   })
-      //   // .catch(()=>setCompanyLoadError(true))
-      //   .finally(()=>setLoading(false))
+      if(!initialized) {
+        initialized = true
+        fetch(`${_backendUrl}/api/get_conversations_for_company?companyid=blacktiecasinoevents`, {method: "GET"})
+          .then(data=>data.json())
+          .then(setConversationsForBlackTie)
+
+        // setLoading(true)
+        // fetch(`${_backendUrl}/api/get_latest_conversations`, {method: "GET"})
+        //   .then(data=>data.json())
+        //   .then(latestConvos => {
+        //     const last30DayDates = getLast30DaysDates()
+        //     console.log(latestConvos)
+        //     console.log(transformDataForChart(latestConvos))
+        //     // console.log(getUniqueSortedEpochDays(latestConvos))
+        //     // console.log(getUniqueSortedEpochDays(latestConvos).map(epochDate=>epochDate))
+        //   })
+        //   // .catch(()=>setCompanyLoadError(true))
+        //   .finally(()=>setLoading(false))
+      }
     }
   }, []);
 
@@ -91,6 +101,7 @@ export const ApiProvider = ({ children }) => {
         loading, setLoading,
         debugging,
         conversationsByDate,
+        conversationsForBlackTie,
       }}
     >
       {children}

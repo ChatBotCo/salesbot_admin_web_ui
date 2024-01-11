@@ -7,26 +7,27 @@ import UserPlusIcon from '@heroicons/react/24/solid/UserPlusIcon';
 import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
 import XCircleIcon from '@heroicons/react/24/solid/XCircleIcon';
 import { SvgIcon } from '@mui/material';
+import { ChatBubbleLeftRightIcon } from '@heroicons/react/24/solid';
 
 export const items = [
-  {
-    title: 'Overview',
-    path: '/',
-    icon: (
-      <SvgIcon fontSize="small">
-        <ChartBarIcon />
-      </SvgIcon>
-    )
-  },
   // {
-  //   title: 'Customers',
-  //   path: '/customers',
+  //   title: 'Overview',
+  //   path: '/',
   //   icon: (
   //     <SvgIcon fontSize="small">
-  //       <UsersIcon />
+  //       <ChartBarIcon />
   //     </SvgIcon>
   //   )
   // },
+  {
+    title: 'Black Tie Conversations',
+    path: '/conversations',
+    icon: (
+      <SvgIcon fontSize="small">
+        <ChatBubbleLeftRightIcon />
+      </SvgIcon>
+    )
+  },
   // {
   //   title: 'Companies',
   //   path: '/companies',

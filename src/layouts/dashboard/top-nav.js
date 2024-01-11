@@ -98,24 +98,24 @@ export const TopNav = (props) => {
             {/*    </Badge>*/}
             {/*  </IconButton>*/}
             {/*</Tooltip>*/}
-            <Avatar
-              onClick={accountPopover.handleOpen}
-              ref={accountPopover.anchorRef}
-              sx={{
-                cursor: 'pointer',
-                height: 40,
-                width: 40
-              }}
-              src="/assets/avatars/avatar-anika-visser.png"
-            />
+            {/*<Avatar*/}
+            {/*  onClick={accountPopover.handleOpen}*/}
+            {/*  ref={accountPopover.anchorRef}*/}
+            {/*  sx={{*/}
+            {/*    cursor: 'pointer',*/}
+            {/*    height: 40,*/}
+            {/*    width: 40*/}
+            {/*  }}*/}
+            {/*  src="/assets/avatars/avatar-anika-visser.png"*/}
+            {/*/>*/}
           </Stack>
         </Stack>
       </Box>
-      <AccountPopover
-        anchorEl={accountPopover.anchorRef.current}
-        open={accountPopover.open}
-        onClose={accountPopover.handleClose}
-      />
+      {/*<AccountPopover*/}
+      {/*  anchorEl={accountPopover.anchorRef.current}*/}
+      {/*  open={accountPopover.open}*/}
+      {/*  onClose={accountPopover.handleClose}*/}
+      {/*/>*/}
     </>
   );
 };
