@@ -1,20 +1,18 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
-let backendUrl = "https://salesbot-001.azurewebsites.net";
-// if(localStorage.getItem('local_backend') === 'true') {
-//   backendUrl = "http://localhost:7071"
-// }
-
 const UtilitiesContext = createContext();
 
 export const UtilitiesProvider = ({ children }) => {
   const [debugging, setDebugging] = useState()
-
+  const [backendUrl, setBackendUrl] = useState("https://salesbot-001.azurewebsites.net")
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       setDebugging(localStorage.getItem('debugging')==='true')
+      if(localStorage.getItem('local_backend') === 'true') {
+        setBackendUrl("http://localhost:7071")
+      }
     }
   }, []);
 
