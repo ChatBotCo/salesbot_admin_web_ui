@@ -38,16 +38,18 @@ const App = (props) => {
       </Head>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <AuthProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <AuthConsumer>
-              {
-                (auth) => auth.isLoading
-                  ? <SplashScreen />
-                  : getLayout(<Component {...pageProps} />)
-              }
-            </AuthConsumer>
-          </ThemeProvider>
+          <UtilitiesProvider>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <AuthConsumer>
+                {
+                  (auth) => auth.isLoading
+                    ? <SplashScreen />
+                    : getLayout(<Component {...pageProps} />)
+                }
+              </AuthConsumer>
+            </ThemeProvider>
+          </UtilitiesProvider>
         </AuthProvider>
       </LocalizationProvider>
     </CacheProvider>
