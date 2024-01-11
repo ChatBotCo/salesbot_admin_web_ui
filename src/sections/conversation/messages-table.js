@@ -1,21 +1,9 @@
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import {
-  Box,
-  Button,
-  Card,
-  SvgIcon,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow
-} from '@mui/material';
+import { Box, Card, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { Scrollbar } from 'src/components/scrollbar';
-import NextLink from 'next/link';
-import { QueueListIcon } from '@heroicons/react/24/solid';
 
-export const ConversationsTable = (props) => {
+export const MessagesTable = (props) => {
   const {
     items = [],
   } = props;
@@ -33,42 +21,32 @@ export const ConversationsTable = (props) => {
                   Date Started
                 </TableCell>
                 <TableCell>
-                  ID
+                  User Question
                 </TableCell>
-                <TableCell/>
+                <TableCell>
+                  ChatBot Response
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {items.map((convo, i) => {
+              {items.map((msg, i) => {
+                console.log(msg)
                 return (
                   <TableRow
                     hover
-                    key={convo.id}
-                    onClick={()=>console.log('click row')}
-                    sx={{cursor:'pointer'}}
+                    key={msg.id}
                   >
                     <TableCell>
                       {i+1}
                     </TableCell>
                     <TableCell>
-                      {format((convo._ts*1000), 'MM/dd/yyyy hh:mm pp')}
+                      {format((msg._ts*1000), 'MM/dd/yyyy hh:mm pp')}
                     </TableCell>
                     <TableCell>
-                      {convo.id}
+                      {msg.user_msg}
                     </TableCell>
                     <TableCell>
-                      <Button
-                        href={`/messages?convo_id=${convo.id}`}
-                        startIcon={(
-                          <SvgIcon fontSize="small">
-                            <QueueListIcon />
-                          </SvgIcon>
-                        )}
-                        sx={{ mt: 3 }}
-                        variant="contained"
-                      >
-                        Messages
-                      </Button>
+                      {msg.assistant_response}
                     </TableCell>
                   </TableRow>
                 );
@@ -81,6 +59,6 @@ export const ConversationsTable = (props) => {
   );
 };
 
-ConversationsTable.propTypes = {
+MessagesTable.propTypes = {
   items: PropTypes.array,
 };

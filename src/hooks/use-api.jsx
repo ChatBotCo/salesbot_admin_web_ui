@@ -10,6 +10,7 @@ export const ApiProvider = ({ children }) => {
   const [loading, setLoading] = useState(false)
   const [conversationsByDate, setConversationsByDate] = useState([])
   const [conversationsForBlackTie, setConversationsForBlackTie] = useState([])
+  const [messagesForConvoId, setMessagesForConvoId] = useState([])
 
   const transformDataForChart = conversations => {
     // Step 1: Group by company_id
@@ -78,6 +79,16 @@ export const ApiProvider = ({ children }) => {
           .then(data=>data.json())
           .then(setConversationsForBlackTie)
 
+        if(window.location.pathname === '/messages') {
+          const urlParams = new URLSearchParams(window.location.search);
+          const convo_id = urlParams.get('convo_id');
+          if(convo_id) {
+            fetch(`${_backendUrl}/api/get_messages_for_conversation?convoid=${convo_id}`, {method: "GET"})
+              .then(data=>data.json())
+              .then(setMessagesForConvoId)
+          }
+        }
+
         // setLoading(true)
         // fetch(`${_backendUrl}/api/get_latest_conversations`, {method: "GET"})
         //   .then(data=>data.json())
@@ -102,6 +113,7 @@ export const ApiProvider = ({ children }) => {
         debugging,
         conversationsByDate,
         conversationsForBlackTie,
+        messagesForConvoId,
       }}
     >
       {children}

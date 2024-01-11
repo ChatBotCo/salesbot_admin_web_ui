@@ -1,17 +1,19 @@
 import Head from 'next/head';
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { ConversationsTable } from '../sections/conversation/conversations-table';
 import { useApi } from '../hooks/use-api';
+import { MessagesTable } from '../sections/conversation/messages-table';
+import NextLink from 'next/link';
+import ArrowLeftIcon from '@heroicons/react/24/solid/ArrowLeftIcon';
 
 const Page = () => {
-  const {conversationsForBlackTie} = useApi()
+  const {messagesForConvoId} = useApi()
 
   return (
     <>
       <Head>
         <title>
-          Conversations
+          Messages
         </title>
       </Head>
       <Box
@@ -28,13 +30,25 @@ const Page = () => {
               spacing={4}
             >
               <Stack spacing={1}>
+                <Button
+                  component={NextLink}
+                  href="/conversations"
+                  startIcon={(
+                    <SvgIcon fontSize="small">
+                      <ArrowLeftIcon />
+                    </SvgIcon>
+                  )}
+                  variant="contained"
+                >
+                  Conversation
+                </Button>
                 <Typography variant="h4">
-                  Black Tie Conversations ({conversationsForBlackTie && conversationsForBlackTie.length})
+                  Messages ({messagesForConvoId.length})
                 </Typography>
               </Stack>
             </Stack>
-            <ConversationsTable
-              items={conversationsForBlackTie}
+            <MessagesTable
+              items={messagesForConvoId}
             />
           </Stack>
         </Container>
