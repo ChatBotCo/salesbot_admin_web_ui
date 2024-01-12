@@ -9,6 +9,7 @@ export const ApiProvider = ({ children }) => {
   const [backendUrl, setBackendUrl] = useState("https://salesbot-001.azurewebsites.net")
   const [loading, setLoading] = useState(false)
   const [countPerDayByCompanyId, setCountPerDayByCompanyId] = useState({})
+  const [msgCountPerDayByCompanyId, setMsgCountPerDayByCompanyId] = useState({})
   const [conversationsForBlackTie, setConversationsForBlackTie] = useState([])
   const [messagesForConvoId, setMessagesForConvoId] = useState([])
 
@@ -25,8 +26,9 @@ export const ApiProvider = ({ children }) => {
       dayStartBuckets.forEach((dayStartTs,i)=>{
         if(i<dayStartBuckets.length) {
           const dayEndTs = dayStartBuckets[i+1]
-          // console.log(`dayStartTs:${dayStartTs} dayEndTs:${dayEndTs} convo._ts:${convo._ts}`)
           if(convo._ts>=dayStartTs && convo._ts<dayEndTs) {
+            countPerDay[dayStartTs] = countPerDay[dayStartTs] + 1
+          } else if(!dayEndTs) {
             countPerDay[dayStartTs] = countPerDay[dayStartTs] + 1
           }
         }
@@ -80,7 +82,6 @@ export const ApiProvider = ({ children }) => {
           }
         }
 
-        // setLoading(true)
         fetch(`${_backendUrl}/api/get_latest_conversations`, {method: "GET"})
           .then(data=>data.json())
           .then(latestConvos => {
@@ -88,8 +89,15 @@ export const ApiProvider = ({ children }) => {
             const _countPerDayByCompanyId = transformDataForChart(latestConvos, dayStartBuckets)
             setCountPerDayByCompanyId(_countPerDayByCompanyId)
           })
-          // .catch(()=>setCompanyLoadError(true))
-          // .finally(()=>setLoading(false))
+
+        fetch(`${_backendUrl}/api/get_latest_messages`, {method: "GET"})
+          .then(data=>data.json())
+          .then(latestMsgs => {
+            const dayStartBuckets = getDayStartBuckets()
+            const _countPerDayByCompanyId = transformDataForChart(latestMsgs, dayStartBuckets)
+            console.log(_countPerDayByCompanyId)
+            setMsgCountPerDayByCompanyId(_countPerDayByCompanyId)
+          })
       }
     }
   }, []);
@@ -104,6 +112,7 @@ export const ApiProvider = ({ children }) => {
         messagesForConvoId,
         getDayStartBuckets,
         countPerDayByCompanyId,
+        msgCountPerDayByCompanyId,
       }}
     >
       {children}

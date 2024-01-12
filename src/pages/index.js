@@ -7,12 +7,18 @@ import { OverviewConversationsByDate } from '../sections/overview/overview-conve
 const now = new Date();
 
 const Page = () => {
-  const {countPerDayByCompanyId} = useApi();
+  const {countPerDayByCompanyId, msgCountPerDayByCompanyId} = useApi();
 
   const seriesData = Object.keys(countPerDayByCompanyId).map(companyId=>{
     return {
       name: companyId,
       data: Object.values(countPerDayByCompanyId[companyId])
+    }
+  })
+  const seriesData_msgCountPerDayByCompanyId = Object.keys(msgCountPerDayByCompanyId).map(companyId=>{
+    return {
+      name: companyId,
+      data: Object.values(msgCountPerDayByCompanyId[companyId])
     }
   })
   // console.log(seriesData)
@@ -44,6 +50,16 @@ const Page = () => {
                 chartSeries={seriesData}
                 sx={{ height: '100%' }}
                 title={'New Conversations per Date'}
+              />
+            </Grid>
+            <Grid
+              xs={12}
+              lg={8}
+            >
+              <OverviewConversationsByDate
+                chartSeries={seriesData_msgCountPerDayByCompanyId}
+                sx={{ height: '100%' }}
+                title={'New Message per Date'}
               />
             </Grid>
           </Grid>
