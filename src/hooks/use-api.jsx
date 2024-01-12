@@ -8,60 +8,51 @@ export const ApiProvider = ({ children }) => {
   const [debugging, setDebugging] = useState()
   const [backendUrl, setBackendUrl] = useState("https://salesbot-001.azurewebsites.net")
   const [loading, setLoading] = useState(false)
-  const [conversationsByDate, setConversationsByDate] = useState([])
+  const [countPerDayByCompanyId, setCountPerDayByCompanyId] = useState({})
   const [conversationsForBlackTie, setConversationsForBlackTie] = useState([])
   const [messagesForConvoId, setMessagesForConvoId] = useState([])
 
-  const transformDataForChart = conversations => {
-    // Step 1: Group by company_id
-    const groupedByCompany = conversations.reduce((acc, conversation) => {
-      if (!acc[conversation.company_id]) {
-        acc[conversation.company_id] = [];
-      }
-      acc[conversation.company_id].push(conversation);
-      return acc;
-    }, {});
+  const transformDataForChart = (conversations, dayStartBuckets) => {
+    const companyIds = Object.keys(conversations.reduce((a, convo) => Object.assign(a, { [convo.company_id]: 0 }), {}))
 
-    // Step 2: Count conversations per epochDays for each company
-    return Object.entries(groupedByCompany).map(([companyId, convs]) => {
-      const countPerDay = convs.reduce((acc, conv) => {
-        acc[conv.epochDays] = (acc[conv.epochDays] || 0) + 1;
-        return acc;
-      }, {});
+    const countPerDayByCompanyId = {}
+    companyIds.forEach(companyId=>{
+      countPerDayByCompanyId[companyId] = dayStartBuckets.reduce((a, ts) => Object.assign(a, { [ts]: 0 }), {})
+    })
 
-      return {
-        name: companyId,
-        data: Object.values(countPerDay)
-      };
-    });
+    conversations.forEach(convo=>{
+      const countPerDay = countPerDayByCompanyId[convo.company_id]
+      dayStartBuckets.forEach((dayStartTs,i)=>{
+        if(i<dayStartBuckets.length) {
+          const dayEndTs = dayStartBuckets[i+1]
+          // console.log(`dayStartTs:${dayStartTs} dayEndTs:${dayEndTs} convo._ts:${convo._ts}`)
+          if(convo._ts>=dayStartTs && convo._ts<dayEndTs) {
+            countPerDay[dayStartTs] = countPerDay[dayStartTs] + 1
+          }
+        }
+      })
+    })
+
+    // console.log(countPerDayByCompanyId)
+    return countPerDayByCompanyId
   }
 
-  const getUniqueSortedEpochDays = conversations => {
-    // Extract epochDays and remove duplicates
-    const uniqueEpochDays = [...new Set(conversations.map(conv => conv.epochDays))];
-
-    // Sort the epochDays in ascending order
-    uniqueEpochDays.sort((a, b) => a - b);
-
-    return uniqueEpochDays;
-  }
-
-  const getLast30DaysDates = () => {
-    const dates = [];
+  const getDayStartBuckets = () => {
+    const timestampsMidnight = [];
     const today = new Date();
 
     for (let i = 29; i >= 0; i--) {
       const date = new Date(today);
-      date.setDate(date.getDate() - i);
+      date.setUTCDate(date.getUTCDate() - i);
+      date.setUTCHours(0, 0, 0, 0);
 
-      // Format the date as 'YYYY-MM-DD' (or any other format you prefer)
-      // const formattedDate = date.toISOString().split('T')[0];
-      // dates.push(formattedDate);
-      const epochDate = Math.floor(date.getTime() /1000 / (86400))* 86400
-      dates.push(epochDate)
+      // Adjust for PST timezone (-8 hours from UTC)
+      const pstOffset = 8 * 60 * 60 * 1000; // 8 hours in milliseconds
+      const epochDatePST = Math.floor((date.getTime() - pstOffset) / 1000);
+      timestampsMidnight.push(epochDatePST);
     }
 
-    return dates;
+    return timestampsMidnight;
   }
 
   useEffect(() => {
@@ -90,17 +81,15 @@ export const ApiProvider = ({ children }) => {
         }
 
         // setLoading(true)
-        // fetch(`${_backendUrl}/api/get_latest_conversations`, {method: "GET"})
-        //   .then(data=>data.json())
-        //   .then(latestConvos => {
-        //     const last30DayDates = getLast30DaysDates()
-        //     console.log(latestConvos)
-        //     console.log(transformDataForChart(latestConvos))
-        //     // console.log(getUniqueSortedEpochDays(latestConvos))
-        //     // console.log(getUniqueSortedEpochDays(latestConvos).map(epochDate=>epochDate))
-        //   })
-        //   // .catch(()=>setCompanyLoadError(true))
-        //   .finally(()=>setLoading(false))
+        fetch(`${_backendUrl}/api/get_latest_conversations`, {method: "GET"})
+          .then(data=>data.json())
+          .then(latestConvos => {
+            const dayStartBuckets = getDayStartBuckets()
+            const _countPerDayByCompanyId = transformDataForChart(latestConvos, dayStartBuckets)
+            setCountPerDayByCompanyId(_countPerDayByCompanyId)
+          })
+          // .catch(()=>setCompanyLoadError(true))
+          // .finally(()=>setLoading(false))
       }
     }
   }, []);
@@ -111,9 +100,10 @@ export const ApiProvider = ({ children }) => {
         backendUrl,
         loading, setLoading,
         debugging,
-        conversationsByDate,
         conversationsForBlackTie,
         messagesForConvoId,
+        getDayStartBuckets,
+        countPerDayByCompanyId,
       }}
     >
       {children}

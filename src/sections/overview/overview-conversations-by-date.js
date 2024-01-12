@@ -1,33 +1,9 @@
 import PropTypes from 'prop-types';
-import ArrowPathIcon from '@heroicons/react/24/solid/ArrowPathIcon';
-import ArrowRightIcon from '@heroicons/react/24/solid/ArrowRightIcon';
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  SvgIcon
-} from '@mui/material';
+import { Card, CardContent, CardHeader } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { Chart } from 'src/components/chart';
-
-const getLast30DaysDates = () => {
-  const dates = [];
-  const today = new Date();
-
-  for (let i = 29; i >= 0; i--) {
-    const date = new Date(today);
-    date.setDate(date.getDate() - i);
-
-    // Format the date as 'YYYY-MM-DD' (or any other format you prefer)
-    const formattedDate = date.toISOString().split('T')[0];
-    dates.push(formattedDate);
-  }
-
-  return dates;
-}
+import { useApi } from '../../hooks/use-api';
+import { format } from 'date-fns';
 
 const useChartOptions = () => {
   const theme = useTheme();
@@ -67,7 +43,7 @@ const useChartOptions = () => {
     },
     plotOptions: {
       bar: {
-        columnWidth: '40px'
+        columnWidth: '20px'
       }
     },
     stroke: {
@@ -87,8 +63,9 @@ const useChartOptions = () => {
         color: theme.palette.divider,
         show: true
       },
-      categories: getLast30DaysDates(),
+      categories: [], // Update with correct values
       labels: {
+        formatter: ts => format((ts*1000), 'MM/dd'),
         offsetY: 5,
         style: {
           colors: theme.palette.text.secondary
@@ -97,7 +74,6 @@ const useChartOptions = () => {
     },
     yaxis: {
       labels: {
-        formatter: (value) => (value > 0 ? `${value}K` : `${value}`),
         offsetX: -10,
         style: {
           colors: theme.palette.text.secondary
@@ -108,13 +84,16 @@ const useChartOptions = () => {
 };
 
 export const OverviewConversationsByDate = (props) => {
-  const { chartSeries, sx } = props;
+  const {getDayStartBuckets} = useApi();
+  const { chartSeries, sx, title } = props;
   const chartOptions = useChartOptions();
+  chartOptions.xaxis.categories = getDayStartBuckets()
 
+  // console.log(chartSeries)
   return (
     <Card sx={sx}>
       <CardHeader
-        title="New Conversations per Date"
+        title={title}
       />
       <CardContent>
         <Chart
@@ -131,5 +110,6 @@ export const OverviewConversationsByDate = (props) => {
 
 OverviewConversationsByDate.protoTypes = {
   chartSeries: PropTypes.array.isRequired,
-  sx: PropTypes.object
+  sx: PropTypes.object,
+  title: PropTypes.string
 };
