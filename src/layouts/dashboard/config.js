@@ -10,18 +10,27 @@ import { SvgIcon } from '@mui/material';
 import { ChatBubbleLeftRightIcon } from '@heroicons/react/24/solid';
 
 export const items = [
-  // {
-  //   title: 'Overview',
-  //   path: '/',
-  //   icon: (
-  //     <SvgIcon fontSize="small">
-  //       <ChartBarIcon />
-  //     </SvgIcon>
-  //   )
-  // },
+  {
+    title: 'Overview',
+    path: '/',
+    icon: (
+      <SvgIcon fontSize="small">
+        <ChartBarIcon />
+      </SvgIcon>
+    )
+  },
   {
     title: 'Black Tie Conversations',
     path: '/conversations',
+    icon: (
+      <SvgIcon fontSize="small">
+        <ChatBubbleLeftRightIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Leads',
+    path: '/leads',
     icon: (
       <SvgIcon fontSize="small">
         <ChatBubbleLeftRightIcon />

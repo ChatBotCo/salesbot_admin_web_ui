@@ -12,6 +12,7 @@ export const ApiProvider = ({ children }) => {
   const [msgCountPerDayByCompanyId, setMsgCountPerDayByCompanyId] = useState({})
   const [conversationsForBlackTie, setConversationsForBlackTie] = useState([])
   const [messagesForConvoId, setMessagesForConvoId] = useState([])
+  const [conversationsWithUserData, setConversationsWithUserData] = useState([])
 
   const transformDataForChart = (conversations, dayStartBuckets) => {
     const companyIds = Object.keys(conversations.reduce((a, convo) => Object.assign(a, { [convo.company_id]: 0 }), {}))
@@ -95,8 +96,13 @@ export const ApiProvider = ({ children }) => {
           .then(latestMsgs => {
             const dayStartBuckets = getDayStartBuckets()
             const _countPerDayByCompanyId = transformDataForChart(latestMsgs, dayStartBuckets)
-            console.log(_countPerDayByCompanyId)
             setMsgCountPerDayByCompanyId(_countPerDayByCompanyId)
+          })
+
+        fetch(`${_backendUrl}/api/get_conversations_with_user_data`, {method: "GET"})
+          .then(data=>data.json())
+          .then(convos => {
+            setConversationsWithUserData(convos)
           })
       }
     }
@@ -113,6 +119,7 @@ export const ApiProvider = ({ children }) => {
         getDayStartBuckets,
         countPerDayByCompanyId,
         msgCountPerDayByCompanyId,
+        conversationsWithUserData,
       }}
     >
       {children}
