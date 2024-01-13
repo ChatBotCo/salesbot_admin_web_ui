@@ -69,9 +69,6 @@ export const ApiProvider = ({ children }) => {
 
       if(!initialized) {
         initialized = true
-        fetch(`${_backendUrl}/api/conversations?company_id=blacktiecasinoevents`, {method: "GET"})
-          .then(data=>data.json())
-          .then(setConversationsForBlackTie)
 
         if(window.location.pathname === '/messages') {
           const urlParams = new URLSearchParams(window.location.search);
@@ -97,6 +94,25 @@ export const ApiProvider = ({ children }) => {
             const dayStartBuckets = getDayStartBuckets()
             const _countPerDayByCompanyId = transformDataForChart(latestMsgs, dayStartBuckets)
             setMsgCountPerDayByCompanyId(_countPerDayByCompanyId)
+          })
+
+        fetch(`${_backendUrl}/api/messages/count_per_convo`, {method: "GET"})
+          .then(data=>data.json())
+          .then(msgCountsPerConvo => {
+            console.log(msgCountsPerConvo)
+            let result = msgCountsPerConvo.reduce((acc, obj) => {
+              acc[obj.conversation_id] = obj.many_msgs;
+              return acc;
+            }, {});
+
+            fetch(`${_backendUrl}/api/conversations?company_id=blacktiecasinoevents`, {method: "GET"})
+              .then(data=>data.json())
+              .then(convos => {
+                setConversationsForBlackTie(convos.map(c=>{
+                  c['many_msgs'] = result[c.id]
+                  return c
+                }))
+              })
           })
 
         fetch(`${_backendUrl}/api/conversations?with_user_data=true`, {method: "GET"})

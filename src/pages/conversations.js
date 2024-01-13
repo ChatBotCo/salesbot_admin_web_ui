@@ -34,7 +34,7 @@ const Page = () => {
               </Stack>
             </Stack>
             <ConversationsTable
-              items={conversationsForBlackTie}
+              items={conversationsForBlackTie.filter(c=>c.many_msgs>0)}
             />
           </Stack>
         </Container>

@@ -27,8 +27,7 @@ export const ConversationsTable = (props) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>
-                </TableCell>
+                <TableCell/>
                 <TableCell>
                   Date Started
                 </TableCell>
@@ -36,6 +35,7 @@ export const ConversationsTable = (props) => {
                   ID
                 </TableCell>
                 <TableCell/>
+                <TableCell>Many Messages</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -70,6 +70,7 @@ export const ConversationsTable = (props) => {
                         Messages
                       </Button>
                     </TableCell>
+                    <TableCell>{convo.many_msgs}</TableCell>
                   </TableRow>
                 );
               })}
