@@ -13,6 +13,7 @@ export const ApiProvider = ({ children }) => {
   const [loading, setLoading] = useState(false)
   const [countPerDayByCompanyId, setCountPerDayByCompanyId] = useState({})
   const [msgCountPerDayByCompanyId, setMsgCountPerDayByCompanyId] = useState({})
+  const [conversationsByCompanyId, setConversationsByCompanyId] = useState({})
   const [conversationsForBlackTie, setConversationsForBlackTie] = useState([])
   const [conversationsForEdge, setConversationsForEdge] = useState([])
   const [conversationsForSalesBot, setConversationsForSalesBot] = useState([])
@@ -76,20 +77,24 @@ export const ApiProvider = ({ children }) => {
         }
       }
 
-      if(window.location.pathname === '/conversations') {
-        const urlParams = new URLSearchParams(window.location.search);
-        const company_id = urlParams.get('company_id');
-        setCompanyIdParam(company_id)
-      }
-
       setLoading(true)
+      const now = new Date();
+      const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+      const epochSeconds30DaysAgo = Math.floor(thirtyDaysAgo.getTime() / 1000);
       const promises = [
-        fetch(`${backendUrl}/api/conversations?latest=true`, {method: "GET"})
+        fetch(`${backendUrl}/api/conversations?company_id=${user.company_id}&since_timestamp=${epochSeconds30DaysAgo}`, {method: "GET"})
           .then(data=>data.json())
-          .then(latestConvos => {
+          .then(convos => {
             const dayStartBuckets = getDayStartBuckets()
-            const _countPerDayByCompanyId = transformDataForChart(latestConvos, dayStartBuckets)
+            const _countPerDayByCompanyId = transformDataForChart(convos, dayStartBuckets)
             setCountPerDayByCompanyId(_countPerDayByCompanyId)
+
+            let result = convos.reduce((acc, convo) => {
+              if(!acc[convo.company_id]) acc[convo.company_id] = []
+              acc[convo.company_id].push(convo)
+              return acc;
+            }, {});
+            setConversationsByCompanyId(result)
           }),
 
         fetch(`${backendUrl}/api/messages?latest=true`, {method: "GET"})
@@ -144,7 +149,7 @@ export const ApiProvider = ({ children }) => {
       ]
       Promise.all(promises)
         .finally(()=>setLoading(false))
-      }
+    }
   }
 
   const clearAllDataForAuthorizedUser = () => {
@@ -187,6 +192,7 @@ export const ApiProvider = ({ children }) => {
         msgCountPerDayByCompanyId,
         conversationsWithUserData,
         companyIdParam,
+        conversationsByCompanyId,
       }}
     >
       {children}
