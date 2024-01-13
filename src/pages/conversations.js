@@ -1,33 +1,68 @@
+import { useCallback, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Box, CircularProgress, Container, Stack, Typography } from '@mui/material';
+import { Box, CircularProgress, Container, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { ConversationsTable } from '../sections/conversation/conversations-table';
 import { useApi } from '../hooks/use-api';
-import { useAuth } from '../hooks/use-auth';
 
 const Page = () => {
   const {
-    conversationsForBlackTie,
-    conversationsForEdge,
-    conversationsForSalesBot,
     loading,
-    companyIdParam,
-    conversationsByCompanyId
+    conversationsByCompanyId,
+    companiesByCompanyId,
   } = useApi()
-  let titleElements
-  console.log(conversationsByCompanyId)
-  switch (companyIdParam) {
-    case 'blacktiecasinoevents':
-      titleElements = `Black Tie Conversations (${conversationsForBlackTie && conversationsForBlackTie.length}))`
-      break
-    case 'edge.app':
-      titleElements = `Edge Conversations (${conversationsForEdge && conversationsForEdge.length}))`
-      break
-    case 'saleschat_bot':
-    default:
-      titleElements = `Sales Chatbot Conversations (${conversationsForSalesBot && conversationsForSalesBot.length}))`
-      break
+
+  const [tabs, setTabs] = useState([]);
+  const [titleElement, setTitleElement] = useState('Conversations');
+  const [selectedCompanyId, _setSelectedCompanyId] = useState('');
+  const [conversations, setConversations] = useState([]);
+
+  const setSelectedCompanyId = company_id => {
+    // console.log(`setSelectedCompanyId company_id:${company_id}`)
+    // console.log(companiesByCompanyId)
+    // console.log(conversationsByCompanyId)
+    _setSelectedCompanyId(company_id)
+
+    const company = companiesByCompanyId[company_id]
+    // console.log(companiesByCompanyId)
+    // console.log(company)
+    if(company) {
+      const convos = conversationsByCompanyId[company_id] || []
+      // console.log('setConversations')
+      // console.log(conversationsByCompanyId)
+      // console.log(convos)
+      setConversations(convos)
+      setTitleElement(`Conversations (${convos.length}))`)
+    } else {
+      setTitleElement('Conversations')
+    }
   }
+
+  useEffect(() => {
+    // console.log('useEffect for cunt fuck')
+    // console.log(companiesByCompanyId)
+    // console.log(conversationsByCompanyId)
+    const companies = Object.values(companiesByCompanyId) || []
+    const firstCompany = (companies.length>0 && companies[0]) || {}
+    const firstCompanyId = firstCompany.company_id
+    setSelectedCompanyId(firstCompanyId)
+
+    // console.log(companies)
+    const _tabs = companies.map((company, i) => {
+      console.log(company.company_id)
+      return <Tab
+        key={company.company_id}
+        label={company.name}
+        value={company.company_id}
+      />
+    })
+    setTabs(_tabs)
+  },[companiesByCompanyId, conversationsByCompanyId]);
+
+  const handleSelectCompany = (e,company_id) => {
+    setSelectedCompanyId(company_id);
+  }
+
   return (
     <>
       <Head>
@@ -50,13 +85,21 @@ const Page = () => {
             >
               <Stack spacing={1}>
                 <Typography variant="h4">
-                  {titleElements}
+                  {titleElement}
                   {loading && <CircularProgress />}
                 </Typography>
               </Stack>
             </Stack>
+            <Tabs
+              onChange={handleSelectCompany}
+              sx={{ mb: 3 }}
+              value={selectedCompanyId}
+            >
+              {tabs}
+            </Tabs>
             <ConversationsTable
-              items={conversationsForBlackTie.filter(c=>c.many_msgs>0)}
+              // items={conversationsForBlackTie.filter(c=>c.many_msgs>0)}
+              items={conversations}
             />
           </Stack>
         </Container>

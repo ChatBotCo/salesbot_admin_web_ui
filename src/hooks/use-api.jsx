@@ -13,6 +13,7 @@ export const ApiProvider = ({ children }) => {
   const [loading, setLoading] = useState(false)
   const [countPerDayByCompanyId, setCountPerDayByCompanyId] = useState({})
   const [msgCountPerDayByCompanyId, setMsgCountPerDayByCompanyId] = useState({})
+  const [companiesByCompanyId, setCompaniesByCompanyId] = useState({})
   const [conversationsByCompanyId, setConversationsByCompanyId] = useState({})
   const [conversationsForBlackTie, setConversationsForBlackTie] = useState([])
   const [conversationsForEdge, setConversationsForEdge] = useState([])
@@ -82,6 +83,20 @@ export const ApiProvider = ({ children }) => {
       const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
       const epochSeconds30DaysAgo = Math.floor(thirtyDaysAgo.getTime() / 1000);
       const promises = [
+        fetch(`${backendUrl}/api/companies?company_id=${user.company_id}`, {method: "GET"})
+          .then(data=>data.json())
+          .then(_companies => {
+            // console.log('cunt fuck retard stupid bitch fuck')
+            // console.log(_companies)
+            let result = _companies.reduce((acc, company) => {
+              acc[company.company_id] = company
+              return acc;
+            }, {});
+            // console.log('setCompaniesByCompanyId')
+            // console.log(setCompaniesByCompanyId)
+            setCompaniesByCompanyId(result)
+          }),
+
         fetch(`${backendUrl}/api/conversations?company_id=${user.company_id}&since_timestamp=${epochSeconds30DaysAgo}`, {method: "GET"})
           .then(data=>data.json())
           .then(convos => {
@@ -193,6 +208,7 @@ export const ApiProvider = ({ children }) => {
         conversationsWithUserData,
         companyIdParam,
         conversationsByCompanyId,
+        companiesByCompanyId,
       }}
     >
       {children}
