@@ -76,19 +76,23 @@ export const AuthProvider = (props) => {
     initialized.current = true;
 
     let isAuthenticated = false;
+    let authorizeUserdata = null
 
     try {
-      isAuthenticated = window.sessionStorage.getItem('authenticated') === 'true';
+      isAuthenticated = window.localStorage.getItem('authenticated') === 'true';
+      const _authorizeUserdata = window.localStorage.getItem('authorizeUserdata');
+      authorizeUserdata = _authorizeUserdata && JSON.parse(_authorizeUserdata)
     } catch (err) {
       console.error(err);
     }
 
-    if (isAuthenticated) {
+    if (isAuthenticated && authorizeUserdata) {
       const user = {
-        id: '5e86809283e28b96d2d38537',
+        id: authorizeUserdata.user_name,
         avatar: '/assets/avatars/avatar-anika-visser.png',
-        name: 'Anika Visser',
-        email: 'anika.visser@devias.io'
+        name: authorizeUserdata.user_name,
+        email: authorizeUserdata.user_name,
+        company_id: authorizeUserdata.company_id,
       };
 
       dispatch({
@@ -110,26 +114,6 @@ export const AuthProvider = (props) => {
     []
   );
 
-  const skip = () => {
-    try {
-      window.sessionStorage.setItem('authenticated', 'true');
-    } catch (err) {
-      console.error(err);
-    }
-
-    const user = {
-      id: '5e86809283e28b96d2d38537',
-      avatar: '/assets/avatars/avatar-anika-visser.png',
-      name: 'Anika Visser',
-      email: 'anika.visser@devias.io'
-    };
-
-    dispatch({
-      type: HANDLERS.SIGN_IN,
-      payload: user
-    });
-  };
-
   const signIn = async (user_name, password) => {
     const body = { user_name, password }
     fetch(`${backendUrl}/api/login`, {
@@ -150,7 +134,7 @@ export const AuthProvider = (props) => {
           // }
 
           try {
-            window.sessionStorage.setItem('authenticated', 'true');
+            window.localStorage.setItem('authenticated', 'true');
           } catch (err) {
             console.error(err);
           }
@@ -162,6 +146,12 @@ export const AuthProvider = (props) => {
             email: authorizeUserdata.user_name,
             company_id: authorizeUserdata.company_id,
           };
+
+          try {
+            window.localStorage.setItem('authorizeUserdata', JSON.stringify(authorizeUserdata));
+          } catch (err) {
+            console.error(err);
+          }
 
           dispatch({
             type: HANDLERS.SIGN_IN,
@@ -180,6 +170,8 @@ export const AuthProvider = (props) => {
   };
 
   const signOut = () => {
+    window.localStorage.removeItem('authenticated')
+    window.localStorage.removeItem('authorizeUserdata')
     dispatch({
       type: HANDLERS.SIGN_OUT
     });

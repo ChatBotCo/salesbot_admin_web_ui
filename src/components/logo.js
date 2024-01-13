@@ -5,6 +5,6 @@ export const Logo = () => {
   const fillColor = theme.palette.primary.main;
 
   return (
-    <img src='assets/saleschatbot_Logo_05_Dark_BG.png'/>
+    <img src='/assets/saleschatbot_Logo_05_Dark_BG.png'/>
   );
 };

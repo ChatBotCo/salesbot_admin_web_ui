@@ -8,7 +8,7 @@ import { useAuth } from '../hooks/use-auth';
 const Page = () => {
   const {conversationsForBlackTie, conversationsForEdge, conversationsForSalesBot, loading, companyIdParam} = useApi()
   let titleElements
-  console.log(companyIdParam)
+  // console.log(companyIdParam)
   switch (companyIdParam) {
     case 'blacktiecasinoevents':
       titleElements = `Black Tie Conversations (${conversationsForBlackTie && conversationsForBlackTie.length}))`

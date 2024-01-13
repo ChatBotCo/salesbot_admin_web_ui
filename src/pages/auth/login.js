@@ -68,7 +68,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Login | Devias Kit
+          Salse Chatbot
         </title>
       </Head>
       <Box

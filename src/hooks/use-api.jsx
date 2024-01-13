@@ -6,7 +6,7 @@ const ApiContext = createContext();
 let initialized = false
 
 export const ApiProvider = ({ children }) => {
-  const {setAuthBackendUrl} = useAuth()
+  const {setAuthBackendUrl, user} = useAuth()
 
   const [debugging, setDebugging] = useState()
   const [backendUrl, setBackendUrl] = useState("https://salesbot-api-svc.azurewebsites.net")
@@ -64,99 +64,103 @@ export const ApiProvider = ({ children }) => {
     return timestampsMidnight;
   }
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      setDebugging(localStorage.getItem('debugging')==='true')
-      let _backendUrl = backendUrl
-      if(localStorage.getItem('local_backend') === 'true') {
-        _backendUrl = "http://localhost:5000"
-        setBackendUrl(_backendUrl)
-      }
-      setAuthBackendUrl(_backendUrl)
-
-      if(!initialized) {
-        initialized = true
-
-        if(window.location.pathname === '/messages') {
-          const urlParams = new URLSearchParams(window.location.search);
-          const convo_id = urlParams.get('convo_id');
-          if(convo_id) {
-            fetch(`${_backendUrl}/api/messages?convo_id=${convo_id}`, {method: "GET"})
-              .then(data=>data.json())
-              .then(setMessagesForConvoId)
-          }
-        }
-
-        if(window.location.pathname === '/conversations') {
-          const urlParams = new URLSearchParams(window.location.search);
-          const company_id = urlParams.get('company_id');
-          setCompanyIdParam(company_id)
-        }
-
-        setLoading(true)
-        const promises = [
-        fetch(`${_backendUrl}/api/conversations?latest=true`, {method: "GET"})
+  const loadAllDataForAuthorizedUser = () => {
+    if(window.location.pathname === '/messages') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const convo_id = urlParams.get('convo_id');
+      if(convo_id) {
+        fetch(`${_backendUrl}/api/messages?convo_id=${convo_id}`, {method: "GET"})
           .then(data=>data.json())
-          .then(latestConvos => {
-            const dayStartBuckets = getDayStartBuckets()
-            const _countPerDayByCompanyId = transformDataForChart(latestConvos, dayStartBuckets)
-            setCountPerDayByCompanyId(_countPerDayByCompanyId)
-          }),
-
-        fetch(`${_backendUrl}/api/messages?latest=true`, {method: "GET"})
-          .then(data=>data.json())
-          .then(latestMsgs => {
-            const dayStartBuckets = getDayStartBuckets()
-            const _countPerDayByCompanyId = transformDataForChart(latestMsgs, dayStartBuckets)
-            setMsgCountPerDayByCompanyId(_countPerDayByCompanyId)
-          }),
-
-        fetch(`${_backendUrl}/api/messages/count_per_convo`, {method: "GET"})
-          .then(data=>data.json())
-          .then(msgCountsPerConvo => {
-            let result = msgCountsPerConvo.reduce((acc, obj) => {
-              acc[obj.conversation_id] = obj.many_msgs;
-              return acc;
-            }, {});
-
-            fetch(`${_backendUrl}/api/conversations?company_id=blacktiecasinoevents`, {method: "GET"})
-              .then(data=>data.json())
-              .then(convos => {
-                setConversationsForBlackTie(convos.map(c=>{
-                  c['many_msgs'] = result[c.id]
-                  return c
-                }))
-              })
-
-            fetch(`${_backendUrl}/api/conversations?company_id=edge.app`, {method: "GET"})
-              .then(data=>data.json())
-              .then(convos => {
-                setConversationsForEdge(convos.map(c=>{
-                  c['many_msgs'] = result[c.id]
-                  return c
-                }))
-              })
-
-            fetch(`${_backendUrl}/api/conversations?company_id=saleschat_bot`, {method: "GET"})
-              .then(data=>data.json())
-              .then(convos => {
-                setConversationsForSalesBot(convos.map(c=>{
-                  c['many_msgs'] = result[c.id]
-                  return c
-                }))
-              })
-          }),
-
-        fetch(`${_backendUrl}/api/conversations?with_user_data=true`, {method: "GET"})
-          .then(data=>data.json())
-          .then(convos => {
-            setConversationsWithUserData(convos)
-          }),
-        ]
-        Promise.all(promises)
-          .finally(()=>setLoading(false))
+          .then(setMessagesForConvoId)
       }
     }
+
+    if(window.location.pathname === '/conversations') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const company_id = urlParams.get('company_id');
+      setCompanyIdParam(company_id)
+    }
+
+    setLoading(true)
+    const promises = [
+      fetch(`${backendUrl}/api/conversations?latest=true`, {method: "GET"})
+        .then(data=>data.json())
+        .then(latestConvos => {
+          const dayStartBuckets = getDayStartBuckets()
+          const _countPerDayByCompanyId = transformDataForChart(latestConvos, dayStartBuckets)
+          setCountPerDayByCompanyId(_countPerDayByCompanyId)
+        }),
+
+      fetch(`${backendUrl}/api/messages?latest=true`, {method: "GET"})
+        .then(data=>data.json())
+        .then(latestMsgs => {
+          const dayStartBuckets = getDayStartBuckets()
+          const _countPerDayByCompanyId = transformDataForChart(latestMsgs, dayStartBuckets)
+          setMsgCountPerDayByCompanyId(_countPerDayByCompanyId)
+        }),
+
+      fetch(`${backendUrl}/api/messages/count_per_convo`, {method: "GET"})
+        .then(data=>data.json())
+        .then(msgCountsPerConvo => {
+          let result = msgCountsPerConvo.reduce((acc, obj) => {
+            acc[obj.conversation_id] = obj.many_msgs;
+            return acc;
+          }, {});
+
+          fetch(`${backendUrl}/api/conversations?company_id=blacktiecasinoevents`, {method: "GET"})
+            .then(data=>data.json())
+            .then(convos => {
+              setConversationsForBlackTie(convos.map(c=>{
+                c['many_msgs'] = result[c.id]
+                return c
+              }))
+            })
+
+          fetch(`${backendUrl}/api/conversations?company_id=edge.app`, {method: "GET"})
+            .then(data=>data.json())
+            .then(convos => {
+              setConversationsForEdge(convos.map(c=>{
+                c['many_msgs'] = result[c.id]
+                return c
+              }))
+            })
+
+          fetch(`${backendUrl}/api/conversations?company_id=saleschat_bot`, {method: "GET"})
+            .then(data=>data.json())
+            .then(convos => {
+              setConversationsForSalesBot(convos.map(c=>{
+                c['many_msgs'] = result[c.id]
+                return c
+              }))
+            })
+        }),
+
+      fetch(`${backendUrl}/api/conversations?with_user_data=true`, {method: "GET"})
+        .then(data=>data.json())
+        .then(convos => {
+          setConversationsWithUserData(convos)
+        }),
+    ]
+    Promise.all(promises)
+      .finally(()=>setLoading(false))
+  }
+
+  // On User object update (auth change)
+  useEffect(() => {
+    if(user) {
+      loadAllDataForAuthorizedUser()
+    }
+  },[user]);
+
+  useEffect(() => {
+    // if (typeof window !== 'undefined' && window.localStorage) {
+    setDebugging(localStorage.getItem('debugging')==='true')
+    let _backendUrl = backendUrl
+    if(localStorage.getItem('local_backend') === 'true') {
+      _backendUrl = "http://localhost:5000"
+      setBackendUrl(_backendUrl)
+    }
+    setAuthBackendUrl(_backendUrl)
   }, []);
 
   return (
