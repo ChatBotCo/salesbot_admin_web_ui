@@ -20,6 +20,16 @@ export const ConversationsTable = (props) => {
     items = [],
   } = props;
 
+  const sortedItems = items.sort((a, b) => {
+    if (a._ts < b._ts) {
+      return 1;
+    }
+    if (a._ts > b._ts) {
+      return -1;
+    }
+    return 0;
+  });
+
   return (
     <Card>
       <Scrollbar>
@@ -36,10 +46,12 @@ export const ConversationsTable = (props) => {
                 </TableCell>
                 <TableCell/>
                 <TableCell>Many Messages</TableCell>
+                <TableCell>Lead Generated?</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {items.map((convo, i) => {
+              {sortedItems.map((convo, i) => {
+                const leadGen = (convo.user_first_name || convo.user_first_name || convo.user_last_name || convo.user_phone_number) ? 'YES' : ''
                 return (
                   <TableRow
                     hover
@@ -71,6 +83,7 @@ export const ConversationsTable = (props) => {
                       </Button>
                     </TableCell>
                     <TableCell>{convo.many_msgs}</TableCell>
+                    <TableCell>{leadGen}</TableCell>
                   </TableRow>
                 );
               })}

@@ -99,7 +99,6 @@ export const ApiProvider = ({ children }) => {
         fetch(`${_backendUrl}/api/messages/count_per_convo`, {method: "GET"})
           .then(data=>data.json())
           .then(msgCountsPerConvo => {
-            console.log(msgCountsPerConvo)
             let result = msgCountsPerConvo.reduce((acc, obj) => {
               acc[obj.conversation_id] = obj.many_msgs;
               return acc;
