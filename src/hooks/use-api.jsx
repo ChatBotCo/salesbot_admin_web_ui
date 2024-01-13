@@ -14,8 +14,11 @@ export const ApiProvider = ({ children }) => {
   const [countPerDayByCompanyId, setCountPerDayByCompanyId] = useState({})
   const [msgCountPerDayByCompanyId, setMsgCountPerDayByCompanyId] = useState({})
   const [conversationsForBlackTie, setConversationsForBlackTie] = useState([])
+  const [conversationsForEdge, setConversationsForEdge] = useState([])
+  const [conversationsForSalesBot, setConversationsForSalesBot] = useState([])
   const [messagesForConvoId, setMessagesForConvoId] = useState([])
   const [conversationsWithUserData, setConversationsWithUserData] = useState([])
+  const [companyIdParam, setCompanyIdParam] = useState("")
 
   const transformDataForChart = (conversations, dayStartBuckets) => {
     const companyIds = Object.keys(conversations.reduce((a, convo) => Object.assign(a, { [convo.company_id]: 0 }), {}))
@@ -84,6 +87,12 @@ export const ApiProvider = ({ children }) => {
           }
         }
 
+        if(window.location.pathname === '/conversations') {
+          const urlParams = new URLSearchParams(window.location.search);
+          const company_id = urlParams.get('company_id');
+          setCompanyIdParam(company_id)
+        }
+
         setLoading(true)
         const promises = [
         fetch(`${_backendUrl}/api/conversations?latest=true`, {method: "GET"})
@@ -118,6 +127,24 @@ export const ApiProvider = ({ children }) => {
                   return c
                 }))
               })
+
+            fetch(`${_backendUrl}/api/conversations?company_id=edge.app`, {method: "GET"})
+              .then(data=>data.json())
+              .then(convos => {
+                setConversationsForEdge(convos.map(c=>{
+                  c['many_msgs'] = result[c.id]
+                  return c
+                }))
+              })
+
+            fetch(`${_backendUrl}/api/conversations?company_id=saleschat_bot`, {method: "GET"})
+              .then(data=>data.json())
+              .then(convos => {
+                setConversationsForSalesBot(convos.map(c=>{
+                  c['many_msgs'] = result[c.id]
+                  return c
+                }))
+              })
           }),
 
         fetch(`${_backendUrl}/api/conversations?with_user_data=true`, {method: "GET"})
@@ -139,11 +166,14 @@ export const ApiProvider = ({ children }) => {
         loading, setLoading,
         debugging,
         conversationsForBlackTie,
+        conversationsForEdge,
+        conversationsForSalesBot,
         messagesForConvoId,
         getDayStartBuckets,
         countPerDayByCompanyId,
         msgCountPerDayByCompanyId,
         conversationsWithUserData,
+        companyIdParam,
       }}
     >
       {children}

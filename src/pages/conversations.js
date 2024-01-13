@@ -6,9 +6,21 @@ import { useApi } from '../hooks/use-api';
 import { useAuth } from '../hooks/use-auth';
 
 const Page = () => {
-  const {conversationsForBlackTie, loading} = useApi()
-  const {user} = useAuth()
-
+  const {conversationsForBlackTie, conversationsForEdge, conversationsForSalesBot, loading, companyIdParam} = useApi()
+  let titleElements
+  console.log(companyIdParam)
+  switch (companyIdParam) {
+    case 'blacktiecasinoevents':
+      titleElements = `Black Tie Conversations (${conversationsForBlackTie && conversationsForBlackTie.length}))`
+      break
+    case 'edge.app':
+      titleElements = `Edge Conversations (${conversationsForEdge && conversationsForEdge.length}))`
+      break
+    case 'saleschat_bot':
+    default:
+      titleElements = `Sales Chatbot Conversations (${conversationsForSalesBot && conversationsForSalesBot.length}))`
+      break
+  }
   return (
     <>
       <Head>
@@ -31,7 +43,7 @@ const Page = () => {
             >
               <Stack spacing={1}>
                 <Typography variant="h4">
-                  Black Tie Conversations ({conversationsForBlackTie && conversationsForBlackTie.length})
+                  {titleElements}
                   {loading && <CircularProgress />}
                 </Typography>
               </Stack>

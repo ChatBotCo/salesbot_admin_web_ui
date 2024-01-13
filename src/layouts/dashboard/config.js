@@ -22,7 +22,25 @@ export const items = [
   },
   {
     title: 'Black Tie Conversations',
-    path: '/conversations',
+    path: '/conversations?company_id=blacktiecasinoevents',
+    icon: (
+      <SvgIcon fontSize="small">
+        <ChatBubbleLeftRightIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Edge Conversations',
+    path: '/conversations?company_id=edge.app',
+    icon: (
+      <SvgIcon fontSize="small">
+        <ChatBubbleLeftRightIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'SalesBot Conversations',
+    path: '/conversations?company_id=saleschat_bot',
     icon: (
       <SvgIcon fontSize="small">
         <ChatBubbleLeftRightIcon />
