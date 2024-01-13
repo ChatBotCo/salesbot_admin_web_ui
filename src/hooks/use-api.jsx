@@ -80,13 +80,15 @@ export const ApiProvider = ({ children }) => {
           }
         }
 
+        setLoading(true)
+        const promises = [
         fetch(`${_backendUrl}/api/conversations?latest=true`, {method: "GET"})
           .then(data=>data.json())
           .then(latestConvos => {
             const dayStartBuckets = getDayStartBuckets()
             const _countPerDayByCompanyId = transformDataForChart(latestConvos, dayStartBuckets)
             setCountPerDayByCompanyId(_countPerDayByCompanyId)
-          })
+          }),
 
         fetch(`${_backendUrl}/api/messages?latest=true`, {method: "GET"})
           .then(data=>data.json())
@@ -94,7 +96,7 @@ export const ApiProvider = ({ children }) => {
             const dayStartBuckets = getDayStartBuckets()
             const _countPerDayByCompanyId = transformDataForChart(latestMsgs, dayStartBuckets)
             setMsgCountPerDayByCompanyId(_countPerDayByCompanyId)
-          })
+          }),
 
         fetch(`${_backendUrl}/api/messages/count_per_convo`, {method: "GET"})
           .then(data=>data.json())
@@ -112,13 +114,16 @@ export const ApiProvider = ({ children }) => {
                   return c
                 }))
               })
-          })
+          }),
 
         fetch(`${_backendUrl}/api/conversations?with_user_data=true`, {method: "GET"})
           .then(data=>data.json())
           .then(convos => {
             setConversationsWithUserData(convos)
-          })
+          }),
+        ]
+        Promise.all(promises)
+          .finally(()=>setLoading(false))
       }
     }
   }, []);

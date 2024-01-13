@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { Box, Container, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box, CircularProgress, Container, Unstable_Grid2 as Grid } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { useApi } from '../hooks/use-api';
 import { OverviewConversationsByDate } from '../sections/overview/overview-conversations-by-date';
@@ -7,7 +7,7 @@ import { OverviewConversationsByDate } from '../sections/overview/overview-conve
 const now = new Date();
 
 const Page = () => {
-  const {countPerDayByCompanyId, msgCountPerDayByCompanyId} = useApi();
+  const {countPerDayByCompanyId, msgCountPerDayByCompanyId, loading} = useApi();
 
   const seriesData = Object.keys(countPerDayByCompanyId).map(companyId=>{
     return {
@@ -37,6 +37,7 @@ const Page = () => {
           py: 8
         }}
       >
+        {loading && <CircularProgress />}
         <Container maxWidth="xl">
           <Grid
             container
@@ -46,6 +47,7 @@ const Page = () => {
               xs={12}
               lg={8}
             >
+
               <OverviewConversationsByDate
                 chartSeries={seriesData}
                 sx={{ height: '100%' }}

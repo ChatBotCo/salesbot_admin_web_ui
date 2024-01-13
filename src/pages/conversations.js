@@ -1,11 +1,11 @@
 import Head from 'next/head';
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Box, CircularProgress, Container, Stack, Typography } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { ConversationsTable } from '../sections/conversation/conversations-table';
 import { useApi } from '../hooks/use-api';
 
 const Page = () => {
-  const {conversationsForBlackTie} = useApi()
+  const {conversationsForBlackTie, loading} = useApi()
 
   return (
     <>
@@ -30,6 +30,7 @@ const Page = () => {
               <Stack spacing={1}>
                 <Typography variant="h4">
                   Black Tie Conversations ({conversationsForBlackTie && conversationsForBlackTie.length})
+                  {loading && <CircularProgress />}
                 </Typography>
               </Stack>
             </Stack>
