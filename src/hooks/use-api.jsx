@@ -65,91 +65,100 @@ export const ApiProvider = ({ children }) => {
   }
 
   const loadAllDataForAuthorizedUser = () => {
-    if(window.location.pathname === '/messages') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const convo_id = urlParams.get('convo_id');
-      if(convo_id) {
-        fetch(`${_backendUrl}/api/messages?convo_id=${convo_id}`, {method: "GET"})
-          .then(data=>data.json())
-          .then(setMessagesForConvoId)
+    if(user) {
+      if(window.location.pathname === '/messages') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const convo_id = urlParams.get('convo_id');
+        if(convo_id) {
+          fetch(`${backendUrl}/api/messages?convo_id=${convo_id}`, {method: "GET"})
+            .then(data=>data.json())
+            .then(setMessagesForConvoId)
+        }
       }
-    }
 
-    if(window.location.pathname === '/conversations') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const company_id = urlParams.get('company_id');
-      setCompanyIdParam(company_id)
-    }
+      if(window.location.pathname === '/conversations') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const company_id = urlParams.get('company_id');
+        setCompanyIdParam(company_id)
+      }
 
-    setLoading(true)
-    const promises = [
-      fetch(`${backendUrl}/api/conversations?latest=true`, {method: "GET"})
-        .then(data=>data.json())
-        .then(latestConvos => {
-          const dayStartBuckets = getDayStartBuckets()
-          const _countPerDayByCompanyId = transformDataForChart(latestConvos, dayStartBuckets)
-          setCountPerDayByCompanyId(_countPerDayByCompanyId)
-        }),
+      setLoading(true)
+      const promises = [
+        fetch(`${backendUrl}/api/conversations?latest=true`, {method: "GET"})
+          .then(data=>data.json())
+          .then(latestConvos => {
+            const dayStartBuckets = getDayStartBuckets()
+            const _countPerDayByCompanyId = transformDataForChart(latestConvos, dayStartBuckets)
+            setCountPerDayByCompanyId(_countPerDayByCompanyId)
+          }),
 
-      fetch(`${backendUrl}/api/messages?latest=true`, {method: "GET"})
-        .then(data=>data.json())
-        .then(latestMsgs => {
-          const dayStartBuckets = getDayStartBuckets()
-          const _countPerDayByCompanyId = transformDataForChart(latestMsgs, dayStartBuckets)
-          setMsgCountPerDayByCompanyId(_countPerDayByCompanyId)
-        }),
+        fetch(`${backendUrl}/api/messages?latest=true`, {method: "GET"})
+          .then(data=>data.json())
+          .then(latestMsgs => {
+            const dayStartBuckets = getDayStartBuckets()
+            const _countPerDayByCompanyId = transformDataForChart(latestMsgs, dayStartBuckets)
+            setMsgCountPerDayByCompanyId(_countPerDayByCompanyId)
+          }),
 
-      fetch(`${backendUrl}/api/messages/count_per_convo`, {method: "GET"})
-        .then(data=>data.json())
-        .then(msgCountsPerConvo => {
-          let result = msgCountsPerConvo.reduce((acc, obj) => {
-            acc[obj.conversation_id] = obj.many_msgs;
-            return acc;
-          }, {});
+        fetch(`${backendUrl}/api/messages/count_per_convo`, {method: "GET"})
+          .then(data=>data.json())
+          .then(msgCountsPerConvo => {
+            let result = msgCountsPerConvo.reduce((acc, obj) => {
+              acc[obj.conversation_id] = obj.many_msgs;
+              return acc;
+            }, {});
 
-          fetch(`${backendUrl}/api/conversations?company_id=blacktiecasinoevents`, {method: "GET"})
-            .then(data=>data.json())
-            .then(convos => {
-              setConversationsForBlackTie(convos.map(c=>{
-                c['many_msgs'] = result[c.id]
-                return c
-              }))
-            })
+            fetch(`${backendUrl}/api/conversations?company_id=blacktiecasinoevents`, {method: "GET"})
+              .then(data=>data.json())
+              .then(convos => {
+                setConversationsForBlackTie(convos.map(c=>{
+                  c['many_msgs'] = result[c.id]
+                  return c
+                }))
+              })
 
-          fetch(`${backendUrl}/api/conversations?company_id=edge.app`, {method: "GET"})
-            .then(data=>data.json())
-            .then(convos => {
-              setConversationsForEdge(convos.map(c=>{
-                c['many_msgs'] = result[c.id]
-                return c
-              }))
-            })
+            fetch(`${backendUrl}/api/conversations?company_id=edge.app`, {method: "GET"})
+              .then(data=>data.json())
+              .then(convos => {
+                setConversationsForEdge(convos.map(c=>{
+                  c['many_msgs'] = result[c.id]
+                  return c
+                }))
+              })
 
-          fetch(`${backendUrl}/api/conversations?company_id=saleschat_bot`, {method: "GET"})
-            .then(data=>data.json())
-            .then(convos => {
-              setConversationsForSalesBot(convos.map(c=>{
-                c['many_msgs'] = result[c.id]
-                return c
-              }))
-            })
-        }),
+            fetch(`${backendUrl}/api/conversations?company_id=saleschat_bot`, {method: "GET"})
+              .then(data=>data.json())
+              .then(convos => {
+                setConversationsForSalesBot(convos.map(c=>{
+                  c['many_msgs'] = result[c.id]
+                  return c
+                }))
+              })
+          }),
 
-      fetch(`${backendUrl}/api/conversations?with_user_data=true`, {method: "GET"})
-        .then(data=>data.json())
-        .then(convos => {
-          setConversationsWithUserData(convos)
-        }),
-    ]
-    Promise.all(promises)
-      .finally(()=>setLoading(false))
+        fetch(`${backendUrl}/api/conversations?with_user_data=true`, {method: "GET"})
+          .then(data=>data.json())
+          .then(convos => {
+            setConversationsWithUserData(convos)
+          }),
+      ]
+      Promise.all(promises)
+        .finally(()=>setLoading(false))
+      }
+  }
+
+  const clearAllDataForAuthorizedUser = () => {
+    setCountPerDayByCompanyId({})
+    setMsgCountPerDayByCompanyId({})
+    setConversationsForBlackTie([])
+    setConversationsForEdge([])
+    setConversationsForSalesBot([])
   }
 
   // On User object update (auth change)
   useEffect(() => {
-    if(user) {
-      loadAllDataForAuthorizedUser()
-    }
+    clearAllDataForAuthorizedUser()
+    loadAllDataForAuthorizedUser()
   },[user]);
 
   useEffect(() => {
