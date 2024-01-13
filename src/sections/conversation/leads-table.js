@@ -32,6 +32,7 @@ export const LeadsTable = (props) => {
                 <TableCell>Name</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Phone</TableCell>
+                <TableCell/>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -47,7 +48,20 @@ export const LeadsTable = (props) => {
                     <TableCell>{convo.company_id}</TableCell>
                     <TableCell>{convo.user_first_name} {convo.user_last_name}</TableCell>
                     <TableCell>{convo.user_email}</TableCell>
-                    <TableCell>{convo.user_phone_number}</TableCell>
+                    <TableCell>{convo.user_phone_number}</TableCell><TableCell>
+                    <Button
+                      href={`/messages?convo_id=${convo.id}&from_leads=true`}
+                      startIcon={(
+                        <SvgIcon fontSize="small">
+                          <QueueListIcon />
+                        </SvgIcon>
+                      )}
+                      sx={{ mt: 3 }}
+                      variant="contained"
+                    >
+                      Messages
+                    </Button>
+                  </TableCell>
                   </TableRow>
                 );
               })}

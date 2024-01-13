@@ -15,7 +15,11 @@ import NextLink from 'next/link';
 import ArrowLeftIcon from '@heroicons/react/24/solid/ArrowLeftIcon';
 
 const Page = () => {
-  const {messagesForConvoId, loading} = useApi()
+  const {
+    messagesForConvoId,
+    loading,
+    navToMsgsFromLeadsTable,
+  } = useApi()
 
   return (
     <>
@@ -40,7 +44,7 @@ const Page = () => {
               <Stack spacing={1}>
                 <Button
                   component={NextLink}
-                  href="/conversations"
+                  href={navToMsgsFromLeadsTable ? '/leads' : '/conversations'}
                   startIcon={(
                     <SvgIcon fontSize="small">
                       <ArrowLeftIcon />
@@ -48,7 +52,7 @@ const Page = () => {
                   )}
                   variant="contained"
                 >
-                  Conversation
+                  {navToMsgsFromLeadsTable ? 'Leads' : 'Conversation'}
                 </Button>
                 <Typography variant="h4">
                   Messages ({messagesForConvoId.length})

@@ -22,6 +22,7 @@ export const ApiProvider = ({ children }) => {
   const [messageCountsPerConvo, setMessageCountsPerConvo] = useState({})
   const [conversationsWithUserData, setConversationsWithUserData] = useState([])
   const [companyIdParam, setCompanyIdParam] = useState("")
+  const [navToMsgsFromLeadsTable, setNavToMsgsFromLeadsTable] = useState(false)
 
   const transformDataForChart = (conversations, dayStartBuckets) => {
     const companyIds = Object.keys(conversations.reduce((a, convo) => Object.assign(a, { [convo.company_id]: 0 }), {}))
@@ -72,7 +73,9 @@ export const ApiProvider = ({ children }) => {
       if(window.location.pathname === '/messages') {
         const urlParams = new URLSearchParams(window.location.search);
         const convo_id = urlParams.get('convo_id');
+        const from_leads = urlParams.get('from_leads');
         if(convo_id) {
+          setNavToMsgsFromLeadsTable(from_leads === 'true')
           fetch(`${backendUrl}/api/messages?convo_id=${convo_id}`, {method: "GET"})
             .then(data=>data.json())
             .then(setMessagesForConvoId)
@@ -181,6 +184,7 @@ export const ApiProvider = ({ children }) => {
         conversationsByCompanyId,
         companiesByCompanyId,
         messageCountsPerConvo,
+        navToMsgsFromLeadsTable,
       }}
     >
       {children}
