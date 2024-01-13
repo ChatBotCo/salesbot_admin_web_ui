@@ -8,7 +8,6 @@ import { useAuth } from '../hooks/use-auth';
 const Page = () => {
   const {conversationsForBlackTie, loading} = useApi()
   const {user} = useAuth()
-  console.log(user)
 
   return (
     <>

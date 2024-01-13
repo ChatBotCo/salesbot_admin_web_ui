@@ -1,4 +1,5 @@
 import ChartBarIcon from '@heroicons/react/24/solid/ChartBarIcon';
+import StarIcon from '@heroicons/react/24/solid/StarIcon';
 import CogIcon from '@heroicons/react/24/solid/CogIcon';
 import LockClosedIcon from '@heroicons/react/24/solid/LockClosedIcon';
 import ShoppingBagIcon from '@heroicons/react/24/solid/ShoppingBagIcon';
@@ -33,7 +34,7 @@ export const items = [
     path: '/leads',
     icon: (
       <SvgIcon fontSize="small">
-        <ChatBubbleLeftRightIcon />
+        <StarIcon />
       </SvgIcon>
     )
   },
