@@ -3,9 +3,12 @@ import { Box, CircularProgress, Container, Stack, Typography } from '@mui/materi
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { ConversationsTable } from '../sections/conversation/conversations-table';
 import { useApi } from '../hooks/use-api';
+import { useAuth } from '../hooks/use-auth';
 
 const Page = () => {
   const {conversationsForBlackTie, loading} = useApi()
+  const {user} = useAuth()
+  console.log(user)
 
   return (
     <>

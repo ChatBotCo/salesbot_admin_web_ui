@@ -1,10 +1,13 @@
 import {createContext, useContext, useEffect, useState} from "react";
+import {useAuth} from "./use-auth";
 
 const ApiContext = createContext();
 
 let initialized = false
 
 export const ApiProvider = ({ children }) => {
+  const {setAuthBackendUrl} = useAuth()
+
   const [debugging, setDebugging] = useState()
   const [backendUrl, setBackendUrl] = useState("https://salesbot-api-svc.azurewebsites.net")
   const [loading, setLoading] = useState(false)
@@ -66,6 +69,7 @@ export const ApiProvider = ({ children }) => {
         _backendUrl = "http://localhost:5000"
         setBackendUrl(_backendUrl)
       }
+      setAuthBackendUrl(_backendUrl)
 
       if(!initialized) {
         initialized = true

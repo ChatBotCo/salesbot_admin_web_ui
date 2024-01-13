@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
+import { createContext, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useRouter } from 'next/navigation';
 
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
@@ -34,6 +35,7 @@ const handlers = {
     };
   },
   [HANDLERS.SIGN_IN]: (state, action) => {
+    console.log('SIGN_IN')
     const user = action.payload;
 
     return {
@@ -60,9 +62,11 @@ const reducer = (state, action) => (
 export const AuthContext = createContext({ undefined });
 
 export const AuthProvider = (props) => {
+  const router = useRouter();
   const { children } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
   const initialized = useRef(false);
+  const [backendUrl, setAuthBackendUrl] = useState("")
 
   const initialize = async () => {
     // Prevent from calling twice in development mode with React.StrictMode enabled
@@ -127,28 +131,49 @@ export const AuthProvider = (props) => {
     });
   };
 
-  const signIn = async (email, password) => {
-    if (email !== 'demo@devias.io' || password !== 'Password123!') {
-      throw new Error('Please check your email and password');
-    }
+  const signIn = async (user_name, password) => {
+    const body = { user_name, password }
+    fetch(`${backendUrl}/api/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    })
+      .then(data=>data.json())
+      .then(authorizeUserdata => {
+        if(authorizeUserdata.status === 401){
+          window.alert("Invalid login credentials")
+        } else {
+          console.log(authorizeUserdata)
+          // if (email !== 'demo@devias.io' || password !== 'Password123!') {
+          //   throw new Error('Please check your email and password');
+          // }
 
-    try {
-      window.sessionStorage.setItem('authenticated', 'true');
-    } catch (err) {
-      console.error(err);
-    }
+          try {
+            window.sessionStorage.setItem('authenticated', 'true');
+          } catch (err) {
+            console.error(err);
+          }
 
-    const user = {
-      id: '5e86809283e28b96d2d38537',
-      avatar: '/assets/avatars/avatar-anika-visser.png',
-      name: 'Anika Visser',
-      email: 'anika.visser@devias.io'
-    };
+          const user = {
+            id: authorizeUserdata.user_name,
+            avatar: '/assets/avatars/avatar-anika-visser.png',
+            name: authorizeUserdata.user_name,
+            email: authorizeUserdata.user_name,
+            company_id: authorizeUserdata.company_id,
+          };
 
-    dispatch({
-      type: HANDLERS.SIGN_IN,
-      payload: user
-    });
+          dispatch({
+            type: HANDLERS.SIGN_IN,
+            payload: user
+          });
+          router.push('/')
+        }
+      })
+      .catch(err=>{
+        window.alert("Login error")
+      })
   };
 
   const signUp = async (email, name, password) => {
@@ -165,10 +190,10 @@ export const AuthProvider = (props) => {
     <AuthContext.Provider
       value={{
         ...state,
-        skip,
         signIn,
         signUp,
-        signOut
+        signOut,
+        setAuthBackendUrl,
       }}
     >
       {children}
