@@ -20,7 +20,6 @@ export const ApiProvider = ({ children }) => {
   const [conversationsForSalesBot, setConversationsForSalesBot] = useState([])
   const [messagesForConvoId, setMessagesForConvoId] = useState([])
   const [messageCountsPerConvo, setMessageCountsPerConvo] = useState({})
-  const [conversationsWithUserData, setConversationsWithUserData] = useState([])
   const [companyIdParam, setCompanyIdParam] = useState("")
   const [navToMsgsFromLeadsTable, setNavToMsgsFromLeadsTable] = useState(false)
 
@@ -129,12 +128,6 @@ export const ApiProvider = ({ children }) => {
             }, {})
             setMessageCountsPerConvo(result)
           }),
-
-        fetch(`${backendUrl}/api/conversations?with_user_data=true`, {method: "GET"})
-          .then(data=>data.json())
-          .then(convos => {
-            setConversationsWithUserData(convos)
-          }),
       ]
       Promise.all(promises)
         .finally(()=>setLoading(false))
@@ -179,7 +172,6 @@ export const ApiProvider = ({ children }) => {
         getDayStartBuckets,
         countPerDayByCompanyId,
         msgCountPerDayByCompanyId,
-        conversationsWithUserData,
         companyIdParam,
         conversationsByCompanyId,
         companiesByCompanyId,
