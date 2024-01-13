@@ -35,7 +35,6 @@ const handlers = {
     };
   },
   [HANDLERS.SIGN_IN]: (state, action) => {
-    console.log('SIGN_IN')
     const user = action.payload;
 
     return {
