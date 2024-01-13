@@ -18,6 +18,7 @@ import { QueueListIcon } from '@heroicons/react/24/solid';
 export const ConversationsTable = (props) => {
   const {
     items = [],
+    messageCountsPerConvo = {},
   } = props;
 
   const sortedItems = items.sort((a, b) => {
@@ -29,6 +30,8 @@ export const ConversationsTable = (props) => {
     }
     return 0;
   });
+
+  const filteredSortedItems = sortedItems.filter(convo=>messageCountsPerConvo[convo.id])
 
   return (
     <Card>
@@ -50,7 +53,7 @@ export const ConversationsTable = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {sortedItems.map((convo, i) => {
+              {filteredSortedItems.map((convo, i) => {
                 const leadGen = (convo.user_first_name || convo.user_first_name || convo.user_last_name || convo.user_phone_number) ? 'YES' : ''
                 return (
                   <TableRow
@@ -82,7 +85,7 @@ export const ConversationsTable = (props) => {
                         Messages
                       </Button>
                     </TableCell>
-                    <TableCell>{convo.many_msgs}</TableCell>
+                    <TableCell>{messageCountsPerConvo[convo.id]}</TableCell>
                     <TableCell>{leadGen}</TableCell>
                   </TableRow>
                 );
@@ -97,4 +100,5 @@ export const ConversationsTable = (props) => {
 
 ConversationsTable.propTypes = {
   items: PropTypes.array,
+  messageCountsPerConvo: PropTypes.object,
 };

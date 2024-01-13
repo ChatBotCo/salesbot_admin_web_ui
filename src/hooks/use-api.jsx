@@ -19,6 +19,7 @@ export const ApiProvider = ({ children }) => {
   const [conversationsForEdge, setConversationsForEdge] = useState([])
   const [conversationsForSalesBot, setConversationsForSalesBot] = useState([])
   const [messagesForConvoId, setMessagesForConvoId] = useState([])
+  const [messageCountsPerConvo, setMessageCountsPerConvo] = useState({})
   const [conversationsWithUserData, setConversationsWithUserData] = useState([])
   const [companyIdParam, setCompanyIdParam] = useState("")
 
@@ -86,14 +87,10 @@ export const ApiProvider = ({ children }) => {
         fetch(`${backendUrl}/api/companies?company_id=${user.company_id}`, {method: "GET"})
           .then(data=>data.json())
           .then(_companies => {
-            // console.log('cunt fuck retard stupid bitch fuck')
-            // console.log(_companies)
             let result = _companies.reduce((acc, company) => {
               acc[company.company_id] = company
               return acc;
             }, {});
-            // console.log('setCompaniesByCompanyId')
-            // console.log(setCompaniesByCompanyId)
             setCompaniesByCompanyId(result)
           }),
 
@@ -126,34 +123,8 @@ export const ApiProvider = ({ children }) => {
             let result = msgCountsPerConvo.reduce((acc, obj) => {
               acc[obj.conversation_id] = obj.many_msgs;
               return acc;
-            }, {});
-
-            fetch(`${backendUrl}/api/conversations?company_id=blacktiecasinoevents`, {method: "GET"})
-              .then(data=>data.json())
-              .then(convos => {
-                setConversationsForBlackTie(convos.map(c=>{
-                  c['many_msgs'] = result[c.id]
-                  return c
-                }))
-              })
-
-            fetch(`${backendUrl}/api/conversations?company_id=edge.app`, {method: "GET"})
-              .then(data=>data.json())
-              .then(convos => {
-                setConversationsForEdge(convos.map(c=>{
-                  c['many_msgs'] = result[c.id]
-                  return c
-                }))
-              })
-
-            fetch(`${backendUrl}/api/conversations?company_id=saleschat_bot`, {method: "GET"})
-              .then(data=>data.json())
-              .then(convos => {
-                setConversationsForSalesBot(convos.map(c=>{
-                  c['many_msgs'] = result[c.id]
-                  return c
-                }))
-              })
+            }, {})
+            setMessageCountsPerConvo(result)
           }),
 
         fetch(`${backendUrl}/api/conversations?with_user_data=true`, {method: "GET"})
@@ -209,6 +180,7 @@ export const ApiProvider = ({ children }) => {
         companyIdParam,
         conversationsByCompanyId,
         companiesByCompanyId,
+        messageCountsPerConvo,
       }}
     >
       {children}

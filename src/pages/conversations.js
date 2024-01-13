@@ -10,6 +10,7 @@ const Page = () => {
     loading,
     conversationsByCompanyId,
     companiesByCompanyId,
+    messageCountsPerConvo,
   } = useApi()
 
   const [tabs, setTabs] = useState([]);
@@ -18,30 +19,19 @@ const Page = () => {
   const [conversations, setConversations] = useState([]);
 
   const setSelectedCompanyId = company_id => {
-    // console.log(`setSelectedCompanyId company_id:${company_id}`)
-    // console.log(companiesByCompanyId)
-    // console.log(conversationsByCompanyId)
     _setSelectedCompanyId(company_id)
 
     const company = companiesByCompanyId[company_id]
-    // console.log(companiesByCompanyId)
-    // console.log(company)
     if(company) {
       const convos = conversationsByCompanyId[company_id] || []
-      // console.log('setConversations')
-      // console.log(conversationsByCompanyId)
-      // console.log(convos)
       setConversations(convos)
-      setTitleElement(`Conversations (${convos.length}))`)
+      setTitleElement(`${convos.length} Conversations`)
     } else {
       setTitleElement('Conversations')
     }
   }
 
   useEffect(() => {
-    // console.log('useEffect for cunt fuck')
-    // console.log(companiesByCompanyId)
-    // console.log(conversationsByCompanyId)
     const companies = Object.values(companiesByCompanyId) || []
     const firstCompany = (companies.length>0 && companies[0]) || {}
     const firstCompanyId = firstCompany.company_id
@@ -49,7 +39,6 @@ const Page = () => {
 
     // console.log(companies)
     const _tabs = companies.map((company, i) => {
-      console.log(company.company_id)
       return <Tab
         key={company.company_id}
         label={company.name}
@@ -98,8 +87,8 @@ const Page = () => {
               {tabs}
             </Tabs>
             <ConversationsTable
-              // items={conversationsForBlackTie.filter(c=>c.many_msgs>0)}
               items={conversations}
+              messageCountsPerConvo={messageCountsPerConvo}
             />
           </Stack>
         </Container>
