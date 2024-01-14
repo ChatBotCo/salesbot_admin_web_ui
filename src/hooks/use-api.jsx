@@ -25,9 +25,10 @@ export const ApiProvider = ({ children }) => {
   const [navToMsgsFromLeadsTable, setNavToMsgsFromLeadsTable] = useState(false)
 
   const [loading, setLoading] = useState(false)
+  const [saving, setSaving] = useState(false)
   const [showSaveResults, setShowSaveResults] = useState(false)
   const [saveResults, setSaveResults] = useState('')
-  const [saveResultsSeverity, setSaveResultsSeverity] = useState('')
+  const [saveResultsSeverity, setSaveResultsSeverity] = useState('success')
 
   const transformDataForChart = (conversations, dayStartBuckets) => {
     const companyIds = Object.keys(conversations.reduce((a, convo) => Object.assign(a, { [convo.company_id]: 0 }), {}))
@@ -163,7 +164,7 @@ export const ApiProvider = ({ children }) => {
   }
 
   const saveChatbotChanges = updatedChatbotValues => {
-    setLoading(true)
+    setSaving(true)
     fetch(`${backendUrl}/api/chatbots`, {
       method: "PUT",
       headers: {
@@ -182,7 +183,7 @@ export const ApiProvider = ({ children }) => {
         }
         setShowSaveResults(true)
       })
-      .finally(()=>setLoading(false))
+      .finally(()=>setSaving(false))
   }
 
   // On User object update (auth change)
@@ -229,7 +230,7 @@ export const ApiProvider = ({ children }) => {
         navToMsgsFromLeadsTable,
         chatbotsByCompanyId,
         saveChatbotChanges,
-        showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity
+        showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity, saving,
       }}
     >
       {children}

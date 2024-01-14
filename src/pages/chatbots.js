@@ -43,9 +43,6 @@ const Page = () => {
     setSelectedCompanyId(company_id);
   }
 
-  console.log(showSaveResults)
-  console.log(saveResults)
-
   return (
     <>
       <Head>
