@@ -13,6 +13,7 @@ import {
   Unstable_Grid2 as Grid
 } from '@mui/material';
 import PropTypes from 'prop-types';
+import {useApi} from "../../hooks/use-api";
 
 const llmModels = [
   {
@@ -34,6 +35,10 @@ export const ChatbotEdit = (props) => {
   const {
     chatbot,
   } = props;
+
+  const {
+    saveChatbotChanges,
+  } = useApi()
 
   const [values, setValues] = useState(defaultValues);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -81,8 +86,6 @@ export const ChatbotEdit = (props) => {
       setUnsavedChanges(changes);
     }
   }, [values, chatbot])
-
-  console.log(values)
 
   return (
     <form
@@ -132,19 +135,21 @@ export const ChatbotEdit = (props) => {
                   />
                 } label="Show Avatar" />
               </Grid>
-              <Grid
-                xs={12}
-              >
-                <Card sx={{border: '1px solid lightgray'}}>
-                  <CardHeader
-                    title="Customize Your Avatar"
-                  />
-                  <CardContent sx={{ pt: 0 }}>
-                    <Box sx={{ m: -1.5 }}>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
+              {values.show_avatar && (
+                <Grid
+                  xs={12}
+                >
+                  <Card sx={{border: '1px solid lightgray'}}>
+                    <CardHeader
+                      title="Customize Your Avatar"
+                    />
+                    <CardContent sx={{ pt: 0 }}>
+                      <Box sx={{ m: -1.5 }}>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              )}
             </Grid>
           </Box>
         </CardContent>
@@ -153,6 +158,9 @@ export const ChatbotEdit = (props) => {
           {(chatbot && unsavedChanges) && (
             <Button
               variant="contained"
+              onClick={()=>{
+                saveChatbotChanges(values)
+              }}
             >
               Save Changes
             </Button>

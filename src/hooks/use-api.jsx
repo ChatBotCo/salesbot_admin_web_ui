@@ -10,7 +10,7 @@ export const ApiProvider = ({ children }) => {
 
   const [debugging, setDebugging] = useState()
   const [backendUrl, setBackendUrl] = useState("https://salesbot-api-svc.azurewebsites.net")
-  const [loading, setLoading] = useState(false)
+
   const [countPerDayByCompanyId, setCountPerDayByCompanyId] = useState({})
   const [msgCountPerDayByCompanyId, setMsgCountPerDayByCompanyId] = useState({})
   const [companiesByCompanyId, setCompaniesByCompanyId] = useState({})
@@ -23,6 +23,11 @@ export const ApiProvider = ({ children }) => {
   const [messageCountsPerConvo, setMessageCountsPerConvo] = useState({})
   const [companyIdParam, setCompanyIdParam] = useState("")
   const [navToMsgsFromLeadsTable, setNavToMsgsFromLeadsTable] = useState(false)
+
+  const [loading, setLoading] = useState(false)
+  const [showSaveResults, setShowSaveResults] = useState(false)
+  const [saveResults, setSaveResults] = useState('')
+  const [saveResultsSeverity, setSaveResultsSeverity] = useState('')
 
   const transformDataForChart = (conversations, dayStartBuckets) => {
     const companyIds = Object.keys(conversations.reduce((a, convo) => Object.assign(a, { [convo.company_id]: 0 }), {}))
@@ -153,6 +158,28 @@ export const ApiProvider = ({ children }) => {
     setConversationsForSalesBot([])
   }
 
+  const saveChatbotChanges = updatedChatbotValues => {
+    setLoading(true)
+    fetch(`${backendUrl}/api/chatbots`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedChatbotValues),
+    })
+      .then(data=> {
+        if(data.status === 204) {
+          setSaveResults('Chatbot saved')
+          setSaveResultsSeverity('success')
+        } else {
+          setSaveResults('There was an error saving the chatbot')
+          setSaveResultsSeverity('error')
+        }
+        setShowSaveResults(true)
+      })
+      .finally(()=>setLoading(false))
+  }
+
   // On User object update (auth change)
   useEffect(() => {
     clearAllDataForAuthorizedUser()
@@ -169,6 +196,13 @@ export const ApiProvider = ({ children }) => {
     }
     setAuthBackendUrl(_backendUrl)
   }, []);
+
+  const handleDismissSaveResults  = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setShowSaveResults(false);
+  };
 
   return (
     <ApiContext.Provider
@@ -189,6 +223,8 @@ export const ApiProvider = ({ children }) => {
         messageCountsPerConvo,
         navToMsgsFromLeadsTable,
         chatbotsByCompanyId,
+        saveChatbotChanges,
+        showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity
       }}
     >
       {children}

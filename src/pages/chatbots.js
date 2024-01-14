@@ -1,24 +1,16 @@
 import Head from 'next/head';
-import {
-  Box,
-  CircularProgress,
-  Container,
-  Stack, Tab, Tabs,
-  Typography,
-  Unstable_Grid2 as Grid
-} from '@mui/material';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { AccountProfile } from 'src/sections/account/account-profile';
-import { AccountProfileDetails } from 'src/sections/account/account-profile-details';
-import { ChatbotEdit } from '../sections/chatbot/chatbot-edit';
-import { useApi } from '../hooks/use-api';
-import { useEffect, useState } from 'react';
+import {Alert, Box, CircularProgress, Container, Snackbar, Stack, Tab, Tabs, Typography} from '@mui/material';
+import {Layout as DashboardLayout} from 'src/layouts/dashboard/layout';
+import {ChatbotEdit} from '../sections/chatbot/chatbot-edit';
+import {useApi} from '../hooks/use-api';
+import {useEffect, useState} from 'react';
 
 const Page = () => {
   const {
     loading,
     companiesByCompanyId,
     chatbotsByCompanyId,
+    showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity,
   } = useApi()
 
   const [tabs, setTabs] = useState([]);
@@ -50,6 +42,9 @@ const Page = () => {
   const handleSelectCompany = (e,company_id) => {
     setSelectedCompanyId(company_id);
   }
+
+  console.log(showSaveResults)
+  console.log(saveResults)
 
   return (
     <>
@@ -84,6 +79,11 @@ const Page = () => {
           </Stack>
         </Container>
       </Box>
+      <Snackbar open={showSaveResults} autoHideDuration={6000} onClose={handleDismissSaveResults}>
+        <Alert onClose={handleDismissSaveResults} severity={saveResultsSeverity} sx={{ width: '100%' }}>
+          {saveResults}
+        </Alert>
+      </Snackbar>
     </>
   )
 };
