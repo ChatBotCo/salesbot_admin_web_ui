@@ -14,6 +14,7 @@ export const ApiProvider = ({ children }) => {
   const [countPerDayByCompanyId, setCountPerDayByCompanyId] = useState({})
   const [msgCountPerDayByCompanyId, setMsgCountPerDayByCompanyId] = useState({})
   const [companiesByCompanyId, setCompaniesByCompanyId] = useState({})
+  const [chatbotsByCompanyId, setChatbotsByCompanyId] = useState({})
   const [conversationsByCompanyId, setConversationsByCompanyId] = useState({})
   const [conversationsForBlackTie, setConversationsForBlackTie] = useState([])
   const [conversationsForEdge, setConversationsForEdge] = useState([])
@@ -94,6 +95,16 @@ export const ApiProvider = ({ children }) => {
               return acc;
             }, {});
             setCompaniesByCompanyId(result)
+          }),
+
+        fetch(`${backendUrl}/api/chatbots?company_id=${user.company_id}`, {method: "GET"})
+          .then(data=>data.json())
+          .then(_companies => {
+            let result = _companies.reduce((acc, company) => {
+              acc[company.company_id] = company
+              return acc;
+            }, {});
+            setChatbotsByCompanyId(result)
           }),
 
         fetch(`${backendUrl}/api/conversations?company_id=${user.company_id}&since_timestamp=${epochSeconds30DaysAgo}`, {method: "GET"})
@@ -177,6 +188,7 @@ export const ApiProvider = ({ children }) => {
         companiesByCompanyId,
         messageCountsPerConvo,
         navToMsgsFromLeadsTable,
+        chatbotsByCompanyId,
       }}
     >
       {children}
