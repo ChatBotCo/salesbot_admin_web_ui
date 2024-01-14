@@ -73,6 +73,18 @@ export const ApiProvider = ({ children }) => {
     return timestampsMidnight;
   }
 
+  const reloadChatbots = () => {
+    return fetch(`${backendUrl}/api/chatbots?company_id=${user.company_id}`, {method: "GET"})
+      .then(data=>data.json())
+      .then(_companies => {
+        let result = _companies.reduce((acc, company) => {
+          acc[company.company_id] = company
+          return acc;
+        }, {});
+        setChatbotsByCompanyId(result)
+      })
+  }
+
   const loadAllDataForAuthorizedUser = () => {
     if(user) {
       if(window.location.pathname === '/messages') {
@@ -102,15 +114,7 @@ export const ApiProvider = ({ children }) => {
             setCompaniesByCompanyId(result)
           }),
 
-        fetch(`${backendUrl}/api/chatbots?company_id=${user.company_id}`, {method: "GET"})
-          .then(data=>data.json())
-          .then(_companies => {
-            let result = _companies.reduce((acc, company) => {
-              acc[company.company_id] = company
-              return acc;
-            }, {});
-            setChatbotsByCompanyId(result)
-          }),
+        reloadChatbots(),
 
         fetch(`${backendUrl}/api/conversations?company_id=${user.company_id}&since_timestamp=${epochSeconds30DaysAgo}`, {method: "GET"})
           .then(data=>data.json())
@@ -171,6 +175,7 @@ export const ApiProvider = ({ children }) => {
         if(data.status === 204) {
           setSaveResults('Chatbot saved')
           setSaveResultsSeverity('success')
+          reloadChatbots()
         } else {
           setSaveResults('There was an error saving the chatbot')
           setSaveResultsSeverity('error')
