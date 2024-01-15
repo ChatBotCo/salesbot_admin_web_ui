@@ -87,7 +87,7 @@ export const ApiProvider = ({ children }) => {
   }
 
   const loadAllDataForAuthorizedUser = () => {
-    if(user) {
+    if(user && user.company_id) {
       if(window.location.pathname === '/messages') {
         const urlParams = new URLSearchParams(window.location.search);
         const convo_id = urlParams.get('convo_id');
@@ -132,7 +132,7 @@ export const ApiProvider = ({ children }) => {
             setConversationsByCompanyId(result)
           }),
 
-        fetch(`${backendUrl}/api/messages?latest=true`, {method: "GET"})
+        fetch(`${backendUrl}/api/messages?latest=true&company_id=${user.company_id}`, {method: "GET"})
           .then(data=>data.json())
           .then(latestMsgs => {
             const dayStartBuckets = getDayStartBuckets()
@@ -140,7 +140,7 @@ export const ApiProvider = ({ children }) => {
             setMsgCountPerDayByCompanyId(_countPerDayByCompanyId)
           }),
 
-        fetch(`${backendUrl}/api/messages/count_per_convo`, {method: "GET"})
+        fetch(`${backendUrl}/api/messages/count_per_convo?company_id=${user.company_id}`, {method: "GET"})
           .then(data=>data.json())
           .then(msgCountsPerConvo => {
             let result = msgCountsPerConvo.reduce((acc, obj) => {
