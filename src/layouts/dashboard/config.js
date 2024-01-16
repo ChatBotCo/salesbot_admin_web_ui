@@ -1,7 +1,7 @@
 import { SvgIcon } from '@mui/material';
 import {
   ChartBarIcon,
-  ChatBubbleLeftRightIcon,
+  ChatBubbleLeftRightIcon, CloudArrowDownIcon,
   HandThumbUpIcon,
   StarIcon
 } from '@heroicons/react/24/solid';
@@ -40,6 +40,15 @@ export const items = [
     icon: (
       <SvgIcon fontSize="small">
         <HandThumbUpIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Install Your Chat Bot',
+    path: '/install',
+    icon: (
+      <SvgIcon fontSize="small">
+        <CloudArrowDownIcon />
       </SvgIcon>
     )
   },
