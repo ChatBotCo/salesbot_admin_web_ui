@@ -1,16 +1,11 @@
 import Head from 'next/head';
-import { Box, Button, Container, Stack, SvgIcon, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { useApi } from '../hooks/use-api';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ClipboardIcon } from '@heroicons/react/24/solid';
+import { CompanyTabs } from '../components/company-tabs';
 
 const Page = () => {
-  const {
-    companiesByCompanyId,
-  } = useApi()
-
-  const [tabs, setTabs] = useState([]);
   const [selectedCompanyId, setSelectedCompanyId] = useState('');
   const [showCopied, _setShowCopied] = useState(false);
 
@@ -19,26 +14,6 @@ const Page = () => {
     if(_show) {
       window.setTimeout(()=>_setShowCopied(false), 2000)
     }
-  }
-
-  useEffect(() => {
-    const companies = Object.values(companiesByCompanyId) || []
-    const firstCompany = (companies.length>0 && companies[0]) || {}
-    const firstCompanyId = firstCompany.company_id
-    setSelectedCompanyId(firstCompanyId)
-
-    const _tabs = companies.map((company, i) => {
-      return <Tab
-        key={company.company_id}
-        label={company.name}
-        value={company.company_id}
-      />
-    })
-    setTabs(_tabs)
-  },[companiesByCompanyId]);
-
-  const handleSelectCompany = (e,company_id) => {
-    setSelectedCompanyId(company_id);
   }
 
   const scriptElementText = `<script id="sales_chatbot_script" src="https://kelichatbot2.blob.core.windows.net/salesbot-assets/sales_chatbot.js" data-company-id="${selectedCompanyId}"></script>`
@@ -72,13 +47,7 @@ const Page = () => {
                 Install Your Chat Bot
               </Typography>
             </div>
-            <Tabs
-              onChange={handleSelectCompany}
-              sx={{ mb: 3 }}
-              value={selectedCompanyId}
-            >
-              {tabs}
-            </Tabs>
+            <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>
           </Stack>
           <Stack spacing={3} direction="row">
             <Typography variant="subtitle1">
