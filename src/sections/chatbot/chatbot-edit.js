@@ -230,27 +230,27 @@ export const ChatbotEdit = (props) => {
                 />
               } label="Show Animated Avatar Character" />
             </Grid>
-            {values.show_avatar && (
-              <Grid
-                xs={12}
-              >
-                <Card sx={{border: '1px solid lightgray'}}>
-                  <CardHeader
-                    title="Customize Your Avatar"
-                  />
-                  <CardContent sx={{ pt: 0 }}>
-                    <Box sx={{ m: -1.5 }}>
-                      <Grid
-                        container
-                        spacing={3}
-                      >
+            {/*{values.show_avatar && (*/}
+            {/*  <Grid*/}
+            {/*    xs={12}*/}
+            {/*  >*/}
+            {/*    <Card sx={{border: '1px solid lightgray'}}>*/}
+            {/*      <CardHeader*/}
+            {/*        title="Customize Your Avatar"*/}
+            {/*      />*/}
+            {/*      <CardContent sx={{ pt: 0 }}>*/}
+            {/*        <Box sx={{ m: -1.5 }}>*/}
+            {/*          <Grid*/}
+            {/*            container*/}
+            {/*            spacing={3}*/}
+            {/*          >*/}
 
-                      </Grid>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            )}
+            {/*          </Grid>*/}
+            {/*        </Box>*/}
+            {/*      </CardContent>*/}
+            {/*    </Card>*/}
+            {/*  </Grid>*/}
+            {/*)}*/}
           </Grid>
         </CardContent>
       </Card>
