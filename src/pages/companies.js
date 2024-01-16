@@ -1,53 +1,35 @@
 import Head from 'next/head';
-import {Alert, Box, CircularProgress, Container, Snackbar, Stack, Tab, Tabs, Typography} from '@mui/material';
-import {Layout as DashboardLayout} from 'src/layouts/dashboard/layout';
-import {ChatbotEdit} from '../sections/chatbot/chatbot-edit';
-import {useApi} from '../hooks/use-api';
-import {useEffect, useState} from 'react';
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Container,
+  Snackbar,
+  Stack,
+  Typography
+} from '@mui/material';
+import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
+import { useApi } from '../hooks/use-api';
+import { useState } from 'react';
+import { CompanyTabs } from '../components/company-tabs';
+import { CompanyEdit } from '../sections/company/company-edit';
 
 const Page = () => {
   const {
     loading,
     companiesByCompanyId,
-    chatbotsByCompanyId,
     showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity,
   } = useApi()
 
-  const [tabs, setTabs] = useState([]);
-  const [selectedCompanyId, _setSelectedCompanyId] = useState('');
-  const [chatbot, setChatbot] = useState({});
+  const [selectedCompanyId, setSelectedCompanyId] = useState('');
 
-  const setSelectedCompanyId = company_id => {
-    _setSelectedCompanyId(company_id)
-    const _chatbot = chatbotsByCompanyId[company_id]
-    setChatbot(_chatbot)
-  }
-
-  useEffect(() => {
-    const companies = Object.values(companiesByCompanyId) || []
-    const firstCompany = (companies.length>0 && companies[0]) || {}
-    const firstCompanyId = firstCompany.company_id
-    setSelectedCompanyId(firstCompanyId)
-
-    const _tabs = companies.map((company, i) => {
-      return <Tab
-        key={company.company_id}
-        label={company.name}
-        value={company.company_id}
-      />
-    })
-    setTabs(_tabs)
-  },[companiesByCompanyId, chatbotsByCompanyId]);
-
-  const handleSelectCompany = (e,company_id) => {
-    setSelectedCompanyId(company_id);
-  }
+  const selectedCompany = companiesByCompanyId[selectedCompanyId]
 
   return (
     <>
       <Head>
         <title>
-          Customize Your Chat Bot
+          Company
           {loading && <CircularProgress />}
         </title>
       </Head>
@@ -62,17 +44,11 @@ const Page = () => {
           <Stack spacing={3}>
             <div>
               <Typography variant="h4">
-                Customize Your Chat Bot
+                Edit Your Company
               </Typography>
             </div>
-            <Tabs
-              onChange={handleSelectCompany}
-              sx={{ mb: 3 }}
-              value={selectedCompanyId}
-            >
-              {tabs}
-            </Tabs>
-            <ChatbotEdit chatbot={chatbot} />
+            <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>
+            <CompanyEdit company={selectedCompany} />
           </Stack>
         </Container>
       </Box>

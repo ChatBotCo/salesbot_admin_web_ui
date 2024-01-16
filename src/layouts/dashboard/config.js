@@ -1,5 +1,6 @@
 import { SvgIcon } from '@mui/material';
 import {
+  BuildingStorefrontIcon,
   ChartBarIcon,
   ChatBubbleLeftRightIcon, CloudArrowDownIcon,
   HandThumbUpIcon,
@@ -49,6 +50,15 @@ export const items = [
     icon: (
       <SvgIcon fontSize="small">
         <CloudArrowDownIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Edit Your Company',
+    path: '/companies',
+    icon: (
+      <SvgIcon fontSize="small">
+        <BuildingStorefrontIcon />
       </SvgIcon>
     )
   },
