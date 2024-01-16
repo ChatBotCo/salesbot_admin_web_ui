@@ -222,6 +222,16 @@ export const ApiProvider = ({ children }) => {
       .finally(()=>setSaving(false))
   }
 
+  const reloadLink = link => {
+    return fetch(`${backendUrl}/api/links/${link.id}`, {method: "GET"})
+      .then(data=>data.json())
+      .then(_link => {
+        const _linksById = {...linksById}
+        _linksById[_link.id] = _link
+        setLinksById(_linksById)
+      })
+  }
+
   const saveLinkChanges = linkValues => {
     setSaving(true)
     fetch(`${backendUrl}/api/links`, {
@@ -233,14 +243,12 @@ export const ApiProvider = ({ children }) => {
     })
       .then(data=> {
         if(data.status === 204) {
-          setSaveResults('Training link updated')
-          setSaveResultsSeverity('success')
-          // reloadCompanies()
+          reloadLink(linkValues)
         } else {
           setSaveResults('There was an error saving the training link')
           setSaveResultsSeverity('error')
+          setShowSaveResults(true)
         }
-        setShowSaveResults(true)
       })
       .finally(()=>setSaving(false))
   }

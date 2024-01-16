@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import {
   Alert,
-  Box,
+  Box, Button,
   CircularProgress,
-  Container,
+  Container, Modal,
   Snackbar,
-  Stack,
+  Stack, SvgIcon,
   Typography
 } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
@@ -13,6 +13,8 @@ import { useApi } from '../hooks/use-api';
 import { useState } from 'react';
 import { CompanyTabs } from '../components/company-tabs';
 import { LinksTable } from '../sections/links/links-table';
+import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
+import { AddLinkModal } from '../sections/links/add-link-modal';
 
 const Page = () => {
   const {
@@ -21,11 +23,26 @@ const Page = () => {
     showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity,
   } = useApi()
 
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
   const [selectedCompanyId, setSelectedCompanyId] = useState('');
+  const [showAddLinkModal, setShowAddLinkModal] = useState(false);
+
   const linksForSelectedCompany = Object.values(linksById).filter(link=>link.company_id === selectedCompanyId)
 
   return (
     <>
+      <AddLinkModal setShowAddLinkModal={setShowAddLinkModal} showAddLinkModal={showAddLinkModal} />
       <Head>
         <title>
           Training
@@ -40,12 +57,27 @@ const Page = () => {
       >
         <Container maxWidth="lg">
           <Stack spacing={3}>
-            <div>
+            <Stack
+              spacing={3}
+              justifyContent={'space-between'}
+              direction={'row'}
+            >
               <Typography variant="h4">
                 Train Your Chat Bot
                 {loading && <CircularProgress />}
               </Typography>
-            </div>
+              <Button
+                startIcon={(
+                  <SvgIcon fontSize="small">
+                    <PlusIcon />
+                  </SvgIcon>
+                )}
+                onClick={()=>setShowAddLinkModal(true)}
+                variant="contained"
+              >
+                Add Training Link
+              </Button>
+            </Stack>
             <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>
             <LinksTable items={linksForSelectedCompany} />
           </Stack>
