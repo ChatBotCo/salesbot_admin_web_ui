@@ -1,19 +1,21 @@
-import { useCallback, useEffect, useState } from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {
-  Box,
   Button,
   Card,
-  CardActions,
   CardContent,
-  CardHeader,
-  Checkbox, CircularProgress,
-  Divider,
-  FormControlLabel, FormLabel, Radio, RadioGroup, Stack,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  Stack,
   TextField,
   Unstable_Grid2 as Grid
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import {useApi} from "../../hooks/use-api";
+import {InfoPopover} from "../../components/info-popover";
 
 const llmModels = [
   {
@@ -93,8 +95,6 @@ export const ChatbotEdit = (props) => {
     }
   }, [values, chatbot])
 
-  // console.log(values)
-
   if(!chatbot) return <>{loading && <CircularProgress />}</>
 
   return (
@@ -125,7 +125,10 @@ export const ChatbotEdit = (props) => {
             <Grid
               xs={6}
             >
-              <FormLabel id="llm-model-picker">Which LLM model would you like to use?</FormLabel>
+              <FormLabel id="llm-model-picker">
+                <InfoPopover infoText={'LLM choice impacts speed and accuracy.  3.5 is fast but occasionally inaccurate.  4 is slower but much more effective and accurate.'} id={'models-info'} />
+                Which LLM model would you like to use?
+              </FormLabel>
               <TextField
                 aria-labelledby="llm-model-picker"
                 fullWidth
@@ -154,6 +157,31 @@ export const ChatbotEdit = (props) => {
         <CardContent>
           <Grid
             container
+          >
+            <Grid
+              xs={12}
+            >
+              <FormLabel id="contact-radio-buttons-group">
+                <InfoPopover infoText={'This is the initial text that is displayed in a speech bubble that should entice your site visitors to engage with the chatbot.'} id={'greeting-info'} />
+                How should the chatbot greet visitors to your website?
+              </FormLabel>
+              <TextField
+                fullWidth
+                helperText="Provide the default greeting from your chatbot"
+                name="greeting"
+                onChange={handleChange}
+                required
+                value={values.greeting || ''}
+              />
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+
+      <Card sx={{mb:2}}>
+        <CardContent>
+          <Grid
+            container
             spacing={3}
           >
             {/*"contact_prompt": "Try to get the customer to fill out the 'Contact Us' form so that a human representative can contact them to discuss what they require.",*/}
@@ -164,7 +192,10 @@ export const ChatbotEdit = (props) => {
               xs={12}
               md={6}
             >
-              <FormLabel id="contact-radio-buttons-group">How should the chatbot create a lead?</FormLabel>
+              <FormLabel id="contact-radio-buttons-group">
+                <InfoPopover infoText={'This is the strategy that you want the chatbot to take to propel your sales'} id={'lead-info'} />
+                How should the chatbot create a lead?
+              </FormLabel>
               <RadioGroup
                 aria-labelledby="contact-radio-buttons-group"
                 name="contact_method"
@@ -179,35 +210,16 @@ export const ChatbotEdit = (props) => {
               xs={12}
               md={6}
             >
+              <FormLabel id="contact-link-label">
+                <InfoPopover infoText={'This URL ("https://...") is where users will be redirected when they want to contact you, install your app, create a trial account, etc.'} id={'contact-link-info'} />
+                Provide a webpage to redirect users
+              </FormLabel>
               <TextField
+                aria-labelledby="contact-link-label"
                 fullWidth
-                helperText="Provide a URL to a webpage that instructs your users how to install your app."
-                label="Where should they be redirected if they want to install your app?"
                 name="contact_link"
                 onChange={handleChange}
                 value={values.contact_link || ''}
-              />
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
-
-      <Card sx={{mb:2}}>
-        <CardContent>
-          <Grid
-            container
-          >
-            <Grid
-              xs={12}
-            >
-              <FormLabel id="contact-radio-buttons-group">How should the chatbot greet visitors to your website?</FormLabel>
-              <TextField
-                fullWidth
-                helperText="Provide the default greeting from your chatbot"
-                name="greeting"
-                onChange={handleChange}
-                required
-                value={values.greeting || ''}
               />
             </Grid>
           </Grid>
@@ -228,7 +240,7 @@ export const ChatbotEdit = (props) => {
                   onChange={handleChangeCheckbox}
                   name="show_avatar"
                 />
-              } label="Show Animated Avatar Character" />
+              } label={<>Show Animated Avatar Character<InfoPopover infoText={'If checked then an animated 3D character will read the chatbot responses'} id={'show-avatar-info'} /></>} />
             </Grid>
             {/*{values.show_avatar && (*/}
             {/*  <Grid*/}

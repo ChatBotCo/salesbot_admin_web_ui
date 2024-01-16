@@ -26,7 +26,7 @@ export const items = [
     )
   },
   {
-    title: 'Leads',
+    title: 'Generated Leads',
     path: '/leads',
     icon: (
       <SvgIcon fontSize="small">
