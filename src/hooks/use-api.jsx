@@ -99,6 +99,18 @@ export const ApiProvider = ({ children }) => {
       })
   }
 
+  const reloadLinks = companyId => {
+    return fetch(`${backendUrl}/api/links?company_id=${companyId}`, {method: "GET"})
+      .then(data=>data.json())
+      .then(_links => {
+        let result = _links.reduce((acc, link) => {
+          acc[link.id] = link
+          return acc;
+        }, {});
+        setLinksById(result)
+      })
+  }
+
   const loadAllDataForAuthorizedUser = () => {
     if(user && user.company_id) {
       if(window.location.pathname === '/messages') {
@@ -120,15 +132,7 @@ export const ApiProvider = ({ children }) => {
       const promises = [
         reloadCompanies(),
         reloadChatbots(),
-        fetch(`${backendUrl}/api/links?company_id=${user.company_id}`, {method: "GET"})
-          .then(data=>data.json())
-          .then(_links => {
-            let result = _links.reduce((acc, link) => {
-              acc[link.id] = link
-              return acc;
-            }, {});
-            setLinksById(result)
-          }),
+        reloadLinks(user.company_id),
 
         fetch(`${backendUrl}/api/conversations?company_id=${user.company_id}&since_timestamp=${epochSeconds30DaysAgo}`, {method: "GET"})
           .then(data=>data.json())
@@ -253,6 +257,42 @@ export const ApiProvider = ({ children }) => {
       .finally(()=>setSaving(false))
   }
 
+  const addLink = (linkText,companyId) => {
+    setSaving(true)
+    fetch(`${backendUrl}/api/links?company_id=${companyId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({link:linkText}),
+    })
+      .then(data=> {
+        if(data.status === 200) {
+          return reloadLinks(companyId)
+            .then(()=>{
+              setSaveResults('Training link added')
+              setSaveResultsSeverity('success')
+              setShowSaveResults(true)
+            })
+          // data.json()
+          //   .then(newLink => {
+          //     console.log(newLink)
+          //     const _linksById = {...linksById}
+          //     _linksById[newLink.id] = newLink
+          //     setLinksById(_linksById)
+          //     setSaveResults('Training link added')
+          //     setSaveResultsSeverity('success')
+          //     setShowSaveResults(true)
+          //   })
+        } else {
+          setSaveResults('There was an error saving the training link')
+          setSaveResultsSeverity('error')
+          setShowSaveResults(true)
+        }
+      })
+      .finally(()=>setSaving(false))
+  }
+
   const createCompany = (newCompany) => {
     setSaving(true)
     fetch(`${backendUrl}/api/companies`, {
@@ -336,6 +376,7 @@ export const ApiProvider = ({ children }) => {
         createCompany,
         linksById,
         saveLinkChanges,
+        addLink,
       }}
     >
       {children}

@@ -6,24 +6,27 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  FormLabel, Modal,
-  TextField,
-  Unstable_Grid2 as Grid
+  Modal,
+  TextField
 } from '@mui/material';
 import { useApi } from '../../hooks/use-api';
-import { InfoPopover } from '../../components/info-popover';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 
 export const AddLinkModal = (props) => {
   const {
     showAddLinkModal,
     setShowAddLinkModal,
+    selectedCompanyId,
   } = props
 
   const {
-    loading,
     saving,
+    addLink,
   } = useApi()
+
+  const [linkUrl, setLinkUrl] = useState('');
+  const [isValid, setIsValid] = useState(true);
 
   const style = {
     position: 'absolute',
@@ -31,11 +34,38 @@ export const AddLinkModal = (props) => {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
+    bgcolor: 'transparent',
     p: 4,
+    focus: 'none',
   };
+
+  const handleChange = e => {
+    const url = e.target.value;
+    setLinkUrl(url);
+    // setIsValid(isValidUrl(url) || url === '')
+  }
+
+  const isValidUrl = string=>{
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  const dismissModal = ()=>{
+    setLinkUrl('')
+    setIsValid(true)
+    setShowAddLinkModal(false)
+  }
+
+  const submit = ()=>{
+    // if(isValidUrl(linkUrl)) {
+      addLink(linkUrl, selectedCompanyId)
+      dismissModal()
+    // }
+  }
 
   return (
     <Modal
@@ -45,40 +75,36 @@ export const AddLinkModal = (props) => {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Card s x={{mb:2}}>
+        <Card sx={{mb:2}}>
           <CardHeader
             title="Provide a link to train the chatbot"
           />
           <CardContent>
-            <Grid
-              container
-            >
-              <Grid
-                xs={12}
-              >
-                <FormLabel id="contact-radio-buttons-group">
-                  <InfoPopover infoText={'This is the initial text that is displayed in a speech bubble that should entice your site visitors to engage with the chatbot.'} id={'greeting-info'} />
-                  How should the chatbot greet visitors to your website?
-                </FormLabel>
-                <TextField
-                  fullWidth
-                  helperText="Provide the default greeting from your chatbot"
-                  name="greeting"
-                  // onChange={handleChange}
-                  required
-                  // value={values.greeting || ''}
-                />
-              </Grid>
-            </Grid>
+            <TextField
+              fullWidth
+              onChange={handleChange}
+              required
+              value={linkUrl || ''}
+              error={!isValid}
+              helperText={!isValid && 'Please only enter a valid web URL like:"http://example.com"'}
+            />
           </CardContent>
-          <CardActions>
+          <CardActions sx={{ justifyContent: 'flex-end' }}>
             {saving ? <CircularProgress /> :  (
-              <Button
-                variant="contained"
-                onClick={()=>{}}
-              >
-                Add Training Link
-              </Button>
+              <>
+                <Button
+                  onClick={dismissModal}
+                  color={'secondary'}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={submit}
+                >
+                  Submit
+                </Button>
+              </>
             )}
           </CardActions>
         </Card>
@@ -90,4 +116,5 @@ export const AddLinkModal = (props) => {
 AddLinkModal.propTypes = {
   showAddLinkModal: PropTypes.bool,
   setShowAddLinkModal: PropTypes.func,
+  selectedCompanyId: PropTypes.string,
 };

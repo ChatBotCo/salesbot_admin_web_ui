@@ -15,6 +15,7 @@ import { CompanyTabs } from '../components/company-tabs';
 import { LinksTable } from '../sections/links/links-table';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { AddLinkModal } from '../sections/links/add-link-modal';
+import { LinksInputCard } from '../sections/links/links-input-card';
 
 const Page = () => {
   const {
@@ -42,7 +43,7 @@ const Page = () => {
 
   return (
     <>
-      <AddLinkModal setShowAddLinkModal={setShowAddLinkModal} showAddLinkModal={showAddLinkModal} />
+      <AddLinkModal setShowAddLinkModal={setShowAddLinkModal} showAddLinkModal={showAddLinkModal} selectedCompanyId={selectedCompanyId} />
       <Head>
         <title>
           Training
@@ -66,20 +67,21 @@ const Page = () => {
                 Train Your Chat Bot
                 {loading && <CircularProgress />}
               </Typography>
-              <Button
-                startIcon={(
-                  <SvgIcon fontSize="small">
-                    <PlusIcon />
-                  </SvgIcon>
-                )}
-                onClick={()=>setShowAddLinkModal(true)}
-                variant="contained"
-              >
-                Add Training Link
-              </Button>
+              {/*<Button*/}
+              {/*  startIcon={(*/}
+              {/*    <SvgIcon fontSize="small">*/}
+              {/*      <PlusIcon />*/}
+              {/*    </SvgIcon>*/}
+              {/*  )}*/}
+              {/*  onClick={()=>setShowAddLinkModal(true)}*/}
+              {/*  variant="contained"*/}
+              {/*>*/}
+              {/*  Add Training Link*/}
+              {/*</Button>*/}
             </Stack>
             <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>
-            <LinksTable items={linksForSelectedCompany} />
+            <LinksInputCard selectedCompanyId={selectedCompanyId} />
+            {linksForSelectedCompany.length ? <LinksTable items={linksForSelectedCompany} /> : ''}
           </Stack>
         </Container>
       </Box>

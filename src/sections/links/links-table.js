@@ -42,7 +42,7 @@ export const LinksTable = (props) => {
 
   return (
     <Card>
-      <Scrollbar>
+      <Scrollbar sx={{maxHeight:400}}>
         <Box sx={{ minWidth: 800 }}>
           <Table>
             <TableHead>
