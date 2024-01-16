@@ -47,7 +47,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Customize Your Chat Bot
+          Customization
           {loading && <CircularProgress />}
         </title>
       </Head>

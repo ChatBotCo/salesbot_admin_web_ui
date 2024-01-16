@@ -30,7 +30,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Install
+          Installation
         </title>
       </Head>
       <Box

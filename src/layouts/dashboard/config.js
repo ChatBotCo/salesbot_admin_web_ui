@@ -1,5 +1,6 @@
 import { SvgIcon } from '@mui/material';
 import {
+  AcademicCapIcon,
   BuildingStorefrontIcon,
   ChartBarIcon,
   ChatBubbleLeftRightIcon, CloudArrowDownIcon,
@@ -50,6 +51,15 @@ export const items = [
     icon: (
       <SvgIcon fontSize="small">
         <CloudArrowDownIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Train Your Chat Bot',
+    path: '/links',
+    icon: (
+      <SvgIcon fontSize="small">
+        <AcademicCapIcon />
       </SvgIcon>
     )
   },

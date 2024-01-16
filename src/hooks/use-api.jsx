@@ -15,6 +15,7 @@ export const ApiProvider = ({ children }) => {
   const [msgCountPerDayByCompanyId, setMsgCountPerDayByCompanyId] = useState({})
   const [companiesByCompanyId, setCompaniesByCompanyId] = useState({})
   const [chatbotsByCompanyId, setChatbotsByCompanyId] = useState({})
+  const [linksById, setLinksById] = useState({})
   const [conversationsByCompanyId, setConversationsByCompanyId] = useState({})
   const [conversationsForBlackTie, setConversationsForBlackTie] = useState([])
   const [conversationsForEdge, setConversationsForEdge] = useState([])
@@ -86,6 +87,18 @@ export const ApiProvider = ({ children }) => {
       })
   }
 
+  const reloadCompanies = () => {
+    return fetch(`${backendUrl}/api/companies?company_id=${user.company_id}`, {method: "GET"})
+      .then(data=>data.json())
+      .then(_companies => {
+        let result = _companies.reduce((acc, company) => {
+          acc[company.company_id] = company
+          return acc;
+        }, {});
+        setCompaniesByCompanyId(result)
+      })
+  }
+
   const loadAllDataForAuthorizedUser = () => {
     if(user && user.company_id) {
       if(window.location.pathname === '/messages') {
@@ -105,17 +118,17 @@ export const ApiProvider = ({ children }) => {
       const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
       const epochSeconds30DaysAgo = Math.floor(thirtyDaysAgo.getTime() / 1000);
       const promises = [
-        fetch(`${backendUrl}/api/companies?company_id=${user.company_id}`, {method: "GET"})
+        reloadCompanies(),
+        reloadChatbots(),
+        fetch(`${backendUrl}/api/links?company_id=${user.company_id}`, {method: "GET"})
           .then(data=>data.json())
-          .then(_companies => {
-            let result = _companies.reduce((acc, company) => {
-              acc[company.company_id] = company
+          .then(_links => {
+            let result = _links.reduce((acc, link) => {
+              acc[link.id] = link
               return acc;
             }, {});
-            setCompaniesByCompanyId(result)
+            setLinksById(result)
           }),
-
-        reloadChatbots(),
 
         fetch(`${backendUrl}/api/conversations?company_id=${user.company_id}&since_timestamp=${epochSeconds30DaysAgo}`, {method: "GET"})
           .then(data=>data.json())
@@ -179,6 +192,52 @@ export const ApiProvider = ({ children }) => {
           reloadChatbots()
         } else {
           setSaveResults('There was an error saving the chatbot')
+          setSaveResultsSeverity('error')
+        }
+        setShowSaveResults(true)
+      })
+      .finally(()=>setSaving(false))
+  }
+
+  const saveCompanyChanges = updatedCompanyValues => {
+    setSaving(true)
+    fetch(`${backendUrl}/api/companies`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedCompanyValues),
+    })
+      .then(data=> {
+        if(data.status === 204) {
+          setSaveResults('Company saved')
+          setSaveResultsSeverity('success')
+          reloadCompanies()
+        } else {
+          setSaveResults('There was an error saving the company information')
+          setSaveResultsSeverity('error')
+        }
+        setShowSaveResults(true)
+      })
+      .finally(()=>setSaving(false))
+  }
+
+  const saveLinkChanges = linkValues => {
+    setSaving(true)
+    fetch(`${backendUrl}/api/links`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(linkValues),
+    })
+      .then(data=> {
+        if(data.status === 204) {
+          setSaveResults('Training link updated')
+          setSaveResultsSeverity('success')
+          // reloadCompanies()
+        } else {
+          setSaveResults('There was an error saving the training link')
           setSaveResultsSeverity('error')
         }
         setShowSaveResults(true)
@@ -264,8 +323,11 @@ export const ApiProvider = ({ children }) => {
         navToMsgsFromLeadsTable,
         chatbotsByCompanyId,
         saveChatbotChanges,
+        saveCompanyChanges,
         showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity, saving,
         createCompany,
+        linksById,
+        saveLinkChanges,
       }}
     >
       {children}

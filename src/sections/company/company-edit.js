@@ -30,7 +30,7 @@ export const CompanyEdit = (props) => {
   const {
     loading,
     saving,
-    // saveChatbotChanges,
+    saveCompanyChanges,
   } = useApi()
 
   const [values, setValues] = useState(defaultValues);
@@ -94,7 +94,7 @@ export const CompanyEdit = (props) => {
             disabled={!(company && unsavedChanges)}
             variant="contained"
             onClick={()=>{
-              // saveChatbotChanges(values)
+              saveCompanyChanges(values)
             }}
           >
             {(company && unsavedChanges) ? 'Save Changes' : 'No Unsaved Changes'}
