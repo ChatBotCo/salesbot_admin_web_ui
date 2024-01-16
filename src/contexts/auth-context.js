@@ -66,6 +66,7 @@ export const AuthProvider = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const initialized = useRef(false);
   const [backendUrl, setAuthBackendUrl] = useState("")
+  const [waitingForLogin, setWaitingForLogin] = useState(false)
 
   const initialize = async () => {
     // Prevent from calling twice in development mode with React.StrictMode enabled
@@ -88,11 +89,11 @@ export const AuthProvider = (props) => {
 
     if (isAuthenticated && authorizeUserdata) {
       const user = {
-        id: authorizeUserdata.user_name,
+        id: authorizeUserdata.id,
         avatar: '/assets/avatars/avatar-anika-visser.png',
         name: authorizeUserdata.user_name,
         email: authorizeUserdata.user_name,
-        company_id: authorizeUserdata.company_id,
+        company_id: authorizeUserdata.company_id === 'XXX' ? null : authorizeUserdata.company_id,
       };
 
       dispatch({
@@ -116,6 +117,7 @@ export const AuthProvider = (props) => {
 
   const signIn = async (user_name, password) => {
     const body = { user_name, password }
+    setWaitingForLogin(true)
     fetch(`${backendUrl}/api/login`, {
       method: "POST",
       headers: {
@@ -128,11 +130,6 @@ export const AuthProvider = (props) => {
         if(authorizeUserdata.status === 401){
           window.alert("Invalid login credentials")
         } else {
-          console.log(authorizeUserdata)
-          // if (email !== 'demo@devias.io' || password !== 'Password123!') {
-          //   throw new Error('Please check your email and password');
-          // }
-
           try {
             window.localStorage.setItem('authenticated', 'true');
           } catch (err) {
@@ -140,11 +137,11 @@ export const AuthProvider = (props) => {
           }
 
           const user = {
-            id: authorizeUserdata.user_name,
+            id: authorizeUserdata.id,
             avatar: '/assets/avatars/avatar-anika-visser.png',
             name: authorizeUserdata.user_name,
             email: authorizeUserdata.user_name,
-            company_id: authorizeUserdata.company_id,
+            company_id: authorizeUserdata.company_id === 'XXX' ? null : authorizeUserdata.company_id,
           };
 
           try {
@@ -163,6 +160,7 @@ export const AuthProvider = (props) => {
       .catch(err=>{
         window.alert("Login error")
       })
+      .finally(()=>setWaitingForLogin(false))
   };
 
   const signUp = async (email, name, password) => {
@@ -185,6 +183,7 @@ export const AuthProvider = (props) => {
         signUp,
         signOut,
         setAuthBackendUrl,
+        waitingForLogin,
       }}
     >
       {children}

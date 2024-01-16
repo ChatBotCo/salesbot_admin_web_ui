@@ -1,13 +1,15 @@
 import Head from 'next/head';
-import { Box, CircularProgress, Container, Unstable_Grid2 as Grid } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { useApi } from '../hooks/use-api';
-import { OverviewConversationsByDate } from '../sections/overview/overview-conversations-by-date';
 import { MetricsGrid } from '../sections/metrics/metrics-grid';
+import { useAuth } from '../hooks/use-auth';
+import { NewUser } from '../sections/new_user/new-user';
+import { Box, Container } from '@mui/material';
 
 const now = new Date();
 
 const Page = () => {
+  const {user} = useAuth();
+
   return (
     <>
       <Head>
@@ -15,7 +17,17 @@ const Page = () => {
           Sales Chatbot
         </title>
       </Head>
-      <MetricsGrid />
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          py: 8
+        }}
+      >
+        <Container maxWidth="xl">
+          {(user && user.company_id) ? <MetricsGrid /> : <NewUser />}
+        </Container>
+      </Box>
     </>
   )
 };

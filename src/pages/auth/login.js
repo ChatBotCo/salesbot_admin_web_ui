@@ -1,27 +1,14 @@
-import { useCallback, useState, useEffect } from 'react';
 import Head from 'next/head';
-import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {
-  Alert,
-  Box,
-  Button,
-  FormHelperText,
-  Link,
-  Stack,
-  Tab,
-  Tabs,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Box, Button, CircularProgress, Stack, TextField, Typography } from '@mui/material';
 import { useAuth } from 'src/hooks/use-auth';
 import { Layout as AuthLayout } from 'src/layouts/auth/layout';
 
 const Page = () => {
   const router = useRouter();
-  const auth = useAuth();
+  const {signIn, waitingForLogin} = useAuth();
   const formik = useFormik({
     initialValues: {
       // email: 'demo@devias.io',
@@ -43,7 +30,7 @@ const Page = () => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        await auth.signIn(values.email, values.password);
+        await signIn(values.email, values.password);
         // router.push('/');
       } catch (err) {
         helpers.setStatus({ success: false });
@@ -53,22 +40,11 @@ const Page = () => {
     }
   });
 
-  // useEffect(() => {
-  //   formik.handleSubmit();
-  // }, []);
-
-  const handleMethodChange = useCallback(
-    (event, value) => {
-      setMethod(value);
-    },
-    []
-  );
-
   return (
     <>
       <Head>
         <title>
-          Salse Chatbot
+          Sales Chatbot
         </title>
       </Head>
       <Box
@@ -95,22 +71,8 @@ const Page = () => {
             >
               <Typography variant="h4">
                 Login
+                {waitingForLogin && <CircularProgress />}
               </Typography>
-              {/*<Typography*/}
-              {/*  color="text.secondary"*/}
-              {/*  variant="body2"*/}
-              {/*>*/}
-              {/*  Don&apos;t have an account?*/}
-              {/*  &nbsp;*/}
-              {/*  <Link*/}
-              {/*    component={NextLink}*/}
-              {/*    href="/auth/register"*/}
-              {/*    underline="hover"*/}
-              {/*    variant="subtitle2"*/}
-              {/*  >*/}
-              {/*    Register*/}
-              {/*  </Link>*/}
-              {/*</Typography>*/}
             </Stack>
             <form
               noValidate
@@ -150,13 +112,14 @@ const Page = () => {
                 </Typography>
               )}
               <Button
+                disabled={waitingForLogin}
                 fullWidth
                 size="large"
                 sx={{ mt: 3 }}
                 type="submit"
                 variant="contained"
               >
-                Continue
+                Submit
               </Button>
             </form>
           </div>

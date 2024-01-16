@@ -186,6 +186,40 @@ export const ApiProvider = ({ children }) => {
       .finally(()=>setSaving(false))
   }
 
+  const createCompany = (newCompany) => {
+    setSaving(true)
+    fetch(`${backendUrl}/api/companies`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({...newCompany, user_id:user.id}),
+    })
+      .then(data=> {
+        console.log(data)
+        if(data.status === 200) {
+          data.json()
+            .then(newCompany=>{
+              console.log(newCompany)
+              setSaveResults('Company information saved')
+              setSaveResultsSeverity('success')
+              user.company_id = newCompany.company_id
+              console.log(user)
+              window.localStorage.setItem('authorizeUserdata', JSON.stringify(user));
+              window.location.reload()
+            })
+        } else {
+          setSaveResults('There was an error saving the chatbot')
+          setSaveResultsSeverity('error')
+        }
+      })
+      .catch(()=>{
+        setSaveResults('There was an error saving your company information')
+        setSaveResultsSeverity('error')
+      })
+      .finally(()=>setSaving(false))
+  }
+
   // On User object update (auth change)
   useEffect(() => {
     clearAllDataForAuthorizedUser()
@@ -231,6 +265,7 @@ export const ApiProvider = ({ children }) => {
         chatbotsByCompanyId,
         saveChatbotChanges,
         showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity, saving,
+        createCompany,
       }}
     >
       {children}
