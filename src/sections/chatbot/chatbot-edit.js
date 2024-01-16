@@ -222,6 +222,22 @@ export const ChatbotEdit = (props) => {
                 value={values.contact_link || ''}
               />
             </Grid>
+            <Grid
+              xs={12}
+              md={6}
+            >
+              <FormLabel id="contact-prompt-label">
+                <InfoPopover infoText={'Instruct the chatbot exactly how you want it to sell your products or services to your customers'} id={'contact-prompt-info'} />
+                Custom instructions or sales strategy
+              </FormLabel>
+              <TextField
+                aria-labelledby="contact-prompt-label"
+                fullWidth
+                name="contact_prompt"
+                onChange={handleChange}
+                value={values.contact_prompt || ''}
+              />
+            </Grid>
           </Grid>
         </CardContent>
       </Card>
