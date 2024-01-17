@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Head from 'next/head';
-import { Box, CircularProgress, Container, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Box, CircularProgress, Container, Stack, Typography } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { ConversationsTable } from '../sections/conversation/conversations-table';
 import { useApi } from '../hooks/use-api';
+import { CompanyTabs } from '../components/company-tabs';
 
 const Page = () => {
   const {
@@ -29,27 +30,6 @@ const Page = () => {
     } else {
       setTitleElement('Conversations')
     }
-  }
-
-  useEffect(() => {
-    const companies = Object.values(companiesByCompanyId) || []
-    const firstCompany = (companies.length>0 && companies[0]) || {}
-    const firstCompanyId = firstCompany.company_id
-    setSelectedCompanyId(firstCompanyId)
-
-    // console.log(companies)
-    const _tabs = companies.map((company, i) => {
-      return <Tab
-        key={company.company_id}
-        label={company.name}
-        value={company.company_id}
-      />
-    })
-    setTabs(_tabs)
-  },[companiesByCompanyId, conversationsByCompanyId]);
-
-  const handleSelectCompany = (e,company_id) => {
-    setSelectedCompanyId(company_id);
   }
 
   return (
@@ -79,13 +59,7 @@ const Page = () => {
                 </Typography>
               </Stack>
             </Stack>
-            <Tabs
-              onChange={handleSelectCompany}
-              sx={{ mb: 3 }}
-              value={selectedCompanyId}
-            >
-              {tabs}
-            </Tabs>
+            <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>
             <ConversationsTable
               items={conversations}
               messageCountsPerConvo={messageCountsPerConvo}

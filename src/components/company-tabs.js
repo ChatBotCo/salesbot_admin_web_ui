@@ -35,6 +35,8 @@ export const CompanyTabs = (props) => {
     setSelectedCompanyId(company_id);
   }
 
+  if(Object.keys(companiesByCompanyId).length <=1) return <></>
+
   return (
     <Tabs
       onChange={handleSelectCompany}
