@@ -87,8 +87,8 @@ export const ApiProvider = ({ children }) => {
       })
   }
 
-  const reloadCompanies = () => {
-    return fetch(`${backendUrl}/api/companies?company_id=${user.company_id}`, {method: "GET"})
+  const reloadCompanies = companyId => {
+    return fetch(`${backendUrl}/api/companies?company_id=${companyId}`, {method: "GET"})
       .then(data=>data.json())
       .then(_companies => {
         let result = _companies.reduce((acc, company) => {
@@ -130,7 +130,7 @@ export const ApiProvider = ({ children }) => {
       const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
       const epochSeconds30DaysAgo = Math.floor(thirtyDaysAgo.getTime() / 1000);
       const promises = [
-        reloadCompanies(),
+        reloadCompanies(user.company_id),
         reloadChatbots(),
         reloadLinks(user.company_id),
 
@@ -216,7 +216,7 @@ export const ApiProvider = ({ children }) => {
         if(data.status === 204) {
           setSaveResults('Company saved')
           setSaveResultsSeverity('success')
-          reloadCompanies()
+          reloadCompanies(updatedCompanyValues.id)
         } else {
           setSaveResults('There was an error saving the company information')
           setSaveResultsSeverity('error')
@@ -286,6 +286,26 @@ export const ApiProvider = ({ children }) => {
           //   })
         } else {
           setSaveResults('There was an error saving the training link')
+          setSaveResultsSeverity('error')
+          setShowSaveResults(true)
+        }
+      })
+      .finally(()=>setSaving(false))
+  }
+
+  const startTraining = companyId => {
+    setSaving(true)
+    fetch(`${backendUrl}/api/links/scrape?company_id=${companyId}`, {
+      method: "POST"
+    })
+      .then(data=> {
+        if(data.status === 200) {
+          setSaveResults('Training started')
+          setSaveResultsSeverity('success')
+          setShowSaveResults(true)
+          return reloadCompanies(companyId)
+        } else {
+          setSaveResults('There was an error starting the training')
           setSaveResultsSeverity('error')
           setShowSaveResults(true)
         }
@@ -377,6 +397,7 @@ export const ApiProvider = ({ children }) => {
         linksById,
         saveLinkChanges,
         addLink,
+        startTraining,
       }}
     >
       {children}

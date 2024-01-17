@@ -5,18 +5,12 @@ import {
   CardContent,
   CircularProgress,
   FormLabel,
-  TextField, Typography
+  TextField
 } from '@mui/material';
 import { useState } from 'react';
 import { InfoPopover } from '../../components/info-popover';
 import { useApi } from '../../hooks/use-api';
 import PropTypes from 'prop-types';
-
-const inputStyles = {
-  '::placeholder': {
-      color: 'blue'
-    }
-};
 
 export const LinksInputCard = (props) => {
   const {

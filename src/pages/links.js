@@ -16,6 +16,7 @@ import { LinksTable } from '../sections/links/links-table';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { AddLinkModal } from '../sections/links/add-link-modal';
 import { LinksInputCard } from '../sections/links/links-input-card';
+import { LinksStartScrape } from '../sections/links/links-start-scrape';
 
 const Page = () => {
   const {
@@ -80,7 +81,8 @@ const Page = () => {
               {/*</Button>*/}
             </Stack>
             <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>
-            <LinksInputCard selectedCompanyId={selectedCompanyId} />
+            {!linksForSelectedCompany.length ? <LinksInputCard selectedCompanyId={selectedCompanyId} /> : ''}
+            {linksForSelectedCompany.length ? <LinksStartScrape selectedCompanyId={selectedCompanyId}/> : ''}
             {linksForSelectedCompany.length ? <LinksTable items={linksForSelectedCompany} /> : ''}
           </Stack>
         </Container>
