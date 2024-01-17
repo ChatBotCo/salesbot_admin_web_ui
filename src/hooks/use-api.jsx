@@ -1,9 +1,19 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import {useAuth} from "./use-auth";
+import {LinksInputCard} from "../sections/links/links-input-card";
+import {LinksStartScrape} from "../sections/links/links-start-scrape";
+import {LinksTrainingProgress} from "../sections/links/links-training-progress";
+import {LinksTrainingComplete} from "../sections/links/links-training-complete";
 
 const ApiContext = createContext();
 
-let initialized = false
+let onboardingSteps = {
+  notReady: 1,
+  createCompany: 2,
+  customizeChatbot: 3,
+  scrapeLinks: 4,
+  done: 5,
+}
 
 export const ApiProvider = ({ children }) => {
   const {setAuthBackendUrl, user} = useAuth()
@@ -24,6 +34,7 @@ export const ApiProvider = ({ children }) => {
   const [messageCountsPerConvo, setMessageCountsPerConvo] = useState({})
   const [companyIdParam, setCompanyIdParam] = useState("")
   const [navToMsgsFromLeadsTable, setNavToMsgsFromLeadsTable] = useState(false)
+  const [onboardingStep, setOnboardingStep] = useState(onboardingSteps.notReady)
 
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -168,6 +179,29 @@ export const ApiProvider = ({ children }) => {
           }),
       ]
       Promise.all(promises)
+        .then(()=>{
+          const userHasCompany = user && user.company_id
+          if(!userHasCompany) {
+            setOnboardingStep(onboardingSteps.createCompany)
+          } else if(user.company_id === 'all') {
+            setOnboardingStep(onboardingSteps.done)
+          } else {
+            const linksForSelectedCompany = Object.values(linksById).filter(link=>link.company_id === user.company_id)
+            const company = companiesByCompanyId[user.company_id] || {}
+            const chatbot = chatbotsByCompanyId[user.company_id] || {}
+            const hasLinks = linksForSelectedCompany.length > 0
+            const hasIncompleteLinks = linksForSelectedCompany.filter(link=>link.status==='').length > 0
+            const isCompanyTraining = company.training
+
+            if(!chatbot.initialized) {
+              setOnboardingStep(onboardingSteps.customizeChatbot)
+            } else if(!hasLinks || hasIncompleteLinks || !isCompanyTraining) {
+              setOnboardingStep(onboardingSteps.scrapeLinks)
+            } else {
+              setOnboardingStep(onboardingSteps.done)
+            }
+          }
+        })
         .finally(()=>setLoading(false))
     }
   }
@@ -407,6 +441,7 @@ export const ApiProvider = ({ children }) => {
         saveLinkChanges,
         addLink,
         startTraining,
+        onboardingSteps, onboardingStep, setOnboardingStep,
       }}
     >
       {children}

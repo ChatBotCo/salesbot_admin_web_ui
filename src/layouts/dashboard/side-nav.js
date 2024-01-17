@@ -7,44 +7,94 @@ import { Scrollbar } from 'src/components/scrollbar';
 import { items } from './config';
 import { SideNavItem } from './side-nav-item';
 import { useAuth } from '../../hooks/use-auth';
-import { BuildingStorefrontIcon } from '@heroicons/react/24/solid';
+import {
+  AcademicCapIcon,
+  BuildingStorefrontIcon,
+  HandThumbUpIcon
+} from '@heroicons/react/24/solid';
+import { useApi } from '../../hooks/use-api';
 
 export const SideNav = (props) => {
   const {user} = useAuth();
+
+  const {
+    onboardingSteps,
+    onboardingStep,
+  } = useApi()
 
   const { open, onClose } = props;
   const pathname = usePathname();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
 
-  const navMenuButtons = (user && user.company_id) ? (
-    items.map((item) => {
-      const active = item.path ? (pathname === item.path) : false;
-      return (
+  let navMenuButtons = <></>
+  switch (onboardingStep) {
+    case onboardingSteps.createCompany:
+      navMenuButtons = (
         <SideNavItem
-          active={active}
-          disabled={item.disabled}
-          external={item.external}
-          icon={item.icon}
-          key={item.title}
-          path={item.path}
-          title={item.title}
+          active={true}
+          icon={(
+            <SvgIcon fontSize="small">
+              <BuildingStorefrontIcon />
+            </SvgIcon>
+          )}
+          key={'Create your Company'}
+          path={'/'}
+          title={'Create your Company'}
         />
-      );
-    })
-  ) : (
-    <SideNavItem
-      active={true}
-      disabled={false}
-      icon={(
-        <SvgIcon fontSize="small">
-          <BuildingStorefrontIcon />
-        </SvgIcon>
-      )}
-      key={'Create your Company'}
-      path={'/'}
-      title={'Create your Company'}
-    />
-  )
+      )
+      break
+    case onboardingSteps.customizeChatbot:
+      navMenuButtons = (
+        <SideNavItem
+          active={true}
+          icon={(
+            <SvgIcon fontSize="small">
+              <HandThumbUpIcon />
+            </SvgIcon>
+          )}
+          key={'Customize Your Chat Bot'}
+          path={'/chatbots'}
+          title={'Customize Your Chat Bot'}
+        />
+      )
+      break
+    case onboardingSteps.scrapeLinks:
+      navMenuButtons = (
+        <SideNavItem
+          active={true}
+          icon={(
+            <SvgIcon fontSize="small">
+              <AcademicCapIcon />
+            </SvgIcon>
+          )}
+          key={'Train Your Chat Bot'}
+          path={'/links'}
+          title={'Train Your Chat Bot'}
+        />
+      )
+      break
+    case onboardingSteps.done:
+      navMenuButtons = (
+        items.map((item) => {
+          const active = item.path ? (pathname === item.path) : false;
+          return (
+            <SideNavItem
+              active={active}
+              disabled={item.disabled}
+              external={item.external}
+              icon={item.icon}
+              key={item.title}
+              path={item.path}
+              title={item.title}
+            />
+          );
+        })
+      )
+      break;
+    default:
+      navMenuButtons = <></>
+      break
+  }
 
   const content = (
     <Scrollbar

@@ -17,7 +17,6 @@ import { CompanyTabs } from '../components/company-tabs';
 const Page = () => {
   const {
     loading,
-    companiesByCompanyId,
     chatbotsByCompanyId,
     showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity,
   } = useApi()

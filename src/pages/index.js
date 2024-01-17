@@ -4,11 +4,18 @@ import { MetricsGrid } from '../sections/metrics/metrics-grid';
 import { useAuth } from '../hooks/use-auth';
 import { NewUser } from '../sections/new_user/new-user';
 import { Box, Container } from '@mui/material';
+import { useApi } from '../hooks/use-api';
 
 const now = new Date();
 
 const Page = () => {
   const {user} = useAuth();
+
+  const {
+    onboardingStep,
+  } = useApi()
+
+  console.log(onboardingStep)
 
   return (
     <>
