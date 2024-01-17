@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { MetricsGrid } from '../sections/metrics/metrics-grid';
-import { useAuth } from '../hooks/use-auth';
 import { NewUser } from '../sections/new_user/new-user';
 import { Box, Container } from '@mui/material';
 import { useApi } from '../hooks/use-api';
 import { ChatBotSection } from '../sections/chatbot/chatbots_section';
+import { LinksSection } from '../sections/links/links-section';
 
 const now = new Date();
 
@@ -26,19 +26,7 @@ const Page = () => {
       displayEl = <ChatBotSection />
       break
     case onboardingSteps.scrapeLinks:
-      // navMenuButtons = (
-      //   <SideNavItem
-      //     active={true}
-      //     icon={(
-      //       <SvgIcon fontSize="small">
-      //         <AcademicCapIcon />
-      //       </SvgIcon>
-      //     )}
-      //     key={'Train Your Chat Bot'}
-      //     path={'/links'}
-      //     title={'Train Your Chat Bot'}
-      //   />
-      // )
+      displayEl = <LinksSection />
       break
     case onboardingSteps.done:
       displayEl = <MetricsGrid />
