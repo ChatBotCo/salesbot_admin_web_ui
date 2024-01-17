@@ -267,7 +267,7 @@ export const ApiProvider = ({ children }) => {
       body: JSON.stringify({link:linkText}),
     })
       .then(data=> {
-        if(data.status === 200) {
+        if(data.status === 204) {
           return reloadLinks(companyId)
             .then(()=>{
               setSaveResults('Training link added')
@@ -299,6 +299,7 @@ export const ApiProvider = ({ children }) => {
       method: "POST"
     })
       .then(data=> {
+        console.log(data.status)
         if(data.status === 204) {
           setSaveResults('Training started')
           setSaveResultsSeverity('success')

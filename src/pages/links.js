@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import {
   Alert,
-  Box, Button,
+  Box,
   CircularProgress,
-  Container, Modal,
+  Container,
   Snackbar,
-  Stack, SvgIcon,
+  Stack,
   Typography
 } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
@@ -13,17 +13,18 @@ import { useApi } from '../hooks/use-api';
 import { useState } from 'react';
 import { CompanyTabs } from '../components/company-tabs';
 import { LinksTable } from '../sections/links/links-table';
-import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { AddLinkModal } from '../sections/links/add-link-modal';
 import { LinksInputCard } from '../sections/links/links-input-card';
 import { LinksStartScrape } from '../sections/links/links-start-scrape';
 import { LinksTrainingComplete } from '../sections/links/links-training-complete';
+import { LinksTrainingProgress } from '../sections/links/links-training-progress';
 
 const Page = () => {
   const {
     loading,
     linksById,
     showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity,
+    companiesByCompanyId,
   } = useApi()
 
   const style = {
@@ -42,9 +43,27 @@ const Page = () => {
   const [showAddLinkModal, setShowAddLinkModal] = useState(false);
 
   const linksForSelectedCompany = Object.values(linksById).filter(link=>link.company_id === selectedCompanyId)
+  const selectedCompany = companiesByCompanyId[selectedCompanyId] || {}
 
+  const hasLinks = linksForSelectedCompany.length > 0
   const hasIncompleteLinks = linksForSelectedCompany.filter(link=>link.status==='').length > 0
-  console.log(hasIncompleteLinks)
+  const isCompanyTraining = selectedCompany.training
+
+  console.log(`hasLinks:${hasLinks} hasIncompleteLinks:${hasIncompleteLinks} isCompanyTraining:${isCompanyTraining} `)
+
+  let trainingHeaderEl
+  if(!hasLinks) {
+    trainingHeaderEl = <LinksInputCard selectedCompanyId={selectedCompanyId} />
+  } else if(hasLinks && hasIncompleteLinks && !isCompanyTraining) {
+    trainingHeaderEl = <LinksStartScrape selectedCompanyId={selectedCompanyId}/>
+  } else if(hasLinks && hasIncompleteLinks && isCompanyTraining) {
+    const manyLinks = linksForSelectedCompany.length
+    const manyCompleteLinks = linksForSelectedCompany.filter(link=>link.status!=='').length > 0
+    trainingHeaderEl = <LinksTrainingProgress progress={Math.floor(manyCompleteLinks / manyLinks * 100)}/>
+  } else {
+    trainingHeaderEl = <LinksTrainingComplete />
+  }
+
   return (
     <>
       <AddLinkModal setShowAddLinkModal={setShowAddLinkModal} showAddLinkModal={showAddLinkModal} selectedCompanyId={selectedCompanyId} />
@@ -73,9 +92,7 @@ const Page = () => {
               </Typography>
             </Stack>
             <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>
-            {!linksForSelectedCompany.length ? <LinksInputCard selectedCompanyId={selectedCompanyId} /> : ''}
-            {(linksForSelectedCompany.length && hasIncompleteLinks) ? <LinksStartScrape selectedCompanyId={selectedCompanyId}/> : ''}
-            {(linksForSelectedCompany.length && !hasIncompleteLinks) ? <LinksTrainingComplete /> : ''}
+            {trainingHeaderEl}
             {linksForSelectedCompany.length ? <LinksTable items={linksForSelectedCompany} /> : ''}
           </Stack>
         </Container>
