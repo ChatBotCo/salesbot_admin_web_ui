@@ -299,7 +299,7 @@ export const ApiProvider = ({ children }) => {
       method: "POST"
     })
       .then(data=> {
-        if(data.status === 200) {
+        if(data.status === 204) {
           setSaveResults('Training started')
           setSaveResultsSeverity('success')
           setShowSaveResults(true)

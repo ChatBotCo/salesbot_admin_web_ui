@@ -55,9 +55,6 @@ export const LinksTable = (props) => {
                   Status
                 </TableCell>
                 <TableCell>
-                  Ignoring?
-                </TableCell>
-                <TableCell>
                   Result
                 </TableCell>
               </TableRow>
@@ -76,17 +73,7 @@ export const LinksTable = (props) => {
                     </TableCell>
                     <TableCell>
                       {link.status}
-                    </TableCell>
-                    <TableCell>
-                        <SvgIcon
-                          fontSize="small"
-                          onClick={toggleIgnore(link)}
-                          color={link.status==='ignore' ? 'error' : 'primary'}
-                          sx={{cursor:'pointer'}}
-                        >
-                          {link.status==='ignore' ? <EyeSlashIcon /> : <EyeIcon /> }
-                        </SvgIcon>
-                    </TableCell>
+                    </TableCell>*/}
                     <TableCell>
                       {link.result}
                     </TableCell>

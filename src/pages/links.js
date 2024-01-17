@@ -68,17 +68,6 @@ const Page = () => {
                 Train Your Chat Bot
                 {loading && <CircularProgress />}
               </Typography>
-              {/*<Button*/}
-              {/*  startIcon={(*/}
-              {/*    <SvgIcon fontSize="small">*/}
-              {/*      <PlusIcon />*/}
-              {/*    </SvgIcon>*/}
-              {/*  )}*/}
-              {/*  onClick={()=>setShowAddLinkModal(true)}*/}
-              {/*  variant="contained"*/}
-              {/*>*/}
-              {/*  Add Training Link*/}
-              {/*</Button>*/}
             </Stack>
             <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>
             {!linksForSelectedCompany.length ? <LinksInputCard selectedCompanyId={selectedCompanyId} /> : ''}
