@@ -1,10 +1,11 @@
 import { useCallback, useState, useEffect } from 'react';
 import {
+  Alert,
   Button,
   Card,
   CardContent,
   CircularProgress,
-  FormLabel,
+  FormLabel, Snackbar,
   Stack,
   TextField,
   Typography,
@@ -18,6 +19,7 @@ export const NewUser = () => {
     loading,
     saving,
     createCompany,
+    showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity,
   } = useApi()
 
   const defaultValues = {
@@ -142,6 +144,11 @@ export const NewUser = () => {
           </Grid>
         </CardContent>
       </Card>
+      <Snackbar open={showSaveResults} autoHideDuration={6000} onClose={handleDismissSaveResults}>
+        <Alert onClose={handleDismissSaveResults} severity={saveResultsSeverity} sx={{ width: '100%' }}>
+          {saveResults}
+        </Alert>
+      </Snackbar>
     </form>
   );
 };

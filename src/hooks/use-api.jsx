@@ -336,14 +336,22 @@ export const ApiProvider = ({ children }) => {
               window.localStorage.setItem('authorizeUserdata', JSON.stringify(user));
               window.location.reload()
             })
+        } else if(data.status === 409) {
+          console.error("Company already exists")
+          setSaveResults('Sorry, this company already exists')
+          setSaveResultsSeverity('error')
+          setShowSaveResults(true)
         } else {
+          console.error("There was an error saving the chatbot")
           setSaveResults('There was an error saving the chatbot')
           setSaveResultsSeverity('error')
+          setShowSaveResults(true)
         }
       })
       .catch(()=>{
         setSaveResults('There was an error saving your company information')
         setSaveResultsSeverity('error')
+        setShowSaveResults(true)
       })
       .finally(()=>setSaving(false))
   }

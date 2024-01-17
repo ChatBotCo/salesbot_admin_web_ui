@@ -49,8 +49,6 @@ const Page = () => {
   const hasIncompleteLinks = linksForSelectedCompany.filter(link=>link.status==='').length > 0
   const isCompanyTraining = selectedCompany.training
 
-  console.log(`hasLinks:${hasLinks} hasIncompleteLinks:${hasIncompleteLinks} isCompanyTraining:${isCompanyTraining} `)
-
   let trainingHeaderEl
   if(!hasLinks) {
     trainingHeaderEl = <LinksInputCard selectedCompanyId={selectedCompanyId} />
