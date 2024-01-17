@@ -73,7 +73,7 @@ export const LinksTable = (props) => {
                     </TableCell>
                     <TableCell>
                       {link.status}
-                    </TableCell>*/}
+                    </TableCell>
                     <TableCell>
                       {link.result}
                     </TableCell>

@@ -17,6 +17,7 @@ import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { AddLinkModal } from '../sections/links/add-link-modal';
 import { LinksInputCard } from '../sections/links/links-input-card';
 import { LinksStartScrape } from '../sections/links/links-start-scrape';
+import { LinksTrainingComplete } from '../sections/links/links-training-complete';
 
 const Page = () => {
   const {
@@ -42,6 +43,8 @@ const Page = () => {
 
   const linksForSelectedCompany = Object.values(linksById).filter(link=>link.company_id === selectedCompanyId)
 
+  const hasIncompleteLinks = linksForSelectedCompany.filter(link=>link.status==='').length > 0
+  console.log(hasIncompleteLinks)
   return (
     <>
       <AddLinkModal setShowAddLinkModal={setShowAddLinkModal} showAddLinkModal={showAddLinkModal} selectedCompanyId={selectedCompanyId} />
@@ -71,7 +74,8 @@ const Page = () => {
             </Stack>
             <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>
             {!linksForSelectedCompany.length ? <LinksInputCard selectedCompanyId={selectedCompanyId} /> : ''}
-            {linksForSelectedCompany.length ? <LinksStartScrape selectedCompanyId={selectedCompanyId}/> : ''}
+            {(linksForSelectedCompany.length && hasIncompleteLinks) ? <LinksStartScrape selectedCompanyId={selectedCompanyId}/> : ''}
+            {(linksForSelectedCompany.length && !hasIncompleteLinks) ? <LinksTrainingComplete /> : ''}
             {linksForSelectedCompany.length ? <LinksTable items={linksForSelectedCompany} /> : ''}
           </Stack>
         </Container>
