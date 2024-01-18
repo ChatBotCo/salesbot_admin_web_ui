@@ -199,7 +199,7 @@ export const ApiProvider = ({ children }) => {
 
       if(!chatbot.initialized) {
         setOnboardingStep(onboardingSteps.customizeChatbot)
-      } else if(!hasLinks || hasIncompleteLinks || !isCompanyTraining) {
+      } else if(!hasLinks || hasIncompleteLinks) {
         setOnboardingStep(onboardingSteps.scrapeLinks)
       } else {
         setOnboardingStep(onboardingSteps.done)
@@ -251,7 +251,7 @@ export const ApiProvider = ({ children }) => {
         if(data.status === 204) {
           setSaveResults('Company saved')
           setSaveResultsSeverity('success')
-          reloadCompanies(updatedCompanyValues.id)
+          reloadCompanies(updatedCompanyValues.company_id)
         } else {
           setSaveResults('There was an error saving the company information')
           setSaveResultsSeverity('error')

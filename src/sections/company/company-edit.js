@@ -1,21 +1,16 @@
-import {useCallback, useEffect, useState} from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Button,
   Card,
   CardContent,
-  Checkbox,
   CircularProgress,
-  FormControlLabel,
   FormLabel,
-  Radio,
-  RadioGroup,
   Stack,
   TextField,
   Unstable_Grid2 as Grid
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import {useApi} from "../../hooks/use-api";
-import {InfoPopover} from "../../components/info-popover";
+import { useApi } from '../../hooks/use-api';
 
 const defaultValues = {
   name: '',
@@ -46,16 +41,6 @@ export const CompanyEdit = (props) => {
     []
   );
 
-  const handleChangeCheckbox = useCallback(
-    (event) => {
-      setValues((prevState) => ({
-        ...prevState,
-        [event.target.name]: event.target.checked
-      }));
-    },
-    []
-  );
-
   const handleSubmit = useCallback(
     (event) => {
       event.preventDefault();
@@ -80,7 +65,7 @@ export const CompanyEdit = (props) => {
     }
   }, [values, company])
 
-  if(!company) return <>{loading && <CircularProgress />}</>
+  // if(!company) return <>{loading && <CircularProgress />}</>
 
   return (
     <form

@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { useApi } from '../hooks/use-api';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CompanyTabs } from '../components/company-tabs';
 import { CompanyEdit } from '../sections/company/company-edit';
 
@@ -22,8 +22,11 @@ const Page = () => {
   } = useApi()
 
   const [selectedCompanyId, setSelectedCompanyId] = useState('');
+  const [selectedCompany, setSelectedCompany] = useState({});
 
-  const selectedCompany = companiesByCompanyId[selectedCompanyId]
+  useEffect(() => {
+    setSelectedCompany(companiesByCompanyId[selectedCompanyId])
+  }, [companiesByCompanyId, selectedCompanyId])
 
   return (
     <>
