@@ -194,8 +194,12 @@ export const ChatbotEdit = (props) => {
               md={6}
             >
               <FormLabel id="contact-radio-buttons-group">
-                <InfoPopover infoText={'This is the strategy that you want the chatbot to take to propel your sales'} id={'lead-info'} />
-                How should the chatbot create a lead?
+                <InfoPopover
+                  infoText={'The call-to-action button appears prominantly below the chat window and redirects the user to another webpage.  With this setting you are instructing the chatbot the purpose of this other webpage and how it should encourage people to click on the button'}
+                  id={'lead-info'}
+                  extra={<img style={{width:'200px', marginLeft:'10px', marginBottom:'10px'}} src='/assets/call-to-action-button.png'/>}
+                />
+                What should the call-to-action do?
               </FormLabel>
               <RadioGroup
                 aria-labelledby="contact-radio-buttons-group"
@@ -203,42 +207,50 @@ export const ChatbotEdit = (props) => {
                 value={values.contact_method || 'app_install'}
                 onChange={handleChange}
               >
-                <FormControlLabel value="app_install" control={<Radio />} label="Try to get the user to install the app" />
-                <FormControlLabel value="contact_form" control={<Radio />} label="Try to get the user to fill out a contact form" />
+                <FormControlLabel value="app_install" control={<Radio />} label="Helps the user install our app" />
+                <FormControlLabel value="contact_form" control={<Radio />} label="Takes the user to a contact form" />
+                <FormControlLabel value="none" control={<Radio />} label="No call-to-action button" />
               </RadioGroup>
             </Grid>
-            <Grid
-              xs={12}
-              md={6}
-            >
-              <FormLabel id="contact-link-label">
-                <InfoPopover infoText={'This URL ("https://...") is where users will be redirected when they want to contact you, install your app, create a trial account, etc.'} id={'contact-link-info'} />
-                Provide a webpage to redirect users
-              </FormLabel>
-              <TextField
-                aria-labelledby="contact-link-label"
-                fullWidth
-                name="contact_link"
-                onChange={handleChange}
-                value={values.contact_link || ''}
-              />
-            </Grid>
-            <Grid
-              xs={12}
-              md={6}
-            >
-              <FormLabel id="contact-prompt-label">
-                <InfoPopover infoText={'Instruct the chatbot exactly how you want it to sell your products or services to your customers'} id={'contact-prompt-info'} />
-                Custom instructions or sales strategy
-              </FormLabel>
-              <TextField
-                aria-labelledby="contact-prompt-label"
-                fullWidth
-                name="contact_prompt"
-                onChange={handleChange}
-                value={values.contact_prompt || ''}
-              />
-            </Grid>
+            {
+              values.contact_method !== 'none' && (
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <FormLabel id="contact-link-label">
+                      <InfoPopover
+                        infoText={'If the user clicks on the call-to-action - where do you want to redirect them?'}
+                        id={'contact-link'}
+                      />
+                      Call-to-action redirect webpage
+                    </FormLabel>
+                    <TextField
+                      aria-labelledby="contact-link-label"
+                      fullWidth
+                      name="contact_link"
+                      onChange={handleChange}
+                      value={values.contact_link || ''}
+                    />
+                  </Grid>
+                )
+            }
+            {/*<Grid*/}
+            {/*  xs={12}*/}
+            {/*  md={6}*/}
+            {/*>*/}
+            {/*  <FormLabel id="contact-prompt-label">*/}
+            {/*    <InfoPopover infoText={'Instruct the chatbot exactly how you want it to sell your products or services to your customers'} id={'contact-prompt-info'} />*/}
+            {/*    Custom instructions or sales strategy*/}
+            {/*  </FormLabel>*/}
+            {/*  <TextField*/}
+            {/*    aria-labelledby="contact-prompt-label"*/}
+            {/*    fullWidth*/}
+            {/*    name="contact_prompt"*/}
+            {/*    onChange={handleChange}*/}
+            {/*    value={values.contact_prompt || ''}*/}
+            {/*  />*/}
+            {/*</Grid>*/}
           </Grid>
         </CardContent>
       </Card>

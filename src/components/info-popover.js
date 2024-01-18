@@ -7,6 +7,7 @@ export const InfoPopover = (props) => {
   const {
     id,
     infoText,
+    extra,
   } = props
 
   const [popoverAnchorEl, setPopoverAnchorEl] = useState(null);
@@ -37,6 +38,7 @@ export const InfoPopover = (props) => {
         }}
       >
         <Typography sx={{ p: 2 }}>{infoText}</Typography>
+        {extra}
       </Popover>
 
       <SvgIcon
@@ -53,4 +55,5 @@ export const InfoPopover = (props) => {
 InfoPopover.propTypes = {
   id: PropTypes.string,
   infoText: PropTypes.string,
+  extra: PropTypes.object,
 };
