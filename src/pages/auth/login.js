@@ -2,9 +2,10 @@ import Head from 'next/head';
 import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Box, Button, CircularProgress, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Link, Stack, TextField, Typography } from '@mui/material';
 import { useAuth } from 'src/hooks/use-auth';
 import { Layout as AuthLayout } from 'src/layouts/auth/layout';
+import NextLink from 'next/link';
 
 const Page = () => {
   const router = useRouter();
@@ -72,6 +73,21 @@ const Page = () => {
               <Typography variant="h4">
                 Login
                 {waitingForLogin && <CircularProgress />}
+              </Typography>
+              <Typography
+                color="text.secondary"
+                variant="body2"
+              >
+                Don&apos;t have an account?
+                &nbsp;
+                <Link
+                  component={NextLink}
+                  href="/auth/register"
+                  underline="hover"
+                  variant="subtitle2"
+                >
+                  Register
+                </Link>
               </Typography>
             </Stack>
             <form
