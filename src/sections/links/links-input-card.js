@@ -34,7 +34,7 @@ export const LinksInputCard = (props) => {
     <Card>
       <CardContent sx={{pb:1}}>
         <FormLabel id="link-input">
-          <InfoPopover infoText={'This is necessary so that the chatbot understands your products or services. The chatbot will also gain an understanding of how you present your company and (in a limited way) your sales strategy'} id={'link-input-info'} />
+          <InfoPopover infoText={'This is necessary so that the chatbot understands your products or services. The chatbot will also gain an understanding of how you present your company and (in a limited way) your sales strategy. We only look at publicly available information that you provide through your website.'} id={'link-input-info'} />
           What is your homepage?
         </FormLabel>
         <TextField
@@ -45,7 +45,6 @@ export const LinksInputCard = (props) => {
           required
           value={linkUrl || ''}
           helperText={'We will train the chatbot based on all publicly available information anywhere in your website'}
-          placeholder={'http://example.com'}
         />
       </CardContent>
       <CardActions sx={{pl:3, pb:3}}>
