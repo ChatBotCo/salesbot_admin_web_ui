@@ -106,13 +106,13 @@ export const ChatbotEdit = (props) => {
       <Stack direction={'row'} sx={{ justifyContent: 'flex-end', mb:2 }}>
         {saving ? <CircularProgress /> :  (
           <Button
-            disabled={!(chatbot && unsavedChanges)}
+            disabled={!(chatbot)}
             variant="contained"
             onClick={()=>{
               saveChatbotChanges(values)
             }}
           >
-            {(chatbot && unsavedChanges) ? 'Save Changes' : 'No Unsaved Changes'}
+            {(chatbot) ? 'Save Changes' : 'No Unsaved Changes'}
           </Button>
         )}
       </Stack>

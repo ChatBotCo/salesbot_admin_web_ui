@@ -179,32 +179,35 @@ export const ApiProvider = ({ children }) => {
           }),
       ]
       Promise.all(promises)
-        .then(()=>{
-          const userHasCompany = user && user.company_id
-          if(!userHasCompany) {
-            setOnboardingStep(onboardingSteps.createCompany)
-          } else if(user.company_id === 'all') {
-            setOnboardingStep(onboardingSteps.done)
-          } else {
-            const linksForSelectedCompany = Object.values(linksById).filter(link=>link.company_id === user.company_id)
-            const company = companiesByCompanyId[user.company_id] || {}
-            const chatbot = chatbotsByCompanyId[user.company_id] || {}
-            const hasLinks = linksForSelectedCompany.length > 0
-            const hasIncompleteLinks = linksForSelectedCompany.filter(link=>link.status==='').length > 0
-            const isCompanyTraining = company.training
-
-            if(!chatbot.initialized) {
-              setOnboardingStep(onboardingSteps.customizeChatbot)
-            } else if(!hasLinks || hasIncompleteLinks || !isCompanyTraining) {
-              setOnboardingStep(onboardingSteps.scrapeLinks)
-            } else {
-              setOnboardingStep(onboardingSteps.done)
-            }
-          }
-        })
         .finally(()=>setLoading(false))
     }
   }
+
+  useEffect(() => {
+    const userHasCompany = user && user.company_id
+    if(!userHasCompany) {
+      setOnboardingStep(onboardingSteps.createCompany)
+    } else if(user.company_id === 'all') {
+      setOnboardingStep(onboardingSteps.done)
+    } else {
+      const linksForSelectedCompany = Object.values(linksById).filter(link=>link.company_id === user.company_id)
+      const company = companiesByCompanyId[user.company_id] || {}
+      const chatbot = chatbotsByCompanyId[user.company_id] || {}
+      const hasLinks = linksForSelectedCompany.length > 0
+      const hasIncompleteLinks = linksForSelectedCompany.filter(link=>link.status==='').length > 0
+      const isCompanyTraining = company.training
+
+      console.log(chatbotsByCompanyId)
+      console.log(chatbot)
+      if(!chatbot.initialized) {
+        setOnboardingStep(onboardingSteps.customizeChatbot)
+      } else if(!hasLinks || hasIncompleteLinks || !isCompanyTraining) {
+        setOnboardingStep(onboardingSteps.scrapeLinks)
+      } else {
+        setOnboardingStep(onboardingSteps.done)
+      }
+    }
+  },[user, linksById, companiesByCompanyId, chatbotsByCompanyId]);
 
   const clearAllDataForAuthorizedUser = () => {
     setCountPerDayByCompanyId({})
