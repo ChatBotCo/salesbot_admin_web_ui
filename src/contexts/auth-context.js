@@ -163,8 +163,15 @@ export const AuthProvider = (props) => {
       .finally(()=>setWaitingForLogin(false))
   };
 
-  const signUp = async (email, name, password) => {
-    throw new Error('Sign up is not implemented');
+  const signUp = async (user_name, password) => {
+    const body = { user_name, password }
+    fetch(`${backendUrl}/api/registration`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    })
   };
 
   const signOut = () => {

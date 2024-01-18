@@ -363,11 +363,10 @@ export const ApiProvider = ({ children }) => {
         if(data.status === 200) {
           data.json()
             .then(newCompany=>{
-              console.log(newCompany)
-              setSaveResults('Company information saved')
-              setSaveResultsSeverity('success')
+              // console.log(newCompany)
+              // setSaveResults('Company information saved')
+              // setSaveResultsSeverity('success')
               user.company_id = newCompany.company_id
-              console.log(user)
               window.localStorage.setItem('authorizeUserdata', JSON.stringify(user));
               window.location.reload()
             })
