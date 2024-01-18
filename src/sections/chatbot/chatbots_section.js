@@ -1,7 +1,7 @@
 import { Alert, Box, Container, Snackbar, Stack, Typography } from '@mui/material';
 import { ChatbotEdit } from './chatbot-edit';
 import { useApi } from '../../hooks/use-api';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CompanyTabs } from '../../components/company-tabs';
 
 export const ChatBotSection = () => {
@@ -19,6 +19,13 @@ export const ChatBotSection = () => {
     const _chatbot = chatbotsByCompanyId[company_id]
     setChatbot(_chatbot)
   }
+
+  useEffect(() => {
+    if(selectedCompanyId) {
+      const _chatbot = chatbotsByCompanyId[selectedCompanyId]
+      setChatbot(_chatbot)
+    }
+  }, [chatbotsByCompanyId])
 
   return (
     <Box
