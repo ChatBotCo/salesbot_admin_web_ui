@@ -20,11 +20,11 @@ import {InfoPopover} from "../../components/info-popover";
 const llmModels = [
   {
     value: 'salesbot-gpt-4-1106-preview',
-    label: 'OpenAI Chat GPT-4'
+    label: 'Slow and accurate (GPT v4)'
   },
   {
     value: 'keli-35-turbo',
-    label: 'OpenAI Chat GPT-3.5'
+    label: 'Fast and slightly-less-accurate (GPT v3.5)'
   },
 ];
 
@@ -123,7 +123,8 @@ export const ChatbotEdit = (props) => {
             container
           >
             <Grid
-              xs={6}
+              xs={12}
+              md={6}
             >
               <FormLabel id="llm-model-picker">
                 <InfoPopover infoText={'LLM choice impacts speed and accuracy.  3.5 is fast but occasionally inaccurate.  4 is slower but much more effective and accurate.'} id={'models-info'} />
