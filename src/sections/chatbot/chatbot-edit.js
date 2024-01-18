@@ -95,6 +95,14 @@ export const ChatbotEdit = (props) => {
     }
   }, [values, chatbot])
 
+  const onClickSave = () => {
+    if(values.contact_method !== 'none' && values.contact_link === '') {
+      alert('Please provide a redirect webpage for the call-to-action button')
+    } else {
+      saveChatbotChanges(values)
+    }
+  }
+
   if(!chatbot) return <>{loading && <CircularProgress />}</>
 
   return (
@@ -108,9 +116,7 @@ export const ChatbotEdit = (props) => {
           <Button
             disabled={!(chatbot)}
             variant="contained"
-            onClick={()=>{
-              saveChatbotChanges(values)
-            }}
+            onClick={onClickSave}
           >
             {(chatbot) ? 'Save Changes' : 'No Unsaved Changes'}
           </Button>
@@ -228,6 +234,7 @@ export const ChatbotEdit = (props) => {
                     <TextField
                       aria-labelledby="contact-link-label"
                       fullWidth
+                      error={values.contact_method !== 'none' && values.contact_link === ''}
                       name="contact_link"
                       onChange={handleChange}
                       value={values.contact_link || ''}
