@@ -197,8 +197,6 @@ export const ApiProvider = ({ children }) => {
       const hasIncompleteLinks = linksForSelectedCompany.filter(link=>link.status==='').length > 0
       const isCompanyTraining = company.training
 
-      console.log(chatbotsByCompanyId)
-      console.log(chatbot)
       if(!chatbot.initialized) {
         setOnboardingStep(onboardingSteps.customizeChatbot)
       } else if(!hasLinks || hasIncompleteLinks || !isCompanyTraining) {

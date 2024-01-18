@@ -27,73 +27,58 @@ export const SideNav = (props) => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
 
   let navMenuButtons = <></>
-  switch (onboardingStep) {
-    case onboardingSteps.createCompany:
-      navMenuButtons = (
+  if(onboardingStep === onboardingSteps.done) {
+    navMenuButtons = (
+      items.map((item) => {
+        const active = item.path ? (pathname === item.path) : false;
+        return (
+          <SideNavItem
+            active={active}
+            disabled={item.disabled}
+            external={item.external}
+            icon={item.icon}
+            key={item.title}
+            path={item.path}
+            title={item.title}
+          />
+        );
+      })
+    )
+  } else {
+    navMenuButtons = (
+      <>
         <SideNavItem
-          active={true}
+          disabled={onboardingStep!==onboardingSteps.createCompany}
+          active={onboardingStep===onboardingSteps.createCompany}
           icon={(
             <SvgIcon fontSize="small">
               <BuildingStorefrontIcon />
             </SvgIcon>
           )}
-          key={'Create your Company'}
-          path={'/'}
-          title={'Create your Company'}
+          title={'1. Create your Company'}
         />
-      )
-      break
-    case onboardingSteps.customizeChatbot:
-      navMenuButtons = (
         <SideNavItem
-          active={true}
+          disabled={onboardingStep!==onboardingSteps.customizeChatbot}
+          active={onboardingStep===onboardingSteps.customizeChatbot}
           icon={(
             <SvgIcon fontSize="small">
               <HandThumbUpIcon />
             </SvgIcon>
           )}
-          key={'Customize Your Chat Bot'}
-          path={'/chatbots'}
-          title={'Customize Your Chat Bot'}
+          title={'2. Customize Your Chat Bot'}
         />
-      )
-      break
-    case onboardingSteps.scrapeLinks:
-      navMenuButtons = (
         <SideNavItem
-          active={true}
+          disabled={onboardingStep!==onboardingSteps.scrapeLinks}
+          active={onboardingStep===onboardingSteps.scrapeLinks}
           icon={(
             <SvgIcon fontSize="small">
               <AcademicCapIcon />
             </SvgIcon>
           )}
-          key={'Train Your Chat Bot'}
-          path={'/links'}
-          title={'Train Your Chat Bot'}
+          title={'3. Train Your Chat Bot'}
         />
-      )
-      break
-    case onboardingSteps.done:
-      navMenuButtons = (
-        items.map((item) => {
-          const active = item.path ? (pathname === item.path) : false;
-          return (
-            <SideNavItem
-              active={active}
-              disabled={item.disabled}
-              external={item.external}
-              icon={item.icon}
-              key={item.title}
-              path={item.path}
-              title={item.title}
-            />
-          );
-        })
-      )
-      break;
-    default:
-      navMenuButtons = <></>
-      break
+      </>
+    )
   }
 
   const content = (

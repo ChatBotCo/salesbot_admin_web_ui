@@ -15,8 +15,6 @@ const Page = () => {
     onboardingSteps,
   } = useApi()
 
-  console.log(onboardingStep)
-
   let displayEl = <></>
   switch (onboardingStep) {
     case onboardingSteps.createCompany:
