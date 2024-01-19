@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from 'react';
 import {
   Button,
   Card,
-  CardContent,
+  CardContent, CardHeader,
   Checkbox,
   CircularProgress,
   FormControlLabel,
@@ -124,7 +124,8 @@ export const ChatbotEdit = (props) => {
       </Stack>
 
       <Card sx={{mb:2}}>
-        <CardContent>
+        <CardHeader title='AI Configuration' sx={{pb:0}}/>
+        <CardContent sx={{pt:1}}>
           <Grid
             container
           >
@@ -161,7 +162,8 @@ export const ChatbotEdit = (props) => {
       </Card>
 
       <Card sx={{mb:2}}>
-        <CardContent>
+        <CardHeader title='Default Greeting' sx={{pb:0}}/>
+        <CardContent sx={{pt:1}}>
           <Grid
             container
           >
@@ -186,7 +188,8 @@ export const ChatbotEdit = (props) => {
       </Card>
 
       <Card sx={{mb:2}}>
-        <CardContent>
+        <CardHeader title='Call-to-Action Button' sx={{pb:0}}/>
+        <CardContent sx={{pt:1}}>
           <Grid
             container
             spacing={3}
@@ -247,7 +250,8 @@ export const ChatbotEdit = (props) => {
       </Card>
 
       <Card sx={{mb:2}}>
-        <CardContent>
+        <CardHeader title='Avatar Character' sx={{pb:0}}/>
+        <CardContent sx={{pt:1}}>
           <Grid
             container
           >
