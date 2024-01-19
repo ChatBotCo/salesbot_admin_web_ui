@@ -17,7 +17,7 @@ const Page = () => {
   useEffect(() => {
     const allConvos = Object.values(conversationsByCompanyId).flat()
     const convosWithUserData = allConvos.filter(convo => {
-      return convo.user_email || convo.user_first_name || convo.user_last_name || convo.user_phone_number
+      return convo.user_email || convo.user_phone_number
     })
     setConversationsWithUserData(convosWithUserData)
   },[conversationsByCompanyId]);

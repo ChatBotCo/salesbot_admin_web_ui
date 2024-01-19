@@ -54,7 +54,7 @@ export const ConversationsTable = (props) => {
             </TableHead>
             <TableBody>
               {filteredSortedItems.map((convo, i) => {
-                const leadGen = (convo.user_first_name || convo.user_first_name || convo.user_last_name || convo.user_phone_number) ? 'YES' : ''
+                const leadGen = (convo.user_email || convo.user_phone_number) ? 'YES' : ''
                 return (
                   <TableRow
                     hover
