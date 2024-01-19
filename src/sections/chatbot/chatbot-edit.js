@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useState} from 'react';
 import {
   Button,
-  Card,
+  Card, CardActions,
   CardContent, CardHeader,
   Checkbox,
   CircularProgress,
@@ -9,13 +9,15 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-  Stack,
+  Stack, SvgIcon,
   TextField,
   Unstable_Grid2 as Grid
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import {useApi} from "../../hooks/use-api";
 import {InfoPopover} from "../../components/info-popover";
+import { RedirectPromptRow } from './redirect-prompt-row';
+import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 
 const llmModels = [
   {
@@ -35,6 +37,7 @@ const defaultValues = {
   contact_link: '',
   contact_method: '',
   greeting: '',
+  redirect_prompts: [],
 }
 
 export const ChatbotEdit = (props) => {
@@ -79,7 +82,9 @@ export const ChatbotEdit = (props) => {
   );
 
   useEffect(() => {
-    setValues(chatbot || defaultValues)
+    const _values = chatbot || defaultValues
+    if(!_values.redirect_prompts) _values.redirect_prompts = []
+    setValues(_values)
   }, [chatbot])
 
   useEffect(() => {
@@ -96,11 +101,40 @@ export const ChatbotEdit = (props) => {
   }, [values, chatbot])
 
   const onClickSave = () => {
+    const incompleteRedirectPrompt = values.redirect_prompts.find(rdp=>{
+      return !rdp.prompt ||
+        !rdp.url ||
+        !(rdp.prompt && rdp.prompt.trim()) ||
+        !(rdp.url && rdp.url.trim())
+    }) !== undefined
     if(values.contact_method !== 'none' && values.contact_link === '') {
       alert('Please provide a redirect webpage for the call-to-action button')
+    } else if(incompleteRedirectPrompt) {
+      alert('Every "Redirect Action" needs to have both a prompt and a valid URL')
     } else {
       saveChatbotChanges(values)
     }
+  }
+
+  const addRedirectPrompt = ()=>{
+    const _values = {...values}
+    _values.redirect_prompts.push({prompt:'', url:''})
+    setValues(_values)
+  }
+  const deleteRedirectPromptRow = rowIndex => {
+    const _values = {...values}
+    _values.redirect_prompts = _values.redirect_prompts.filter((_, index) => index !== rowIndex)
+    setValues(_values)
+  };
+
+  const handleChangeRedirectRow = (event, rowIndex) => {
+    const _values = {...values}
+    _values.redirect_prompts.forEach((rowData, index) => {
+      if(index === rowIndex) {
+        rowData[event.target.name] = event.target.value
+      }
+    })
+    setValues(_values)
   }
 
   if(!chatbot) return <>{loading && <CircularProgress />}</>
@@ -194,10 +228,6 @@ export const ChatbotEdit = (props) => {
             container
             spacing={3}
           >
-            {/*"contact_prompt": "Try to get the customer to fill out the 'Contact Us' form so that a human representative can contact them to discuss what they require.",*/}
-            {/*"contact_link": "https://saleschat.bot/contact-us/",*/}
-            {/*"contact_method": 'app_install',*/}
-            {/*"greeting": "Hi! Ask me how AI will your boost sales",*/}
             <Grid
               xs={12}
               md={6}
@@ -247,6 +277,42 @@ export const ChatbotEdit = (props) => {
             }
           </Grid>
         </CardContent>
+      </Card>
+
+      <Card sx={{mb:2}}>
+        <CardHeader title='Redirect Actions' sx={{pb:0}}/>
+        <CardContent sx={{pt:1, pb:0}}>
+          <Grid
+            container
+            spacing={3}
+          >
+            <Grid
+              xs={12}
+            >
+              {values.redirect_prompts.map((rdp,i)=>
+                <RedirectPromptRow key={i}
+                                   rowData={{prompt:rdp.prompt||'', url:rdp.url||''}}
+                                   rowIndex={i}
+                                   handleDeleteRow={deleteRedirectPromptRow}
+                                   handleChange={handleChangeRedirectRow}
+                />
+              )}
+            </Grid>
+          </Grid>
+        </CardContent>
+        <CardActions sx={{pl:3, pb:3}}>
+          <Button
+            variant="contained"
+            onClick={addRedirectPrompt}
+            startIcon={(
+              <SvgIcon fontSize="small">
+                <PlusIcon />
+              </SvgIcon>
+            )}
+          >
+            Add
+          </Button>
+        </CardActions>
       </Card>
 
       <Card sx={{mb:2}}>
