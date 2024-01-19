@@ -183,12 +183,10 @@ export const ApiProvider = ({ children }) => {
   const [pollLinks, setPollLinks] = useState(false);
   const pollLinksRef = useRef(pollLinks);
   const intervalRef = useRef();
-
   // Update the ref whenever pollLinks changes
   useEffect(() => {
     pollLinksRef.current = pollLinks;
   }, [pollLinks]);
-
   // Poll function using the ref
   const poll = () => {
     // console.log(`poll current:${pollLinksRef.current}`)
@@ -196,13 +194,11 @@ export const ApiProvider = ({ children }) => {
       reloadLinks(pollLinksRef.current)
     }
   };
-
   // Set up and clear the interval
   useEffect(() => {
     if (user && user.company_id) {
-      intervalRef.current = window.setInterval(poll, 2000);
+      intervalRef.current = window.setInterval(poll, 3500);
     }
-
     // Clear the interval when the component unmounts or condition changes
     return () => {
       if (intervalRef.current) {
@@ -229,16 +225,12 @@ export const ApiProvider = ({ children }) => {
         setOnboardingStep(onboardingSteps.customizeChatbot)
       } else if(!hasLinks || hasIncompleteLinks) {
         if(hasLinks && hasIncompleteLinks && isCompanyTraining) {
-          // startPollingForTrainingStatus(user.company_id)
           setPollLinks(user.company_id)
         } else {
-          // clearPollingForTrainingStatus()
           setPollLinks(false)
         }
         setOnboardingStep(onboardingSteps.scrapeLinks)
       } else {
-        console.log()
-        // clearPollingForTrainingStatus()
         setPollLinks(false)
         setOnboardingStep(onboardingSteps.done)
       }
@@ -377,7 +369,6 @@ export const ApiProvider = ({ children }) => {
           setSaveResults('Training started')
           setSaveResultsSeverity('success')
           setShowSaveResults(true)
-          // startPollingForTrainingStatus(companyId)
           setPollLinks(companyId)
           return reloadCompanies(companyId)
         } else {
