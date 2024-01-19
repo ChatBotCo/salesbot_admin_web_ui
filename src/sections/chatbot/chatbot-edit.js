@@ -203,7 +203,6 @@ export const ChatbotEdit = (props) => {
                 <InfoPopover
                   infoText={'The call-to-action button appears prominantly below the chat window and redirects the user to another webpage.  With this setting you are instructing the chatbot the purpose of this other webpage and how it should encourage people to click on the button'}
                   id={'lead-info'}
-                  extra={<img style={{width:'200px', marginLeft:'10px', marginBottom:'10px'}} src='/assets/call-to-action-button.png'/>}
                 />
                 What should the call-to-action do?
               </FormLabel>
@@ -239,25 +238,10 @@ export const ChatbotEdit = (props) => {
                       onChange={handleChange}
                       value={values.contact_link || ''}
                     />
+                    <img style={{width:'150px', margin:'10px'}} src='/assets/call-to-action-button.png'/>
                   </Grid>
                 )
             }
-            {/*<Grid*/}
-            {/*  xs={12}*/}
-            {/*  md={6}*/}
-            {/*>*/}
-            {/*  <FormLabel id="contact-prompt-label">*/}
-            {/*    <InfoPopover infoText={'Instruct the chatbot exactly how you want it to sell your products or services to your customers'} id={'contact-prompt-info'} />*/}
-            {/*    Custom instructions or sales strategy*/}
-            {/*  </FormLabel>*/}
-            {/*  <TextField*/}
-            {/*    aria-labelledby="contact-prompt-label"*/}
-            {/*    fullWidth*/}
-            {/*    name="contact_prompt"*/}
-            {/*    onChange={handleChange}*/}
-            {/*    value={values.contact_prompt || ''}*/}
-            {/*  />*/}
-            {/*</Grid>*/}
           </Grid>
         </CardContent>
       </Card>
@@ -269,6 +253,7 @@ export const ChatbotEdit = (props) => {
           >
             <Grid
               xs={12}
+              md={6}
             >
               <FormControlLabel control={
                 <Checkbox
@@ -278,27 +263,14 @@ export const ChatbotEdit = (props) => {
                 />
               } label={<>Show Animated Avatar Character<InfoPopover infoText={'If checked then an animated 3D character will read the chatbot responses'} id={'show-avatar-info'} /></>} />
             </Grid>
-            {/*{values.show_avatar && (*/}
-            {/*  <Grid*/}
-            {/*    xs={12}*/}
-            {/*  >*/}
-            {/*    <Card sx={{border: '1px solid lightgray'}}>*/}
-            {/*      <CardHeader*/}
-            {/*        title="Customize Your Avatar"*/}
-            {/*      />*/}
-            {/*      <CardContent sx={{ pt: 0 }}>*/}
-            {/*        <Box sx={{ m: -1.5 }}>*/}
-            {/*          <Grid*/}
-            {/*            container*/}
-            {/*            spacing={3}*/}
-            {/*          >*/}
-
-            {/*          </Grid>*/}
-            {/*        </Box>*/}
-            {/*      </CardContent>*/}
-            {/*    </Card>*/}
-            {/*  </Grid>*/}
-            {/*)}*/}
+            <Grid
+              xs={12}
+              md={6}
+            >
+              <img style={{width:'200px', marginLeft:'10px', marginBottom:'10px'}}
+                   src={values.show_avatar ? '/assets/chat-with-avatar.png' : '/assets/chat-without-avatar.png'}
+              />
+            </Grid>
           </Grid>
         </CardContent>
       </Card>
