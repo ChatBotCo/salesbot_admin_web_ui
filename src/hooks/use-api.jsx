@@ -1,9 +1,5 @@
-import {createContext, useContext, useEffect, useState} from "react";
+import {createContext, useContext, useEffect, useRef, useState} from "react";
 import {useAuth} from "./use-auth";
-import {LinksInputCard} from "../sections/links/links-input-card";
-import {LinksStartScrape} from "../sections/links/links-start-scrape";
-import {LinksTrainingProgress} from "../sections/links/links-training-progress";
-import {LinksTrainingComplete} from "../sections/links/links-training-complete";
 
 const ApiContext = createContext();
 
@@ -111,6 +107,7 @@ export const ApiProvider = ({ children }) => {
   }
 
   const reloadLinks = companyId => {
+    // console.log('reloadLinks')
     return fetch(`${backendUrl}/api/links?company_id=${companyId}`, {method: "GET"})
       .then(data=>data.json())
       .then(_links => {
@@ -183,6 +180,37 @@ export const ApiProvider = ({ children }) => {
     }
   }
 
+  const [pollLinks, setPollLinks] = useState(false);
+  const pollLinksRef = useRef(pollLinks);
+  const intervalRef = useRef();
+
+  // Update the ref whenever pollLinks changes
+  useEffect(() => {
+    pollLinksRef.current = pollLinks;
+  }, [pollLinks]);
+
+  // Poll function using the ref
+  const poll = () => {
+    // console.log(`poll current:${pollLinksRef.current}`)
+    if(pollLinksRef.current) {
+      reloadLinks(pollLinksRef.current)
+    }
+  };
+
+  // Set up and clear the interval
+  useEffect(() => {
+    if (user && user.company_id) {
+      intervalRef.current = window.setInterval(poll, 2000);
+    }
+
+    // Clear the interval when the component unmounts or condition changes
+    return () => {
+      if (intervalRef.current) {
+        window.clearInterval(intervalRef.current);
+      }
+    };
+  }, [user]);
+
   useEffect(() => {
     const userHasCompany = user && user.company_id
     if(!userHasCompany) {
@@ -200,8 +228,18 @@ export const ApiProvider = ({ children }) => {
       if(!chatbot.initialized) {
         setOnboardingStep(onboardingSteps.customizeChatbot)
       } else if(!hasLinks || hasIncompleteLinks) {
+        if(hasLinks && hasIncompleteLinks && isCompanyTraining) {
+          // startPollingForTrainingStatus(user.company_id)
+          setPollLinks(user.company_id)
+        } else {
+          // clearPollingForTrainingStatus()
+          setPollLinks(false)
+        }
         setOnboardingStep(onboardingSteps.scrapeLinks)
       } else {
+        console.log()
+        // clearPollingForTrainingStatus()
+        setPollLinks(false)
         setOnboardingStep(onboardingSteps.done)
       }
     }
@@ -339,6 +377,8 @@ export const ApiProvider = ({ children }) => {
           setSaveResults('Training started')
           setSaveResultsSeverity('success')
           setShowSaveResults(true)
+          // startPollingForTrainingStatus(companyId)
+          setPollLinks(companyId)
           return reloadCompanies(companyId)
         } else {
           setSaveResults('There was an error starting the training')
