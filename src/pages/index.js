@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { MetricsGrid } from '../sections/metrics/metrics-grid';
-import { NewUser } from '../sections/new_user/new-user';
+import { CreateCompany } from '../sections/new_user/create-company';
 import { Box, Container } from '@mui/material';
 import { useApi } from '../hooks/use-api';
 import { ChatBotSection } from '../sections/chatbot/chatbots_section';
@@ -18,7 +18,7 @@ const Page = () => {
   let displayEl = <></>
   switch (onboardingStep) {
     case onboardingSteps.createCompany:
-      displayEl = <NewUser />
+      displayEl = <CreateCompany />
       break
     case onboardingSteps.customizeChatbot:
       displayEl = <ChatBotSection />

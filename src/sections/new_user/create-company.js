@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { useApi } from '../../hooks/use-api';
 
-export const NewUser = () => {
+export const CreateCompany = () => {
 
   const {
     loading,
