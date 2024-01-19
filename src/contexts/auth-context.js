@@ -68,6 +68,10 @@ export const AuthProvider = (props) => {
   const [backendUrl, setAuthBackendUrl] = useState("")
   const [waitingForLogin, setWaitingForLogin] = useState(false)
 
+  const [showAuthResults, setShowAuthResults] = useState(false)
+  const [authResults, setAuthResults] = useState('')
+  const [authResultsSeverity, setAuthResultsSeverity] = useState('success')
+
   const initialize = async () => {
     // Prevent from calling twice in development mode with React.StrictMode enabled
     if (initialized.current) {
@@ -165,13 +169,28 @@ export const AuthProvider = (props) => {
 
   const signUp = async (user_name, password) => {
     const body = { user_name, password }
-    fetch(`${backendUrl}/api/registration`, {
+    return fetch(`${backendUrl}/api/registration`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
     })
+      .then(data=> {
+        if(data.status === 400) {
+          setAuthResults('That account already exists')
+          setAuthResultsSeverity('error')
+          setShowAuthResults(true)
+          return false
+        } else if(data.status !== 204) {
+          setAuthResults('There was an error saving the training link')
+          setAuthResultsSeverity('error')
+          setShowAuthResults(true)
+          return false
+        } else {
+          return true
+        }
+      })
   };
 
   const signOut = () => {
@@ -180,6 +199,13 @@ export const AuthProvider = (props) => {
     dispatch({
       type: HANDLERS.SIGN_OUT
     });
+  };
+
+  const handleDismissAuthResults  = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setShowAuthResults(false);
   };
 
   return (
@@ -191,6 +217,7 @@ export const AuthProvider = (props) => {
         signOut,
         setAuthBackendUrl,
         waitingForLogin,
+        showAuthResults, authResults, authResultsSeverity,handleDismissAuthResults,
       }}
     >
       {children}

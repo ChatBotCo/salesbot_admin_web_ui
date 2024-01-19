@@ -3,13 +3,16 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Box, Button, Link, Stack, TextField, Typography } from '@mui/material';
+import {Alert, Box, Button, Link, Snackbar, Stack, TextField, Typography} from '@mui/material';
 import { useAuth } from 'src/hooks/use-auth';
 import { Layout as AuthLayout } from 'src/layouts/auth/layout';
 
 const Page = () => {
   const router = useRouter();
-  const auth = useAuth();
+  const {
+    signUp,
+    showAuthResults, authResults, authResultsSeverity,handleDismissAuthResults,
+  } = useAuth();
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -29,8 +32,7 @@ const Page = () => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        await auth.signUp(values.email, values.password);
-        router.push('/');
+        if(await signUp(values.email, values.password)) router.push('/')
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -136,6 +138,11 @@ const Page = () => {
           </div>
         </Box>
       </Box>
+      <Snackbar open={showAuthResults} autoHideDuration={6000} onClose={handleDismissAuthResults}>
+        <Alert onClose={handleDismissAuthResults} severity={authResultsSeverity} sx={{ width: '100%' }}>
+          {authResults}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
