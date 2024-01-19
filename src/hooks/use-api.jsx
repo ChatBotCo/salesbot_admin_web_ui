@@ -102,6 +102,8 @@ export const ApiProvider = ({ children }) => {
           acc[company.company_id] = company
           return acc;
         }, {});
+        delete result['all']
+        delete result['XXX']
         setCompaniesByCompanyId(result)
       })
   }
@@ -364,7 +366,6 @@ export const ApiProvider = ({ children }) => {
       method: "POST"
     })
       .then(data=> {
-        console.log(data.status)
         if(data.status === 204) {
           setSaveResults('Training started')
           setSaveResultsSeverity('success')

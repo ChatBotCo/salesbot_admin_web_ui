@@ -30,7 +30,6 @@ export const MessagesTable = (props) => {
             </TableHead>
             <TableBody>
               {items.map((msg, i) => {
-                console.log(msg)
                 return (
                   <TableRow
                     hover
