@@ -25,6 +25,7 @@ export const CreateCompany = () => {
   const defaultValues = {
     name:'',
     description:'',
+    email_for_leads:'',
   }
 
   const [values, setValues] = useState(defaultValues);
@@ -139,6 +140,31 @@ export const CreateCompany = () => {
                 name="description"
                 onChange={handleChange}
                 value={values.description || ''}
+              />
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+
+      <Card sx={{mt:2}}>
+        <CardContent>
+          <Grid
+            container
+            spacing={3}
+          >
+            <Grid
+              xs={12}
+              md={6}
+            >
+              <FormLabel id="company-email_for_leads">Contact email for this company</FormLabel>
+              <TextField
+                aria-labelledby="company-email_for_leads"
+                fullWidth
+                helperText="The email where we will send generated leads"
+                label="Type here"
+                name="email_for_leads"
+                onChange={handleChange}
+                value={values.email_for_leads || ''}
               />
             </Grid>
           </Grid>

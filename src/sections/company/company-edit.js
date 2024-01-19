@@ -15,6 +15,7 @@ import { useApi } from '../../hooks/use-api';
 const defaultValues = {
   name: '',
   description: '',
+  email_for_leads: '',
 }
 
 export const CompanyEdit = (props) => {
@@ -129,6 +130,31 @@ export const CompanyEdit = (props) => {
                 onChange={handleChange}
                 required
                 value={values.description || ''}
+              />
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+
+      <Card sx={{mt:2}}>
+        <CardContent>
+          <Grid
+            container
+            spacing={3}
+          >
+            <Grid
+              xs={12}
+              md={6}
+            >
+              <FormLabel id="company-email_for_leads">Contact email for this company</FormLabel>
+              <TextField
+                aria-labelledby="company-email_for_leads"
+                fullWidth
+                helperText="The email where we will send generated leads"
+                label="Type here"
+                name="email_for_leads"
+                onChange={handleChange}
+                value={values.email_for_leads || ''}
               />
             </Grid>
           </Grid>
