@@ -400,11 +400,7 @@ export const ApiProvider = ({ children }) => {
         if(data.status === 200) {
           data.json()
             .then(newCompanyResponse=>{
-              console.log('newCompanyResponse:')
-              console.log(newCompanyResponse)
-              updateJwt(newCompanyResponse.updated_jwt)
-              user.company_id = newCompanyResponse.company.company_id
-              window.localStorage.setItem('authorizeUserdata', JSON.stringify(user));
+              updateJwt(newCompanyResponse.company.company_id, newCompanyResponse.updated_jwt)
               window.location.reload()
             })
         } else if(data.status === 409) {

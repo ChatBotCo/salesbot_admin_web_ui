@@ -52,7 +52,6 @@ const handlers = {
     };
   },
   [HANDLERS.UPDATE_JWT]: (state, action) => {
-    console.log('HANDLERS.UPDATE_JWT')
     const user = action.payload;
     return {
       ...state,
@@ -228,11 +227,11 @@ export const AuthProvider = (props) => {
     setShowAuthResults(false);
   };
 
-  const updateJwt  = updatedJwt => {
-    console.log('updateJwt')
+  const updateJwt  = (company_id, updatedJwt) => {
     const user = {
       ...state.user,
       jwt: updatedJwt,
+      company_id: company_id,
     };
 
     try {
@@ -241,6 +240,7 @@ export const AuthProvider = (props) => {
       authorizeUserdata = {
         ...authorizeUserdata,
         jwt: updatedJwt,
+        company_id: company_id,
       }
       window.localStorage.setItem('authorizeUserdata', JSON.stringify(authorizeUserdata));
     } catch (err) {
