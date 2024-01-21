@@ -83,6 +83,8 @@ export const SideNav = (props) => {
     ]
   }
 
+  console.log(user)
+
   const content = (
     <Scrollbar
       sx={{

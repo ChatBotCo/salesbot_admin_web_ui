@@ -144,65 +144,70 @@ export const ApiProvider = ({ children }) => {
   }
 
   const loadAllDataForAuthorizedUser = () => {
-    if(user && user.approval_status!=='approved') {
-      fetchWithData(`${backendUrl}/api/users/approval_status`, {method: "GET"})
-        .then(resp => {
-          setUserApprovalStatus(resp.approval_status)
-        })
-    }
-    if(user && user.company_id) {
-      setLoading(true)
-      if(window.location.pathname === '/messages') {
-        const urlParams = new URLSearchParams(window.location.search);
-        const convo_id = urlParams.get('convo_id');
-        const from_leads = urlParams.get('from_leads');
-        if(convo_id) {
-          setNavToMsgsFromLeadsTable(from_leads === 'true')
-          fetchWithData(`${backendUrl}/api/messages?convo_id=${convo_id}`, {method: "GET"})
-            .then(setMessagesForConvoId)
-        }
+    if(user) {
+      if(user.approval_status!=='approved') {
+        fetchWithData(`${backendUrl}/api/users/approval_status`, {method: "GET"})
+          .then(resp => {
+            setUserApprovalStatus(resp.approval_status)
+          })
+      } else {
+        setUserApprovalStatus(user.approval_status)
       }
 
-      const now = new Date();
-      const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
-      const epochSeconds30DaysAgo = Math.floor(thirtyDaysAgo.getTime() / 1000);
-      const promises = [
-        reloadCompanies(user.company_id),
-        reloadChatbots(),
-        reloadLinks(user.company_id),
+      if(user.company_id) {
+        setLoading(true)
+        if(window.location.pathname === '/messages') {
+          const urlParams = new URLSearchParams(window.location.search);
+          const convo_id = urlParams.get('convo_id');
+          const from_leads = urlParams.get('from_leads');
+          if(convo_id) {
+            setNavToMsgsFromLeadsTable(from_leads === 'true')
+            fetchWithData(`${backendUrl}/api/messages?convo_id=${convo_id}`, {method: "GET"})
+              .then(setMessagesForConvoId)
+          }
+        }
 
-        fetchWithData(`${backendUrl}/api/conversations?since_timestamp=${epochSeconds30DaysAgo}`, {method: "GET"})
-          .then(convos => {
-            const dayStartBuckets = getDayStartBuckets()
-            const _countPerDayByCompanyId = transformDataForChart(convos, dayStartBuckets)
-            setCountPerDayByCompanyId(_countPerDayByCompanyId)
+        const now = new Date();
+        const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+        const epochSeconds30DaysAgo = Math.floor(thirtyDaysAgo.getTime() / 1000);
+        const promises = [
+          reloadCompanies(user.company_id),
+          reloadChatbots(),
+          reloadLinks(user.company_id),
 
-            let result = convos.reduce((acc, convo) => {
-              if(!acc[convo.company_id]) acc[convo.company_id] = []
-              acc[convo.company_id].push(convo)
-              return acc;
-            }, {});
-            setConversationsByCompanyId(result)
-          }),
+          fetchWithData(`${backendUrl}/api/conversations?since_timestamp=${epochSeconds30DaysAgo}`, {method: "GET"})
+            .then(convos => {
+              const dayStartBuckets = getDayStartBuckets()
+              const _countPerDayByCompanyId = transformDataForChart(convos, dayStartBuckets)
+              setCountPerDayByCompanyId(_countPerDayByCompanyId)
 
-        fetchWithData(`${backendUrl}/api/messages?latest=true&`, {method: "GET"})
-          .then(latestMsgs => {
-            const dayStartBuckets = getDayStartBuckets()
-            const _countPerDayByCompanyId = transformDataForChart(latestMsgs, dayStartBuckets)
-            setMsgCountPerDayByCompanyId(_countPerDayByCompanyId)
-          }),
+              let result = convos.reduce((acc, convo) => {
+                if(!acc[convo.company_id]) acc[convo.company_id] = []
+                acc[convo.company_id].push(convo)
+                return acc;
+              }, {});
+              setConversationsByCompanyId(result)
+            }),
 
-        fetchWithData(`${backendUrl}/api/messages/count_per_convo`, {method: "GET"})
-          .then(msgCountsPerConvo => {
-            let result = msgCountsPerConvo.reduce((acc, obj) => {
-              acc[obj.conversation_id] = obj.many_msgs;
-              return acc;
-            }, {})
-            setMessageCountsPerConvo(result)
-          }),
-      ]
-      Promise.all(promises)
-        .finally(()=>setLoading(false))
+          fetchWithData(`${backendUrl}/api/messages?latest=true&`, {method: "GET"})
+            .then(latestMsgs => {
+              const dayStartBuckets = getDayStartBuckets()
+              const _countPerDayByCompanyId = transformDataForChart(latestMsgs, dayStartBuckets)
+              setMsgCountPerDayByCompanyId(_countPerDayByCompanyId)
+            }),
+
+          fetchWithData(`${backendUrl}/api/messages/count_per_convo`, {method: "GET"})
+            .then(msgCountsPerConvo => {
+              let result = msgCountsPerConvo.reduce((acc, obj) => {
+                acc[obj.conversation_id] = obj.many_msgs;
+                return acc;
+              }, {})
+              setMessageCountsPerConvo(result)
+            }),
+        ]
+        Promise.all(promises)
+          .finally(()=>setLoading(false))
+      }
     }
   }
 
