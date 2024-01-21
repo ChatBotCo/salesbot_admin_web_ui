@@ -1,12 +1,16 @@
 import Head from 'next/head';
-import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { useState } from 'react';
-import { ClipboardIcon } from '@heroicons/react/24/solid';
-import { CompanyTabs } from '../components/company-tabs';
+import {Box, Button, Container, Stack, SvgIcon, Typography} from '@mui/material';
+import {Layout as DashboardLayout} from 'src/layouts/dashboard/layout';
+import {useState} from 'react';
+import {ClipboardIcon} from '@heroicons/react/24/solid';
+import {useApi} from "../hooks/use-api";
 
 const Page = () => {
-  const [selectedCompanyId, setSelectedCompanyId] = useState('');
+  const {
+    selectedCompanyId,
+  } = useApi()
+
+
   const [showCopied, _setShowCopied] = useState(false);
 
   const setShowCopied = _show => {
@@ -47,7 +51,6 @@ const Page = () => {
                 Install Your Chatbot
               </Typography>
             </div>
-            <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>
           </Stack>
           <Stack spacing={3} direction="row">
             <Typography variant="subtitle1">

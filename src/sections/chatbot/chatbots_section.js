@@ -1,31 +1,23 @@
-import { Alert, Box, Container, Snackbar, Stack, Typography } from '@mui/material';
-import { ChatbotEdit } from './chatbot-edit';
-import { useApi } from '../../hooks/use-api';
-import { useEffect, useState } from 'react';
-import { CompanyTabs } from '../../components/company-tabs';
+import {Alert, Box, Container, Snackbar, Stack, Typography} from '@mui/material';
+import {ChatbotEdit} from './chatbot-edit';
+import {useApi} from '../../hooks/use-api';
+import {useEffect, useState} from 'react';
 
 export const ChatBotSection = () => {
   const {
-    loading,
     chatbotsByCompanyId,
     showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity,
+    selectedCompanyId,
   } = useApi()
 
-  const [selectedCompanyId, _setSelectedCompanyId] = useState('');
   const [chatbot, setChatbot] = useState({});
-
-  const setSelectedCompanyId = company_id => {
-    _setSelectedCompanyId(company_id)
-    const _chatbot = chatbotsByCompanyId[company_id]
-    setChatbot(_chatbot)
-  }
 
   useEffect(() => {
     if(selectedCompanyId) {
       const _chatbot = chatbotsByCompanyId[selectedCompanyId]
       setChatbot(_chatbot)
     }
-  }, [chatbotsByCompanyId])
+  }, [selectedCompanyId, chatbotsByCompanyId])
 
   return (
     <Box
@@ -42,7 +34,6 @@ export const ChatBotSection = () => {
               Customize Your Chatbot
             </Typography>
           </div>
-          <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>
           <ChatbotEdit chatbot={chatbot} />
         </Stack>
       </Container>

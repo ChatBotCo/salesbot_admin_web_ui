@@ -1,27 +1,18 @@
 import Head from 'next/head';
-import {
-  Alert,
-  Box,
-  CircularProgress,
-  Container,
-  Snackbar,
-  Stack,
-  Typography
-} from '@mui/material';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { useApi } from '../hooks/use-api';
-import { useEffect, useState } from 'react';
-import { CompanyTabs } from '../components/company-tabs';
-import { CompanyEdit } from '../sections/company/company-edit';
+import {Alert, Box, CircularProgress, Container, Snackbar, Stack, Typography} from '@mui/material';
+import {Layout as DashboardLayout} from 'src/layouts/dashboard/layout';
+import {useApi} from '../hooks/use-api';
+import {useEffect, useState} from 'react';
+import {CompanyEdit} from '../sections/company/company-edit';
 
 const Page = () => {
   const {
     loading,
     companiesByCompanyId,
     showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity,
+    selectedCompanyId,
   } = useApi()
 
-  const [selectedCompanyId, setSelectedCompanyId] = useState('');
   const [selectedCompany, setSelectedCompany] = useState({});
 
   useEffect(() => {
@@ -50,7 +41,6 @@ const Page = () => {
                 Edit Your Company
               </Typography>
             </div>
-            <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>
             <CompanyEdit company={selectedCompany} />
           </Stack>
         </Container>

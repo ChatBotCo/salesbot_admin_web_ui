@@ -10,6 +10,7 @@ import {SideNavItem} from './side-nav-item';
 import {AcademicCapIcon, BuildingStorefrontIcon, HandThumbUpIcon} from '@heroicons/react/24/solid';
 import {useApi} from '../../hooks/use-api';
 import {useAuth} from "../../hooks/use-auth";
+import {CompaniesDropDown} from "../../components/companies-dropdown";
 
 export const SideNav = (props) => {
   const {
@@ -106,6 +107,9 @@ export const SideNav = (props) => {
           />
         );
       })
+    )
+    rootAdminMenuButtons.push(
+      <CompaniesDropDown key={'CompaniesDropDown'}/>
     )
   }
 

@@ -1,20 +1,10 @@
-import {
-  Alert,
-  Box,
-  CircularProgress,
-  Container,
-  Snackbar,
-  Stack,
-  Typography
-} from '@mui/material';
-import { useApi } from '../../hooks/use-api';
-import { useState } from 'react';
-import { CompanyTabs } from '../../components/company-tabs';
-import { LinksTable } from './links-table';
-import { LinksInputCard } from './links-input-card';
-import { LinksStartScrape } from './links-start-scrape';
-import { LinksTrainingComplete } from './links-training-complete';
-import { LinksTrainingProgress } from './links-training-progress';
+import {Alert, Box, CircularProgress, Container, Snackbar, Stack, Typography} from '@mui/material';
+import {useApi} from '../../hooks/use-api';
+import {LinksTable} from './links-table';
+import {LinksInputCard} from './links-input-card';
+import {LinksStartScrape} from './links-start-scrape';
+import {LinksTrainingComplete} from './links-training-complete';
+import {LinksTrainingProgress} from './links-training-progress';
 
 export const LinksSection = () => {
   const {
@@ -22,9 +12,8 @@ export const LinksSection = () => {
     linksById,
     showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity,
     companiesByCompanyId,
+    selectedCompanyId,
   } = useApi()
-
-  const [selectedCompanyId, setSelectedCompanyId] = useState('');
 
   const linksForSelectedCompany = Object.values(linksById).filter(link=>link.company_id === selectedCompanyId)
   const selectedCompany = companiesByCompanyId[selectedCompanyId] || {}
@@ -66,7 +55,6 @@ export const LinksSection = () => {
               {loading && <CircularProgress />}
             </Typography>
           </Stack>
-          <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>
           {trainingHeaderEl}
           {linksForSelectedCompany.length ? <LinksTable items={linksForSelectedCompany} /> : ''}
         </Stack>

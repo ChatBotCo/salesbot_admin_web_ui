@@ -1,10 +1,9 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import Head from 'next/head';
-import { Box, CircularProgress, Container, Stack, Typography } from '@mui/material';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { ConversationsTable } from '../sections/conversation/conversations-table';
-import { useApi } from '../hooks/use-api';
-import { CompanyTabs } from '../components/company-tabs';
+import {Box, CircularProgress, Container, Stack, Typography} from '@mui/material';
+import {Layout as DashboardLayout} from 'src/layouts/dashboard/layout';
+import {ConversationsTable} from '../sections/conversation/conversations-table';
+import {useApi} from '../hooks/use-api';
 
 const Page = () => {
   const {
@@ -12,25 +11,22 @@ const Page = () => {
     conversationsByCompanyId,
     companiesByCompanyId,
     messageCountsPerConvo,
+    selectedCompanyId,
   } = useApi()
 
-  const [tabs, setTabs] = useState([]);
   const [titleElement, setTitleElement] = useState('Conversations');
-  const [selectedCompanyId, _setSelectedCompanyId] = useState('');
   const [conversations, setConversations] = useState([]);
 
-  const setSelectedCompanyId = company_id => {
-    _setSelectedCompanyId(company_id)
-
-    const company = companiesByCompanyId[company_id]
+  useEffect(() => {
+    const company = companiesByCompanyId[selectedCompanyId]
     if(company) {
-      const convos = conversationsByCompanyId[company_id] || []
+      const convos = conversationsByCompanyId[selectedCompanyId] || []
       setConversations(convos)
       setTitleElement(`${convos.length} Conversations`)
     } else {
       setTitleElement('Conversations')
     }
-  }
+  },[selectedCompanyId]);
 
   return (
     <>
@@ -59,7 +55,6 @@ const Page = () => {
                 </Typography>
               </Stack>
             </Stack>
-            <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>
             <ConversationsTable
               items={conversations}
               messageCountsPerConvo={messageCountsPerConvo}

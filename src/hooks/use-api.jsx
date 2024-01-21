@@ -45,6 +45,13 @@ export const ApiProvider = ({ children }) => {
   const [saveResults, setSaveResults] = useState('')
   const [saveResultsSeverity, setSaveResultsSeverity] = useState('success')
 
+  const [selectedCompanyId, _setSelectedCompanyId] = useState()
+
+  const setSelectedCompanyId = company_id => {
+    window.localStorage.setItem('selectedCompanyId', company_id)
+    _setSelectedCompanyId(company_id)
+  }
+
   const transformDataForChart = (conversations, dayStartBuckets) => {
     const companyIds = Object.keys(conversations.reduce((a, convo) => Object.assign(a, { [convo.company_id]: 0 }), {}))
 
@@ -450,6 +457,8 @@ export const ApiProvider = ({ children }) => {
       setBackendUrl(_backendUrl)
     }
     setAuthBackendUrl(_backendUrl)
+
+    setSelectedCompanyId(window.localStorage.getItem('selectedCompanyId'))
   }, []);
 
   const handleDismissSaveResults  = (event, reason) => {
@@ -490,6 +499,7 @@ export const ApiProvider = ({ children }) => {
         startTraining,
         onboardingSteps, onboardingStep, setOnboardingStep,
         userApprovalStatus,
+        selectedCompanyId, setSelectedCompanyId,
       }}
     >
       {children}

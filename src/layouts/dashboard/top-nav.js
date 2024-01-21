@@ -10,20 +10,30 @@ import {
   IconButton,
   Stack,
   SvgIcon,
-  Tooltip,
+  Tooltip, Typography,
   useMediaQuery
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { usePopover } from 'src/hooks/use-popover';
 import { AccountPopover } from './account-popover';
+import {useApi} from "../../hooks/use-api";
 
 const SIDE_NAV_WIDTH = 280;
 const TOP_NAV_HEIGHT = 64;
 
 export const TopNav = (props) => {
   const { onNavOpen } = props;
+
+  const {
+    companiesByCompanyId,
+    selectedCompanyId,
+  } = useApi()
+
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const accountPopover = usePopover();
+
+  const company = (companiesByCompanyId && selectedCompanyId && companiesByCompanyId[selectedCompanyId]) || {}
+  const companyName = company.name || ''
 
   return (
     <>
@@ -65,32 +75,15 @@ export const TopNav = (props) => {
                 </SvgIcon>
               </IconButton>
             )}
+            <Typography variant={'h6'}>
+              {companyName}
+            </Typography>
           </Stack>
           <Stack
             alignItems="center"
             direction="row"
             spacing={2}
           >
-            {/*<Tooltip title="Contacts">*/}
-            {/*  <IconButton>*/}
-            {/*    <SvgIcon fontSize="small">*/}
-            {/*      <UsersIcon />*/}
-            {/*    </SvgIcon>*/}
-            {/*  </IconButton>*/}
-            {/*</Tooltip>*/}
-            {/*<Tooltip title="Notifications">*/}
-            {/*  <IconButton>*/}
-            {/*    <Badge*/}
-            {/*      badgeContent={4}*/}
-            {/*      color="success"*/}
-            {/*      variant="dot"*/}
-            {/*    >*/}
-            {/*      <SvgIcon fontSize="small">*/}
-            {/*        <BellIcon />*/}
-            {/*      </SvgIcon>*/}
-            {/*    </Badge>*/}
-            {/*  </IconButton>*/}
-            {/*</Tooltip>*/}
             <Avatar
               onClick={accountPopover.handleOpen}
               ref={accountPopover.anchorRef}
