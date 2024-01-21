@@ -1,25 +1,19 @@
 import NextLink from 'next/link';
-import { usePathname } from 'next/navigation';
+import {usePathname} from 'next/navigation';
 import PropTypes from 'prop-types';
-import { Box, Divider, Drawer, Stack, SvgIcon, useMediaQuery } from '@mui/material';
-import { Logo } from 'src/components/logo';
-import { Scrollbar } from 'src/components/scrollbar';
-import { items } from './config';
-import { SideNavItem } from './side-nav-item';
-import { useAuth } from '../../hooks/use-auth';
-import {
-  AcademicCapIcon,
-  BuildingStorefrontIcon,
-  HandThumbUpIcon
-} from '@heroicons/react/24/solid';
-import { useApi } from '../../hooks/use-api';
+import {Box, Divider, Drawer, Stack, SvgIcon, useMediaQuery} from '@mui/material';
+import {Logo} from 'src/components/logo';
+import {Scrollbar} from 'src/components/scrollbar';
+import {items} from './config';
+import {SideNavItem} from './side-nav-item';
+import {AcademicCapIcon, BuildingStorefrontIcon, HandThumbUpIcon} from '@heroicons/react/24/solid';
+import {useApi} from '../../hooks/use-api';
 
 export const SideNav = (props) => {
-  const {user} = useAuth();
-
   const {
     onboardingSteps,
     onboardingStep,
+    userApprovalStatus,
   } = useApi()
 
   const { open, onClose } = props;
@@ -27,7 +21,8 @@ export const SideNav = (props) => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
 
   let navMenuButtons = <></>
-  if(onboardingStep === onboardingSteps.done) {
+  if(userApprovalStatus !== 'approved') navMenuButtons = <></>
+  else if(onboardingStep === onboardingSteps.done) {
     navMenuButtons = (
       items.map((item) => {
         const active = item.path ? (pathname === item.path) : false;

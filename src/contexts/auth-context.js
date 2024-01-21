@@ -6,7 +6,7 @@ const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
   SIGN_IN: 'SIGN_IN',
   SIGN_OUT: 'SIGN_OUT',
-  UPDATE_JWT: 'UPDATE_JWT',
+  UPDATE_USER: 'UPDATE_USER',
 };
 
 const initialState = {
@@ -51,8 +51,19 @@ const handlers = {
       user: null
     };
   },
-  [HANDLERS.UPDATE_JWT]: (state, action) => {
+  [HANDLERS.UPDATE_USER]: (state, action) => {
     const user = action.payload;
+    try {
+      const _authorizeUserdata = window.localStorage.getItem('authorizeUserdata');
+      let authorizeUserdata = _authorizeUserdata ? JSON.parse(_authorizeUserdata) : {};
+      authorizeUserdata = {
+        ...authorizeUserdata,
+        ...user,
+      };
+      window.localStorage.setItem('authorizeUserdata', JSON.stringify(authorizeUserdata));
+    } catch (err) {
+      console.error(err);
+    }
     return {
       ...state,
       user
@@ -101,12 +112,11 @@ export const AuthProvider = (props) => {
 
     if (isAuthenticated && authorizeUserdata) {
       const user = {
-        id: authorizeUserdata.id,
+        ... authorizeUserdata,
         avatar: '/assets/headshot-keli.png',
         name: authorizeUserdata.user_name,
         email: authorizeUserdata.user_name,
         company_id: authorizeUserdata.company_id === 'XXX' ? null : authorizeUserdata.company_id,
-        jwt: authorizeUserdata.jwt,
       };
 
       dispatch({
@@ -154,12 +164,11 @@ export const AuthProvider = (props) => {
           }
 
           const user = {
-            id: authorizeUserdata.id,
+            ...authorizeUserdata,
             avatar: '/assets/headshot-keli.png',
             name: authorizeUserdata.user_name,
             email: authorizeUserdata.user_name,
             company_id: authorizeUserdata.company_id === 'XXX' ? null : authorizeUserdata.company_id,
-            jwt: authorizeUserdata.jwt,
           };
 
           try {
@@ -234,21 +243,8 @@ export const AuthProvider = (props) => {
       company_id: company_id,
     };
 
-    try {
-      const _authorizeUserdata = window.localStorage.getItem('authorizeUserdata');
-      let authorizeUserdata = _authorizeUserdata && JSON.parse(_authorizeUserdata)
-      authorizeUserdata = {
-        ...authorizeUserdata,
-        jwt: updatedJwt,
-        company_id: company_id,
-      }
-      window.localStorage.setItem('authorizeUserdata', JSON.stringify(authorizeUserdata));
-    } catch (err) {
-      console.error(err);
-    }
-
     dispatch({
-      type: HANDLERS.UPDATE_JWT,
+      type: HANDLERS.UPDATE_USER,
       payload: user
     });
   };

@@ -37,6 +37,7 @@ export const ApiProvider = ({ children }) => {
   const [companyIdParam, setCompanyIdParam] = useState("")
   const [navToMsgsFromLeadsTable, setNavToMsgsFromLeadsTable] = useState(false)
   const [onboardingStep, setOnboardingStep] = useState(onboardingSteps.notReady)
+  const [userApprovalStatus, setUserApprovalStatus] = useState('')
 
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -144,6 +145,7 @@ export const ApiProvider = ({ children }) => {
 
   const loadAllDataForAuthorizedUser = () => {
     if(user && user.company_id) {
+      setLoading(true)
       if(window.location.pathname === '/messages') {
         const urlParams = new URLSearchParams(window.location.search);
         const convo_id = urlParams.get('convo_id');
@@ -155,7 +157,6 @@ export const ApiProvider = ({ children }) => {
         }
       }
 
-      setLoading(true)
       const now = new Date();
       const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
       const epochSeconds30DaysAgo = Math.floor(thirtyDaysAgo.getTime() / 1000);
@@ -192,6 +193,11 @@ export const ApiProvider = ({ children }) => {
               return acc;
             }, {})
             setMessageCountsPerConvo(result)
+          }),
+
+        fetchWithData(`${backendUrl}/api/users/approval_status`, {method: "GET"})
+          .then(resp => {
+            setUserApprovalStatus(resp.approval_status)
           }),
       ]
       Promise.all(promises)
@@ -475,6 +481,7 @@ export const ApiProvider = ({ children }) => {
         addLink,
         startTraining,
         onboardingSteps, onboardingStep, setOnboardingStep,
+        userApprovalStatus,
       }}
     >
       {children}
