@@ -7,15 +7,13 @@ import { useApi } from '../hooks/use-api';
 import { ChatBotSection } from '../sections/chatbot/chatbots_section';
 import { LinksSection } from '../sections/links/links-section';
 
-const now = new Date();
-
 const Page = () => {
   const {
     onboardingStep,
     onboardingSteps,
   } = useApi()
 
-  let displayEl = <></>
+  let displayEl
   switch (onboardingStep) {
     case onboardingSteps.createCompany:
       displayEl = <CreateCompany />
