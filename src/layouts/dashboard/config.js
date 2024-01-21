@@ -55,7 +55,7 @@ export const items = [
     )
   },
   {
-    title: 'Train Your Chat Bot',
+    title: 'Training Results',
     path: '/links',
     icon: (
       <SvgIcon fontSize="small">

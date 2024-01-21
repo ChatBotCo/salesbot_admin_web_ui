@@ -62,7 +62,7 @@ export const LinksSection = () => {
             direction={'row'}
           >
             <Typography variant="h4">
-              Train Your Chat Bot
+              Chatbot Training Results
               {loading && <CircularProgress />}
             </Typography>
           </Stack>
