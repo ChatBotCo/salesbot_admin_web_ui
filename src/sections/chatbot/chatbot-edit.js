@@ -289,6 +289,25 @@ export const ChatbotEdit = (props) => {
             <Grid
               xs={12}
             >
+              <FormLabel id="redirect-prompts">
+                Instruct the chatbot to show a hyperlink to another webpage if the user asks for a specific type of information.
+              </FormLabel>
+            </Grid>
+            <Grid
+              xs={12}
+            >
+              <img style={{
+                width:'75%',
+                marginLeft:'10px',
+                opacity:'60%',
+                border:'1px dashed gray',
+              }}
+                   src={'/assets/redirect_prompt_row.png'}
+              />
+            </Grid>
+            <Grid
+              xs={12}
+            >
               {values.redirect_prompts.map((rdp,i)=>
                 <RedirectPromptRow key={i}
                                    rowData={{prompt:rdp.prompt||'', url:rdp.url||''}}
