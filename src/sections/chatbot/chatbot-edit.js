@@ -18,6 +18,7 @@ import {useApi} from "../../hooks/use-api";
 import {InfoPopover} from "../../components/info-popover";
 import { RedirectPromptRow } from './redirect-prompt-row';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
+import { swap } from 'formik';
 
 const llmModels = [
   {
@@ -135,6 +136,19 @@ export const ChatbotEdit = (props) => {
       }
     })
     setValues(_values)
+  }
+
+  const getAvatarViewImage = ()=>{
+    switch(values.avatar_view) {
+      case 'headshot':
+        return '/assets/chat-with-headshot.png'
+      case 'avatar':
+        return '/assets/chat-with-avatar.png'
+      default:
+        return '/assets/chat-without-avatar.png'
+
+
+    }
   }
 
   if(!chatbot) return <>{loading && <CircularProgress />}</>
@@ -344,20 +358,30 @@ export const ChatbotEdit = (props) => {
               xs={12}
               md={6}
             >
-              <FormControlLabel control={
-                <Checkbox
-                  checked={values.show_avatar || false}
-                  onChange={handleChangeCheckbox}
-                  name="show_avatar"
+              <FormLabel id="show-avatar-radio-buttons-group">
+                <InfoPopover
+                  infoText={'The chatbot character is simply an adornment and does not impact the quality of the chatbot response.'}
+                  id={'lead-info'}
                 />
-              } label={<>Show Animated Avatar Character<InfoPopover infoText={'If checked then an animated 3D character will read the chatbot responses'} id={'show-avatar-info'} /></>} />
+                Would you like to display the chatbot character?
+              </FormLabel>
+              <RadioGroup
+                aria-labelledby="show-avatar-radio-buttons-group"
+                name="avatar_view"
+                value={values.avatar_view || 'headshot'}
+                onChange={handleChange}
+              >
+                <FormControlLabel value="headshot" control={<Radio />} label={<>Static headshot image <InfoPopover infoText={'Small image downloaded and no animation'} id={'headshot-info'}/></>} />
+                <FormControlLabel value="avatar" control={<Radio />} label={<>Animated 3D avatar <InfoPopover infoText={'~3MB download + life-like animation and lipsync w/ audio playback reading chatbot responses'} id={'avatar-info'}/></>} />
+                <FormControlLabel value="none" control={<Radio />} label={<>No avatar, text-only <InfoPopover infoText={'No avatar representation'} id={'none-info'}/></>} />
+              </RadioGroup>
             </Grid>
             <Grid
               xs={12}
               md={6}
             >
               <img style={{width:'200px', marginLeft:'10px', marginBottom:'10px'}}
-                   src={values.show_avatar ? '/assets/chat-with-avatar.png' : '/assets/chat-without-avatar.png'}
+                   src={getAvatarViewImage()}
               />
             </Grid>
           </Grid>
