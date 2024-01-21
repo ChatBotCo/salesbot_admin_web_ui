@@ -98,6 +98,7 @@ export const AuthProvider = (props) => {
         name: authorizeUserdata.user_name,
         email: authorizeUserdata.user_name,
         company_id: authorizeUserdata.company_id === 'XXX' ? null : authorizeUserdata.company_id,
+        jwt: authorizeUserdata.jwt,
       };
 
       dispatch({
@@ -105,6 +106,10 @@ export const AuthProvider = (props) => {
         payload: user
       });
     } else {
+      if(window.location.pathname !== '/auth/login' && window.location.pathname !== '/auth/register') {
+        signOut()
+        window.location.replace('/auth/login')
+      }
       dispatch({
         type: HANDLERS.INITIALIZE
       });
@@ -146,6 +151,7 @@ export const AuthProvider = (props) => {
             name: authorizeUserdata.user_name,
             email: authorizeUserdata.user_name,
             company_id: authorizeUserdata.company_id === 'XXX' ? null : authorizeUserdata.company_id,
+            jwt: authorizeUserdata.jwt,
           };
 
           try {
@@ -201,6 +207,11 @@ export const AuthProvider = (props) => {
     });
   };
 
+  const isAuthenticated = () => {
+    return window.localStorage.getItem('authenticated') === 'true' &&
+      window.localStorage.getItem('authorizeUserdata');
+  }
+
   const handleDismissAuthResults  = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -215,6 +226,7 @@ export const AuthProvider = (props) => {
         signIn,
         signUp,
         signOut,
+        isAuthenticated,
         setAuthBackendUrl,
         waitingForLogin,
         showAuthResults, authResults, authResultsSeverity,handleDismissAuthResults,

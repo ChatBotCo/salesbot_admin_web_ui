@@ -12,6 +12,7 @@ import {
   Unstable_Grid2 as Grid
 } from '@mui/material';
 import { useApi } from '../../hooks/use-api';
+import { InfoPopover } from '../../components/info-popover';
 
 export const CreateCompany = () => {
 
@@ -106,11 +107,13 @@ export const CreateCompany = () => {
               xs={12}
               md={6}
             >
-              <FormLabel id="company-name">What is the name of your company?</FormLabel>
+              <FormLabel id="company-name">
+                <InfoPopover infoText={'The chatbot will use this to represent your company'} id={'company-name'} />
+                What is the name of your company?
+              </FormLabel>
               <TextField
                 aria-labelledby="company-name"
                 fullWidth
-                helperText="The chatbot will use this to represent your company"
                 label="Type here"
                 name="name"
                 onChange={handleChange}
@@ -131,11 +134,13 @@ export const CreateCompany = () => {
               xs={12}
               md={6}
             >
-              <FormLabel id="company-description">What type of products or services does your company sell?</FormLabel>
+              <FormLabel id="company-description">
+                <InfoPopover infoText={'The chatbot will use this to introduce your company to your site visitors'} id={'products-services'} />
+                What type of products or services does your company sell?
+              </FormLabel>
               <TextField
                 aria-labelledby="company-description"
                 fullWidth
-                helperText="The chatbot will use this to introduce your company to your site visitors"
                 label="Type here"
                 name="description"
                 onChange={handleChange}

@@ -12,7 +12,12 @@ let onboardingSteps = {
 }
 
 export const ApiProvider = ({ children }) => {
-  const {setAuthBackendUrl, user} = useAuth()
+  const {
+    setAuthBackendUrl,
+    user,
+    signOut,
+    isAuthenticated,
+  } = useAuth()
 
   const [debugging, setDebugging] = useState()
   const [backendUrl, setBackendUrl] = useState("https://salesbot-api-svc.azurewebsites.net")
@@ -82,9 +87,29 @@ export const ApiProvider = ({ children }) => {
     return timestampsMidnight;
   }
 
+  const fetchWithData = (url, options) =>{
+    return fetchNoData(url, options)
+      .then(data => data.json())
+  }
+
+  const fetchNoData = (url, options) =>{
+    if(isAuthenticated) {
+      options.headers = options.headers || {}
+      options.headers["Authorization"] = `Bearer ${user.jwt}`
+      console.log(options.headers)
+      return fetch(url, options)
+        .then(data => {
+          if (data.status === 401) {
+            signOut()
+            window.location.replace('/auth/login')
+          }
+          return data
+        })
+    }
+  }
+
   const reloadChatbots = () => {
-    return fetch(`${backendUrl}/api/chatbots?company_id=${user.company_id}`, {method: "GET"})
-      .then(data=>data.json())
+    return fetchWithData(`${backendUrl}/api/chatbots?company_id=${user.company_id}`, {method: "GET"})
       .then(_companies => {
         let result = _companies.reduce((acc, company) => {
           acc[company.company_id] = company
@@ -95,8 +120,7 @@ export const ApiProvider = ({ children }) => {
   }
 
   const reloadCompanies = companyId => {
-    return fetch(`${backendUrl}/api/companies?company_id=${companyId}`, {method: "GET"})
-      .then(data=>data.json())
+    return fetchWithData(`${backendUrl}/api/companies?company_id=${companyId}`, {method: "GET"})
       .then(_companies => {
         let result = _companies.reduce((acc, company) => {
           acc[company.company_id] = company
@@ -110,8 +134,7 @@ export const ApiProvider = ({ children }) => {
 
   const reloadLinks = companyId => {
     // console.log('reloadLinks')
-    return fetch(`${backendUrl}/api/links?company_id=${companyId}`, {method: "GET"})
-      .then(data=>data.json())
+    return fetchWithData(`${backendUrl}/api/links?company_id=${companyId}`, {method: "GET"})
       .then(_links => {
         let result = _links.reduce((acc, link) => {
           acc[link.id] = link
@@ -123,14 +146,15 @@ export const ApiProvider = ({ children }) => {
 
   const loadAllDataForAuthorizedUser = () => {
     if(user && user.company_id) {
+      console.trace('loadAllDataForAuthorizedUser')
+      console.log(user)
       if(window.location.pathname === '/messages') {
         const urlParams = new URLSearchParams(window.location.search);
         const convo_id = urlParams.get('convo_id');
         const from_leads = urlParams.get('from_leads');
         if(convo_id) {
           setNavToMsgsFromLeadsTable(from_leads === 'true')
-          fetch(`${backendUrl}/api/messages?convo_id=${convo_id}`, {method: "GET"})
-            .then(data=>data.json())
+          fetchWithData(`${backendUrl}/api/messages?convo_id=${convo_id}`, {method: "GET"})
             .then(setMessagesForConvoId)
         }
       }
@@ -144,8 +168,7 @@ export const ApiProvider = ({ children }) => {
         reloadChatbots(),
         reloadLinks(user.company_id),
 
-        fetch(`${backendUrl}/api/conversations?company_id=${user.company_id}&since_timestamp=${epochSeconds30DaysAgo}`, {method: "GET"})
-          .then(data=>data.json())
+        fetchWithData(`${backendUrl}/api/conversations?company_id=${user.company_id}&since_timestamp=${epochSeconds30DaysAgo}`, {method: "GET"})
           .then(convos => {
             const dayStartBuckets = getDayStartBuckets()
             const _countPerDayByCompanyId = transformDataForChart(convos, dayStartBuckets)
@@ -159,16 +182,14 @@ export const ApiProvider = ({ children }) => {
             setConversationsByCompanyId(result)
           }),
 
-        fetch(`${backendUrl}/api/messages?latest=true&company_id=${user.company_id}`, {method: "GET"})
-          .then(data=>data.json())
+        fetchWithData(`${backendUrl}/api/messages?latest=true&company_id=${user.company_id}`, {method: "GET"})
           .then(latestMsgs => {
             const dayStartBuckets = getDayStartBuckets()
             const _countPerDayByCompanyId = transformDataForChart(latestMsgs, dayStartBuckets)
             setMsgCountPerDayByCompanyId(_countPerDayByCompanyId)
           }),
 
-        fetch(`${backendUrl}/api/messages/count_per_convo?company_id=${user.company_id}`, {method: "GET"})
-          .then(data=>data.json())
+        fetchWithData(`${backendUrl}/api/messages/count_per_convo?company_id=${user.company_id}`, {method: "GET"})
           .then(msgCountsPerConvo => {
             let result = msgCountsPerConvo.reduce((acc, obj) => {
               acc[obj.conversation_id] = obj.many_msgs;
@@ -249,7 +270,7 @@ export const ApiProvider = ({ children }) => {
 
   const saveChatbotChanges = updatedChatbotValues => {
     setSaving(true)
-    fetch(`${backendUrl}/api/chatbots`, {
+    fetchNoData(`${backendUrl}/api/chatbots`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -272,7 +293,7 @@ export const ApiProvider = ({ children }) => {
 
   const saveCompanyChanges = updatedCompanyValues => {
     setSaving(true)
-    fetch(`${backendUrl}/api/companies`, {
+    fetchNoData(`${backendUrl}/api/companies`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -294,7 +315,7 @@ export const ApiProvider = ({ children }) => {
   }
 
   const reloadLink = link => {
-    return fetch(`${backendUrl}/api/links/${link.id}`, {method: "GET"})
+    return fetchWithData(`${backendUrl}/api/links/${link.id}`, {method: "GET"})
       .then(data=>data.json())
       .then(_link => {
         const _linksById = {...linksById}
@@ -305,7 +326,7 @@ export const ApiProvider = ({ children }) => {
 
   const saveLinkChanges = linkValues => {
     setSaving(true)
-    fetch(`${backendUrl}/api/links`, {
+    fetchNoData(`${backendUrl}/api/links`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -326,7 +347,7 @@ export const ApiProvider = ({ children }) => {
 
   const addLink = (linkText,companyId) => {
     setSaving(true)
-    fetch(`${backendUrl}/api/links?company_id=${companyId}`, {
+    fetchNoData(`${backendUrl}/api/links?company_id=${companyId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -362,7 +383,7 @@ export const ApiProvider = ({ children }) => {
 
   const startTraining = companyId => {
     setSaving(true)
-    fetch(`${backendUrl}/api/links/scrape?company_id=${companyId}`, {
+    fetchNoData(`${backendUrl}/api/links/scrape?company_id=${companyId}`, {
       method: "POST"
     })
       .then(data=> {
@@ -383,7 +404,7 @@ export const ApiProvider = ({ children }) => {
 
   const createCompany = (newCompany) => {
     setSaving(true)
-    fetch(`${backendUrl}/api/companies`, {
+    fetchNoData(`${backendUrl}/api/companies`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
