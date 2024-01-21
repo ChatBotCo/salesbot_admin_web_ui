@@ -7,7 +7,7 @@ import {useApi} from '../hooks/use-api';
 import {ChatBotSection} from '../sections/chatbot/chatbots_section';
 import {LinksSection} from '../sections/links/links-section';
 import {useAuth} from '../hooks/use-auth';
-import {ApprovalStatusSection} from '../sections/approvalStatus/approval-status-section';
+import {ApprovalStatusSection} from "../sections/users/approval-status-section";
 
 const Page = () => {
   const {

@@ -84,7 +84,7 @@ export const SideNav = (props) => {
   }
 
   let rootAdminMenuButtons = <></>
-  if(user.role === 'root') {
+  if(user && user.role === 'root') {
     rootAdminMenuButtons = [
       <Divider key={'divider'}/>,
       <Typography key={'admin-header'}>

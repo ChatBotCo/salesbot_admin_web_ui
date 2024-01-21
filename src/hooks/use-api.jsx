@@ -463,6 +463,7 @@ export const ApiProvider = ({ children }) => {
     <ApiContext.Provider
       value={{
         backendUrl,
+        fetchWithData, fetchNoData,
         loading, setLoading,
         debugging,
         conversationsForBlackTie,
@@ -481,6 +482,7 @@ export const ApiProvider = ({ children }) => {
         saveChatbotChanges,
         saveCompanyChanges,
         showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity, saving,
+        setSaveResults, setSaveResultsSeverity, setShowSaveResults, setSaving,
         createCompany,
         linksById,
         saveLinkChanges,

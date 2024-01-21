@@ -10,6 +10,7 @@ import { createTheme } from 'src/theme';
 import { createEmotionCache } from 'src/utils/create-emotion-cache';
 import 'simplebar-react/dist/simplebar.min.css';
 import {ApiProvider} from "../hooks/use-api";
+import {RootAdminProvider} from "../hooks/use-root-admin";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -38,6 +39,7 @@ const App = (props) => {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <AuthProvider>
           <ApiProvider>
+            <RootAdminProvider>
                 <ThemeProvider theme={theme}>
                   <CssBaseline />
                   <AuthConsumer>
@@ -48,6 +50,7 @@ const App = (props) => {
                     }
                   </AuthConsumer>
                 </ThemeProvider>
+            </RootAdminProvider>
           </ApiProvider>
         </AuthProvider>
       </LocalizationProvider>
