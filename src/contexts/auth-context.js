@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
   SIGN_IN: 'SIGN_IN',
-  SIGN_OUT: 'SIGN_OUT'
+  SIGN_OUT: 'SIGN_OUT',
+  UPDATE_JWT: 'UPDATE_JWT',
 };
 
 const initialState = {
@@ -49,7 +50,15 @@ const handlers = {
       isAuthenticated: false,
       user: null
     };
-  }
+  },
+  [HANDLERS.UPDATE_JWT]: (state, action) => {
+    console.log('HANDLERS.UPDATE_JWT')
+    const user = action.payload;
+    return {
+      ...state,
+      user
+    };
+  },
 };
 
 const reducer = (state, action) => (
@@ -219,6 +228,31 @@ export const AuthProvider = (props) => {
     setShowAuthResults(false);
   };
 
+  const updateJwt  = updatedJwt => {
+    console.log('updateJwt')
+    const user = {
+      ...state.user,
+      jwt: updatedJwt,
+    };
+
+    try {
+      const _authorizeUserdata = window.localStorage.getItem('authorizeUserdata');
+      let authorizeUserdata = _authorizeUserdata && JSON.parse(_authorizeUserdata)
+      authorizeUserdata = {
+        ...authorizeUserdata,
+        jwt: updatedJwt,
+      }
+      window.localStorage.setItem('authorizeUserdata', JSON.stringify(authorizeUserdata));
+    } catch (err) {
+      console.error(err);
+    }
+
+    dispatch({
+      type: HANDLERS.UPDATE_JWT,
+      payload: user
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -230,6 +264,7 @@ export const AuthProvider = (props) => {
         setAuthBackendUrl,
         waitingForLogin,
         showAuthResults, authResults, authResultsSeverity,handleDismissAuthResults,
+        updateJwt,
       }}
     >
       {children}

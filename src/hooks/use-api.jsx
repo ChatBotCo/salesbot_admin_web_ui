@@ -17,6 +17,7 @@ export const ApiProvider = ({ children }) => {
     user,
     signOut,
     isAuthenticated,
+    updateJwt,
   } = useAuth()
 
   const [debugging, setDebugging] = useState()
@@ -398,8 +399,11 @@ export const ApiProvider = ({ children }) => {
       .then(data=> {
         if(data.status === 200) {
           data.json()
-            .then(newCompany=>{
-              user.company_id = newCompany.company_id
+            .then(newCompanyResponse=>{
+              console.log('newCompanyResponse:')
+              console.log(newCompanyResponse)
+              updateJwt(newCompanyResponse.updated_jwt)
+              user.company_id = newCompanyResponse.company.company_id
               window.localStorage.setItem('authorizeUserdata', JSON.stringify(user));
               window.location.reload()
             })
