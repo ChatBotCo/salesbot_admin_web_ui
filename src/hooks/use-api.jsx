@@ -144,6 +144,12 @@ export const ApiProvider = ({ children }) => {
   }
 
   const loadAllDataForAuthorizedUser = () => {
+    if(user && user.approval_status!=='approved') {
+      fetchWithData(`${backendUrl}/api/users/approval_status`, {method: "GET"})
+        .then(resp => {
+          setUserApprovalStatus(resp.approval_status)
+        })
+    }
     if(user && user.company_id) {
       setLoading(true)
       if(window.location.pathname === '/messages') {
@@ -193,11 +199,6 @@ export const ApiProvider = ({ children }) => {
               return acc;
             }, {})
             setMessageCountsPerConvo(result)
-          }),
-
-        fetchWithData(`${backendUrl}/api/users/approval_status`, {method: "GET"})
-          .then(resp => {
-            setUserApprovalStatus(resp.approval_status)
           }),
       ]
       Promise.all(promises)

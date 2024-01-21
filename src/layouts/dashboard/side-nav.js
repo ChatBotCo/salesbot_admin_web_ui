@@ -5,9 +5,11 @@ import {Box, Divider, Drawer, Stack, SvgIcon, useMediaQuery} from '@mui/material
 import {Logo} from 'src/components/logo';
 import {Scrollbar} from 'src/components/scrollbar';
 import {items} from './config';
+import {rootItems} from './root-config';
 import {SideNavItem} from './side-nav-item';
 import {AcademicCapIcon, BuildingStorefrontIcon, HandThumbUpIcon} from '@heroicons/react/24/solid';
 import {useApi} from '../../hooks/use-api';
+import {useAuth} from "../../hooks/use-auth";
 
 export const SideNav = (props) => {
   const {
@@ -15,6 +17,10 @@ export const SideNav = (props) => {
     onboardingStep,
     userApprovalStatus,
   } = useApi()
+
+  const {
+    user,
+  } = useAuth()
 
   const { open, onClose } = props;
   const pathname = usePathname();
@@ -40,9 +46,9 @@ export const SideNav = (props) => {
       })
     )
   } else {
-    navMenuButtons = (
-      <>
+    navMenuButtons = [
         <SideNavItem
+          key={1}
           disabled={onboardingStep!==onboardingSteps.createCompany}
           active={onboardingStep===onboardingSteps.createCompany}
           icon={(
@@ -51,8 +57,9 @@ export const SideNav = (props) => {
             </SvgIcon>
           )}
           title={'1. Create your Company'}
-        />
+        />,
         <SideNavItem
+          key={2}
           disabled={onboardingStep!==onboardingSteps.customizeChatbot}
           active={onboardingStep===onboardingSteps.customizeChatbot}
           icon={(
@@ -61,8 +68,9 @@ export const SideNav = (props) => {
             </SvgIcon>
           )}
           title={'2. Customize Your Chatbot'}
-        />
+        />,
         <SideNavItem
+          key={3}
           disabled={onboardingStep!==onboardingSteps.scrapeLinks}
           active={onboardingStep===onboardingSteps.scrapeLinks}
           icon={(
@@ -72,8 +80,7 @@ export const SideNav = (props) => {
           )}
           title={'3. Train Your Chatbot'}
         />
-      </>
-    )
+    ]
   }
 
   const content = (
