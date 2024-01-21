@@ -1,7 +1,7 @@
 import NextLink from 'next/link';
 import {usePathname} from 'next/navigation';
 import PropTypes from 'prop-types';
-import {Box, Divider, Drawer, Stack, SvgIcon, useMediaQuery} from '@mui/material';
+import {Box, Divider, Drawer, Stack, SvgIcon, Typography, useMediaQuery} from '@mui/material';
 import {Logo} from 'src/components/logo';
 import {Scrollbar} from 'src/components/scrollbar';
 import {items} from './config';
@@ -83,7 +83,31 @@ export const SideNav = (props) => {
     ]
   }
 
-  console.log(user)
+  let rootAdminMenuButtons = <></>
+  if(user.role === 'root') {
+    rootAdminMenuButtons = [
+      <Divider key={'divider'}/>,
+      <Typography key={'admin-header'}>
+        Root Admin
+      </Typography>
+    ]
+    rootAdminMenuButtons.push(
+      rootItems.map(item => {
+        const active = item.path ? (pathname === item.path) : false;
+        return (
+          <SideNavItem
+            active={active}
+            disabled={item.disabled}
+            external={item.external}
+            icon={item.icon}
+            key={item.title}
+            path={item.path}
+            title={item.title}
+          />
+        );
+      })
+    )
+  }
 
   const content = (
     <Scrollbar
@@ -135,6 +159,7 @@ export const SideNav = (props) => {
             }}
           >
             {navMenuButtons}
+            {rootAdminMenuButtons}
           </Stack>
         </Box>
         <Divider sx={{ borderColor: 'neutral.700' }} />
