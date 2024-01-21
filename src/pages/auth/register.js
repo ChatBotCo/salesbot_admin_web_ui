@@ -32,7 +32,7 @@ const Page = () => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        if(await signUp(values.email, values.password)) router.push('/')
+        if(await signUp(values.email, values.password)) window.location.replace("/")
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
