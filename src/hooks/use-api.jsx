@@ -107,7 +107,7 @@ export const ApiProvider = ({ children }) => {
   }
 
   const reloadChatbots = () => {
-    return fetchWithData(`${backendUrl}/api/chatbots?company_id=${user.company_id}`, {method: "GET"})
+    return fetchWithData(`${backendUrl}/api/chatbots`, {method: "GET"})
       .then(_companies => {
         let result = _companies.reduce((acc, company) => {
           acc[company.company_id] = company
@@ -118,7 +118,7 @@ export const ApiProvider = ({ children }) => {
   }
 
   const reloadCompanies = companyId => {
-    return fetchWithData(`${backendUrl}/api/companies?company_id=${companyId}`, {method: "GET"})
+    return fetchWithData(`${backendUrl}/api/companies`, {method: "GET"})
       .then(_companies => {
         let result = _companies.reduce((acc, company) => {
           acc[company.company_id] = company
@@ -131,7 +131,7 @@ export const ApiProvider = ({ children }) => {
   }
 
   const reloadLinks = companyId => {
-    return fetchWithData(`${backendUrl}/api/links?company_id=${companyId}`, {method: "GET"})
+    return fetchWithData(`${backendUrl}/api/links`, {method: "GET"})
       .then(_links => {
         let result = _links.reduce((acc, link) => {
           acc[link.id] = link
@@ -163,7 +163,7 @@ export const ApiProvider = ({ children }) => {
         reloadChatbots(),
         reloadLinks(user.company_id),
 
-        fetchWithData(`${backendUrl}/api/conversations?company_id=${user.company_id}&since_timestamp=${epochSeconds30DaysAgo}`, {method: "GET"})
+        fetchWithData(`${backendUrl}/api/conversations?since_timestamp=${epochSeconds30DaysAgo}`, {method: "GET"})
           .then(convos => {
             const dayStartBuckets = getDayStartBuckets()
             const _countPerDayByCompanyId = transformDataForChart(convos, dayStartBuckets)
@@ -177,14 +177,14 @@ export const ApiProvider = ({ children }) => {
             setConversationsByCompanyId(result)
           }),
 
-        fetchWithData(`${backendUrl}/api/messages?latest=true&company_id=${user.company_id}`, {method: "GET"})
+        fetchWithData(`${backendUrl}/api/messages?latest=true&`, {method: "GET"})
           .then(latestMsgs => {
             const dayStartBuckets = getDayStartBuckets()
             const _countPerDayByCompanyId = transformDataForChart(latestMsgs, dayStartBuckets)
             setMsgCountPerDayByCompanyId(_countPerDayByCompanyId)
           }),
 
-        fetchWithData(`${backendUrl}/api/messages/count_per_convo?company_id=${user.company_id}`, {method: "GET"})
+        fetchWithData(`${backendUrl}/api/messages/count_per_convo`, {method: "GET"})
           .then(msgCountsPerConvo => {
             let result = msgCountsPerConvo.reduce((acc, obj) => {
               acc[obj.conversation_id] = obj.many_msgs;
@@ -341,7 +341,7 @@ export const ApiProvider = ({ children }) => {
 
   const addLink = (linkText,companyId) => {
     setSaving(true)
-    fetchNoData(`${backendUrl}/api/links?company_id=${companyId}`, {
+    fetchNoData(`${backendUrl}/api/links`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -367,7 +367,7 @@ export const ApiProvider = ({ children }) => {
 
   const startTraining = companyId => {
     setSaving(true)
-    fetchNoData(`${backendUrl}/api/links/scrape?company_id=${companyId}`, {
+    fetchNoData(`${backendUrl}/api/links/scrape`, {
       method: "POST"
     })
       .then(data=> {
@@ -393,7 +393,7 @@ export const ApiProvider = ({ children }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({...newCompany, user_id:user.id}),
+      body: JSON.stringify(newCompany),
     })
       .then(data=> {
         if(data.status === 200) {
