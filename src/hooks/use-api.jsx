@@ -65,7 +65,6 @@ export const ApiProvider = ({ children }) => {
       })
     })
 
-    // console.log(countPerDayByCompanyId)
     return countPerDayByCompanyId
   }
 
@@ -96,7 +95,6 @@ export const ApiProvider = ({ children }) => {
     if(isAuthenticated) {
       options.headers = options.headers || {}
       options.headers["Authorization"] = `Bearer ${user.jwt}`
-      console.log(options.headers)
       return fetch(url, options)
         .then(data => {
           if (data.status === 401) {
@@ -133,7 +131,6 @@ export const ApiProvider = ({ children }) => {
   }
 
   const reloadLinks = companyId => {
-    // console.log('reloadLinks')
     return fetchWithData(`${backendUrl}/api/links?company_id=${companyId}`, {method: "GET"})
       .then(_links => {
         let result = _links.reduce((acc, link) => {
@@ -146,8 +143,6 @@ export const ApiProvider = ({ children }) => {
 
   const loadAllDataForAuthorizedUser = () => {
     if(user && user.company_id) {
-      console.trace('loadAllDataForAuthorizedUser')
-      console.log(user)
       if(window.location.pathname === '/messages') {
         const urlParams = new URLSearchParams(window.location.search);
         const convo_id = urlParams.get('convo_id');
@@ -212,7 +207,6 @@ export const ApiProvider = ({ children }) => {
   }, [pollLinks]);
   // Poll function using the ref
   const poll = () => {
-    // console.log(`poll current:${pollLinksRef.current}`)
     if(pollLinksRef.current) {
       reloadLinks(pollLinksRef.current)
     }
@@ -362,16 +356,6 @@ export const ApiProvider = ({ children }) => {
               setSaveResultsSeverity('success')
               setShowSaveResults(true)
             })
-          // data.json()
-          //   .then(newLink => {
-          //     console.log(newLink)
-          //     const _linksById = {...linksById}
-          //     _linksById[newLink.id] = newLink
-          //     setLinksById(_linksById)
-          //     setSaveResults('Training link added')
-          //     setSaveResultsSeverity('success')
-          //     setShowSaveResults(true)
-          //   })
         } else {
           setSaveResults('There was an error saving the training link')
           setSaveResultsSeverity('error')
@@ -412,13 +396,9 @@ export const ApiProvider = ({ children }) => {
       body: JSON.stringify({...newCompany, user_id:user.id}),
     })
       .then(data=> {
-        console.log(data)
         if(data.status === 200) {
           data.json()
             .then(newCompany=>{
-              // console.log(newCompany)
-              // setSaveResults('Company information saved')
-              // setSaveResultsSeverity('success')
               user.company_id = newCompany.company_id
               window.localStorage.setItem('authorizeUserdata', JSON.stringify(user));
               window.location.reload()

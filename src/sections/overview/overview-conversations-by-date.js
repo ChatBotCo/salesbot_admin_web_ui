@@ -89,7 +89,6 @@ export const OverviewConversationsByDate = (props) => {
   const chartOptions = useChartOptions();
   chartOptions.xaxis.categories = getDayStartBuckets()
 
-  // console.log(chartSeries)
   return (
     <Card sx={sx}>
       <CardHeader
