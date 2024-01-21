@@ -37,7 +37,7 @@ export const items = [
     )
   },
   {
-    title: 'Customize Your Chat Bot',
+    title: 'Customize Your Chatbot',
     path: '/chatbots',
     icon: (
       <SvgIcon fontSize="small">
@@ -46,7 +46,7 @@ export const items = [
     )
   },
   {
-    title: 'Install Your Chat Bot',
+    title: 'Install Your Chatbot',
     path: '/install',
     icon: (
       <SvgIcon fontSize="small">

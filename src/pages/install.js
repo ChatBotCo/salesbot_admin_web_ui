@@ -44,7 +44,7 @@ const Page = () => {
           <Stack spacing={3}>
             <div>
               <Typography variant="h4">
-                Install Your Chat Bot
+                Install Your Chatbot
               </Typography>
             </div>
             <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>

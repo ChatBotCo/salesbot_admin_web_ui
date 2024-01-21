@@ -39,7 +39,7 @@ export const ChatBotSection = () => {
         <Stack spacing={3}>
           <div>
             <Typography variant="h4">
-              Customize Your Chat Bot
+              Customize Your Chatbot
             </Typography>
           </div>
           <CompanyTabs setSelectedCompanyId={setSelectedCompanyId} selectedCompanyId={selectedCompanyId}/>

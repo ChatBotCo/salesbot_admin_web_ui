@@ -65,7 +65,7 @@ export const SideNav = (props) => {
               <HandThumbUpIcon />
             </SvgIcon>
           )}
-          title={'2. Customize Your Chat Bot'}
+          title={'2. Customize Your Chatbot'}
         />
         <SideNavItem
           disabled={onboardingStep!==onboardingSteps.scrapeLinks}
@@ -75,7 +75,7 @@ export const SideNav = (props) => {
               <AcademicCapIcon />
             </SvgIcon>
           )}
-          title={'3. Train Your Chat Bot'}
+          title={'3. Train Your Chatbot'}
         />
       </>
     )
