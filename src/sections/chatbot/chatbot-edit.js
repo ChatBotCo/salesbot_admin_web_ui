@@ -1,25 +1,27 @@
-import {useCallback, useEffect, useState} from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Button,
-  Card, CardActions,
-  CardContent, CardHeader,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
   Checkbox,
   CircularProgress,
   FormControlLabel,
   FormLabel,
   Radio,
   RadioGroup,
-  Stack, SvgIcon,
+  Stack,
+  SvgIcon,
   TextField,
   Unstable_Grid2 as Grid
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import {useApi} from "../../hooks/use-api";
-import {InfoPopover} from "../../components/info-popover";
+import { useApi } from '../../hooks/use-api';
+import { InfoPopover } from '../../components/info-popover';
 import { RedirectPromptRow } from './redirect-prompt-row';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
-import { swap } from 'formik';
-import { de } from 'date-fns/locale';
+import { AnsweredQuestionRow } from './answered-question-row';
 
 const llmModels = [
   {
@@ -37,6 +39,7 @@ const defaultValues = {
   contact_link: '',
   greeting: '',
   redirect_prompts: [],
+  answered_questions: [],
   show_call_to_action: false,
   collect_user_info: false,
 }
@@ -85,6 +88,7 @@ export const ChatbotEdit = (props) => {
   useEffect(() => {
     const _values = chatbot || defaultValues
     if(!_values.redirect_prompts) _values.redirect_prompts = []
+    if(!_values.answered_questions) _values.answered_questions = []
     setValues(_values)
   }, [chatbot])
 
@@ -134,6 +138,27 @@ export const ChatbotEdit = (props) => {
   const handleChangeRedirectRow = (event, rowIndex) => {
     const _values = {...values}
     _values.redirect_prompts.forEach((rowData, index) => {
+      if(index === rowIndex) {
+        rowData[event.target.name] = event.target.value
+      }
+    })
+    setValues(_values)
+  }
+
+  const addAnsweredQuestion = ()=>{
+    const _values = {...values}
+    _values.answered_questions.push({question:'', answer:''})
+    setValues(_values)
+  }
+  const deleteAnsweredQuestionRow = rowIndex => {
+    const _values = {...values}
+    _values.answered_questions = _values.answered_questions.filter((_, index) => index !== rowIndex)
+    setValues(_values)
+  };
+
+  const handleAnsweredQuestionRow = (event, rowIndex) => {
+    const _values = {...values}
+    _values.answered_questions.forEach((rowData, index) => {
       if(index === rowIndex) {
         rowData[event.target.name] = event.target.value
       }
@@ -389,6 +414,61 @@ export const ChatbotEdit = (props) => {
           <Button
             variant="contained"
             onClick={addRedirectPrompt}
+            startIcon={(
+              <SvgIcon fontSize="small">
+                <PlusIcon />
+              </SvgIcon>
+            )}
+          >
+            Add
+          </Button>
+        </CardActions>
+      </Card>
+
+      <Card sx={{mb:2}}>
+        <CardHeader title='Questions & Answers' sx={{pb:0}}/>
+        <CardContent sx={{pt:1, pb:0}}>
+          <Grid
+            container
+            spacing={3}
+          >
+            <Grid
+              xs={12}
+            >
+              <FormLabel id="redirect-prompts">
+                Sometimes the chatbot gets information a little wrong. Specify the answers to questions that your site visitors might have and that you find your chatbot getting wrong.
+              </FormLabel>
+            </Grid>
+            <Grid
+              xs={12}
+            >
+              <img style={{
+                width:'75%',
+                marginLeft:'10px',
+                opacity:'60%',
+                border:'1px dashed gray',
+              }}
+                   src={'/assets/answered-question-row.png'}
+              />
+            </Grid>
+            <Grid
+              xs={12}
+            >
+              {values.answered_questions.map((aq,i)=>
+                <AnsweredQuestionRow key={i}
+                                   rowData={{question:aq.question||'', answer:aq.answer||''}}
+                                   rowIndex={i}
+                                   handleDeleteRow={deleteAnsweredQuestionRow}
+                                   handleChange={handleAnsweredQuestionRow}
+                />
+              )}
+            </Grid>
+          </Grid>
+        </CardContent>
+        <CardActions sx={{pl:3, pb:3}}>
+          <Button
+            variant="contained"
+            onClick={addAnsweredQuestion}
             startIcon={(
               <SvgIcon fontSize="small">
                 <PlusIcon />
