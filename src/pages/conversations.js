@@ -18,6 +18,7 @@ const Page = () => {
   const [conversations, setConversations] = useState([]);
 
   useEffect(() => {
+    console.log('useEffect')
     const company = companiesByCompanyId[selectedCompanyId]
     if(company) {
       const convos = conversationsByCompanyId[selectedCompanyId] || []
@@ -26,7 +27,7 @@ const Page = () => {
     } else {
       setTitleElement('Conversations')
     }
-  },[selectedCompanyId]);
+  },[selectedCompanyId, conversationsByCompanyId, companiesByCompanyId]);
 
   return (
     <>

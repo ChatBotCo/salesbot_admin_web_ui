@@ -126,7 +126,7 @@ export const ApiProvider = ({ children }) => {
       })
   }
 
-  const reloadCompanies = companyId => {
+  const reloadCompanies = () => {
     return fetchWithData(`${backendUrl}/api/companies`, {method: "GET"})
       .then(_companies => {
         let result = _companies.reduce((acc, company) => {
@@ -139,7 +139,7 @@ export const ApiProvider = ({ children }) => {
       })
   }
 
-  const reloadLinks = companyId => {
+  const reloadLinks = () => {
     return fetchWithData(`${backendUrl}/api/links`, {method: "GET"})
       .then(_links => {
         let result = _links.reduce((acc, link) => {
@@ -147,6 +147,25 @@ export const ApiProvider = ({ children }) => {
           return acc;
         }, {});
         setLinksById(result)
+      })
+  }
+
+  const reloadConvos = () => {
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+    const epochSeconds30DaysAgo = Math.floor(thirtyDaysAgo.getTime() / 1000);
+    return fetchWithData(`${backendUrl}/api/conversations?since_timestamp=${epochSeconds30DaysAgo}`, {method: "GET"})
+      .then(convos => {
+        const dayStartBuckets = getDayStartBuckets()
+        const _countPerDayByCompanyId = transformDataForChart(convos, dayStartBuckets)
+        setCountPerDayByCompanyId(_countPerDayByCompanyId)
+
+        let result = convos.reduce((acc, convo) => {
+          if(!acc[convo.company_id]) acc[convo.company_id] = []
+          acc[convo.company_id].push(convo)
+          return acc;
+        }, {});
+        setConversationsByCompanyId(result)
       })
   }
 
@@ -174,27 +193,11 @@ export const ApiProvider = ({ children }) => {
           }
         }
 
-        const now = new Date();
-        const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
-        const epochSeconds30DaysAgo = Math.floor(thirtyDaysAgo.getTime() / 1000);
         const promises = [
-          reloadCompanies(user.company_id),
+          reloadCompanies(),
           reloadChatbots(),
-          reloadLinks(user.company_id),
-
-          fetchWithData(`${backendUrl}/api/conversations?since_timestamp=${epochSeconds30DaysAgo}`, {method: "GET"})
-            .then(convos => {
-              const dayStartBuckets = getDayStartBuckets()
-              const _countPerDayByCompanyId = transformDataForChart(convos, dayStartBuckets)
-              setCountPerDayByCompanyId(_countPerDayByCompanyId)
-
-              let result = convos.reduce((acc, convo) => {
-                if(!acc[convo.company_id]) acc[convo.company_id] = []
-                acc[convo.company_id].push(convo)
-                return acc;
-              }, {});
-              setConversationsByCompanyId(result)
-            }),
+          reloadLinks(),
+          reloadConvos(),
 
           fetchWithData(`${backendUrl}/api/messages?latest=true&`, {method: "GET"})
             .then(latestMsgs => {
@@ -228,7 +231,7 @@ export const ApiProvider = ({ children }) => {
   // Poll function using the ref
   const poll = () => {
     if(pollLinksRef.current) {
-      reloadLinks(pollLinksRef.current)
+      reloadLinks()
     }
   };
   // Set up and clear the interval
@@ -318,7 +321,7 @@ export const ApiProvider = ({ children }) => {
         if(data.status === 204) {
           setSaveResults('Company saved')
           setSaveResultsSeverity('success')
-          reloadCompanies(updatedCompanyValues.company_id)
+          reloadCompanies()
         } else {
           setSaveResults('There was an error saving the company information')
           setSaveResultsSeverity('error')
@@ -370,7 +373,7 @@ export const ApiProvider = ({ children }) => {
     })
       .then(data=> {
         if(data.status === 204) {
-          return reloadLinks(companyId)
+          return reloadLinks()
             .then(()=>{
               setSaveResults('Training link added')
               setSaveResultsSeverity('success')
@@ -396,7 +399,7 @@ export const ApiProvider = ({ children }) => {
           setSaveResultsSeverity('success')
           setShowSaveResults(true)
           setPollLinks(companyId)
-          return reloadCompanies(companyId)
+          return reloadCompanies()
         } else {
           setSaveResults('There was an error starting the training')
           setSaveResultsSeverity('error')
@@ -438,6 +441,26 @@ export const ApiProvider = ({ children }) => {
         setSaveResults('There was an error saving your company information')
         setSaveResultsSeverity('error')
         setShowSaveResults(true)
+      })
+      .finally(()=>setSaving(false))
+  }
+
+  const deleteConvo = convoId => {
+    setSaving(true)
+    fetchNoData(`${backendUrl}/api/conversations?convo_id=${convoId}`, {
+      method: "DELETE"
+    })
+      .then(data=> {
+        if(data.status === 204) {
+          setSaveResults('Conversation delete')
+          setSaveResultsSeverity('success')
+          setShowSaveResults(true)
+          return reloadConvos()
+        } else {
+          setSaveResults('There was an error deleting the conversation')
+          setSaveResultsSeverity('error')
+          setShowSaveResults(true)
+        }
       })
       .finally(()=>setSaving(false))
   }
@@ -500,6 +523,7 @@ export const ApiProvider = ({ children }) => {
         onboardingSteps, onboardingStep, setOnboardingStep,
         userApprovalStatus,
         selectedCompanyId, setSelectedCompanyId,
+        deleteConvo,
       }}
     >
       {children}

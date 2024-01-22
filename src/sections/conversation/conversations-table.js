@@ -14,12 +14,23 @@ import {
 import { Scrollbar } from 'src/components/scrollbar';
 import NextLink from 'next/link';
 import { QueueListIcon } from '@heroicons/react/24/solid';
+import {TrashIcon} from "@heroicons/react/24/outline";
+import {useAuth} from "../../hooks/use-auth";
+import {useApi} from "../../hooks/use-api";
 
 export const ConversationsTable = (props) => {
   const {
     items = [],
     messageCountsPerConvo = {},
   } = props;
+
+  const {
+    user,
+  } = useAuth()
+
+  const {
+    deleteConvo,
+  } = useApi()
 
   const sortedItems = items.sort((a, b) => {
     if (a._ts < b._ts) {
@@ -32,6 +43,12 @@ export const ConversationsTable = (props) => {
   });
 
   const filteredSortedItems = sortedItems.filter(convo=>messageCountsPerConvo[convo.id])
+
+  const handleDeleteConvo = convoId => {
+    if(window.confirm('Are you sure you want to delete this conversation permanently?')) {
+      deleteConvo(convoId)
+    }
+  }
 
   return (
     <Card>
@@ -50,6 +67,9 @@ export const ConversationsTable = (props) => {
                 <TableCell/>
                 <TableCell>Many Messages</TableCell>
                 <TableCell>Lead Generated?</TableCell>
+                {
+                  user && user.role === 'root' && <TableCell/>
+                }
               </TableRow>
             </TableHead>
             <TableBody>
@@ -87,6 +107,19 @@ export const ConversationsTable = (props) => {
                     </TableCell>
                     <TableCell>{messageCountsPerConvo[convo.id]}</TableCell>
                     <TableCell>{leadGen}</TableCell>
+                    {
+                      user && user.role === 'root' && (
+                        <TableCell>
+                          <Button
+                            onClick={()=>handleDeleteConvo(convo.id)}
+                          >
+                            <SvgIcon fontSize="small">
+                              <TrashIcon />
+                            </SvgIcon>
+                          </Button>
+                        </TableCell>
+                      )
+                    }
                   </TableRow>
                 );
               })}
