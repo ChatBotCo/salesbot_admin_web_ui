@@ -108,7 +108,7 @@ export const ChatbotEdit = (props) => {
         !(rdp.prompt && rdp.prompt.trim()) ||
         !(rdp.url && rdp.url.trim())
     }) !== undefined
-    
+
     if(values.show_call_to_action && !values.contact_link) {
       alert('Please provide a redirect webpage for the call-to-action button')
     } else if(values.show_call_to_action && !values.contact_link.startsWith('http')) {
@@ -208,6 +208,46 @@ export const ChatbotEdit = (props) => {
                   </option>
                 ))}
               </TextField>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+
+      <Card sx={{mb:2}}>
+        <CardHeader title='Avatar Character' sx={{pb:0}}/>
+        <CardContent sx={{pt:1}}>
+          <Grid
+            container
+          >
+            <Grid
+              xs={12}
+              md={6}
+            >
+              <FormLabel id="show-avatar-radio-buttons-group">
+                <InfoPopover
+                  infoText={'The chatbot character is simply an adornment and does not impact the quality of the chatbot response.'}
+                  id={'lead-info'}
+                />
+                Would you like to display the chatbot character?
+              </FormLabel>
+              <RadioGroup
+                aria-labelledby="show-avatar-radio-buttons-group"
+                name="avatar_view"
+                value={values.avatar_view || 'headshot'}
+                onChange={handleChange}
+              >
+                <FormControlLabel value="headshot" control={<Radio />} label={<>Static headshot image <InfoPopover infoText={'Small image downloaded and no animation'} id={'headshot-info'}/></>} />
+                <FormControlLabel value="avatar" control={<Radio />} label={<>Animated 3D avatar <InfoPopover infoText={'~3MB download + life-like animation and lipsync w/ audio playback reading chatbot responses'} id={'avatar-info'}/></>} />
+                <FormControlLabel value="none" control={<Radio />} label={<>No avatar, text-only <InfoPopover infoText={'No avatar representation'} id={'none-info'}/></>} />
+              </RadioGroup>
+            </Grid>
+            <Grid
+              xs={12}
+              md={6}
+            >
+              <img style={{width:'200px', marginLeft:'10px', marginBottom:'10px'}}
+                   src={getAvatarViewImage()}
+              />
             </Grid>
           </Grid>
         </CardContent>
@@ -358,46 +398,6 @@ export const ChatbotEdit = (props) => {
             Add
           </Button>
         </CardActions>
-      </Card>
-
-      <Card sx={{mb:2}}>
-        <CardHeader title='Avatar Character' sx={{pb:0}}/>
-        <CardContent sx={{pt:1}}>
-          <Grid
-            container
-          >
-            <Grid
-              xs={12}
-              md={6}
-            >
-              <FormLabel id="show-avatar-radio-buttons-group">
-                <InfoPopover
-                  infoText={'The chatbot character is simply an adornment and does not impact the quality of the chatbot response.'}
-                  id={'lead-info'}
-                />
-                Would you like to display the chatbot character?
-              </FormLabel>
-              <RadioGroup
-                aria-labelledby="show-avatar-radio-buttons-group"
-                name="avatar_view"
-                value={values.avatar_view || 'headshot'}
-                onChange={handleChange}
-              >
-                <FormControlLabel value="headshot" control={<Radio />} label={<>Static headshot image <InfoPopover infoText={'Small image downloaded and no animation'} id={'headshot-info'}/></>} />
-                <FormControlLabel value="avatar" control={<Radio />} label={<>Animated 3D avatar <InfoPopover infoText={'~3MB download + life-like animation and lipsync w/ audio playback reading chatbot responses'} id={'avatar-info'}/></>} />
-                <FormControlLabel value="none" control={<Radio />} label={<>No avatar, text-only <InfoPopover infoText={'No avatar representation'} id={'none-info'}/></>} />
-              </RadioGroup>
-            </Grid>
-            <Grid
-              xs={12}
-              md={6}
-            >
-              <img style={{width:'200px', marginLeft:'10px', marginBottom:'10px'}}
-                   src={getAvatarViewImage()}
-              />
-            </Grid>
-          </Grid>
-        </CardContent>
       </Card>
     </form>
   );
