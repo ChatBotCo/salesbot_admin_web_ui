@@ -37,7 +37,7 @@ export const InfoPopover = (props) => {
           horizontal: 'left',
         }}
       >
-        <Typography sx={{ p: 2 }}>{infoText}</Typography>
+        {infoText && <Typography sx={{ p: 2 }}>{infoText}</Typography>}
         {extra}
       </Popover>
 

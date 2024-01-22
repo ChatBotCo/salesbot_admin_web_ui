@@ -19,6 +19,7 @@ import {InfoPopover} from "../../components/info-popover";
 import { RedirectPromptRow } from './redirect-prompt-row';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { swap } from 'formik';
+import { de } from 'date-fns/locale';
 
 const llmModels = [
   {
@@ -32,13 +33,12 @@ const llmModels = [
 ];
 
 const defaultValues = {
-  show_avatar: true,
   llm_model: 'keli-35-turbo',
-  contact_prompt: '',
   contact_link: '',
-  contact_method: '',
   greeting: '',
   redirect_prompts: [],
+  show_call_to_action: false,
+  collect_user_info: false,
 }
 
 export const ChatbotEdit = (props) => {
@@ -108,8 +108,11 @@ export const ChatbotEdit = (props) => {
         !(rdp.prompt && rdp.prompt.trim()) ||
         !(rdp.url && rdp.url.trim())
     }) !== undefined
-    if(values.contact_method !== 'none' && values.contact_link === '') {
+    
+    if(values.show_call_to_action && !values.contact_link) {
       alert('Please provide a redirect webpage for the call-to-action button')
+    } else if(values.show_call_to_action && !values.contact_link.startsWith('http')) {
+      alert('Call-to-action URL needs to start with https://...')
     } else if(incompleteRedirectPrompt) {
       alert('Every "Redirect Action" needs to have both a prompt and a valid URL')
     } else {
@@ -140,12 +143,13 @@ export const ChatbotEdit = (props) => {
 
   const getAvatarViewImage = ()=>{
     switch(values.avatar_view) {
-      case 'headshot':
-        return '/assets/chat-with-headshot.png'
       case 'avatar':
         return '/assets/chat-with-avatar.png'
-      default:
+      case 'none':
         return '/assets/chat-without-avatar.png'
+      case 'headshot':
+      default:
+        return '/assets/chat-with-headshot.png'
 
 
     }
@@ -236,7 +240,7 @@ export const ChatbotEdit = (props) => {
       </Card>
 
       <Card sx={{mb:2}}>
-        <CardHeader title='Call-to-Action Button' sx={{pb:0}}/>
+        <CardHeader title='How do you want to do generate leads?' sx={{pb:0}}/>
         <CardContent sx={{pt:1}}>
           <Grid
             container
@@ -246,49 +250,57 @@ export const ChatbotEdit = (props) => {
               xs={12}
               md={6}
             >
-              <FormLabel id="contact-radio-buttons-group">
-                <InfoPopover
-                  infoText={'The call-to-action button appears prominantly below the chat window and redirects the user to another webpage.  With this setting you are instructing the chatbot the purpose of this other webpage and how it should encourage people to click on the button'}
-                  id={'lead-info'}
+              <FormControlLabel control={
+                <Checkbox
+                  checked={values.show_call_to_action || false}
+                  onChange={handleChangeCheckbox}
+                  name="show_call_to_action"
                 />
-                What should the call-to-action do?
-              </FormLabel>
-              <RadioGroup
-                aria-labelledby="contact-radio-buttons-group"
-                name="contact_method"
-                value={values.contact_method || 'app_install'}
-                onChange={handleChange}
-              >
-                <FormControlLabel value="app_install" control={<Radio />} label="Helps the user install our app" />
-                <FormControlLabel value="contact_form" control={<Radio />} label="Takes the user to a contact form" />
-                <FormControlLabel value="none" control={<Radio />} label="No call-to-action button" />
-              </RadioGroup>
+              } label={<>
+                Call-to-action Button
+                <InfoPopover
+                  id={'contact-link'}
+                  extra={<img style={{width:'200px', margin:'5px'}} src='/assets/call-to-action-button.png'/>}
+                />
+              </>} />
             </Grid>
-            {
-              values.contact_method !== 'none' && (
-                  <Grid
-                    xs={12}
-                    md={6}
-                  >
-                    <FormLabel id="contact-link-label">
-                      <InfoPopover
-                        infoText={'If the user clicks on the call-to-action - where do you want to redirect them?'}
-                        id={'contact-link'}
-                      />
-                      Call-to-action redirect webpage
-                    </FormLabel>
-                    <TextField
-                      aria-labelledby="contact-link-label"
-                      fullWidth
-                      error={values.contact_method !== 'none' && values.contact_link === ''}
-                      name="contact_link"
-                      onChange={handleChange}
-                      value={values.contact_link || ''}
-                    />
-                    <img style={{width:'150px', margin:'10px'}} src='/assets/call-to-action-button.png'/>
-                  </Grid>
-                )
-            }
+            <Grid
+              xs={12}
+              md={6}
+            >
+              <FormLabel id="contact-link-label">
+                Call-to-action redirect webpage
+                <InfoPopover
+                  infoText={'Where do you want to redirect users when they click on the call-to-action button?'}
+                  id={'contact-link'}
+                />
+              </FormLabel>
+              <TextField
+                aria-labelledby="contact-link-label"
+                fullWidth
+                error={values.show_call_to_action && values.contact_link === ''}
+                name="contact_link"
+                onChange={handleChange}
+                value={values.contact_link || ''}
+              />
+            </Grid>
+            <Grid
+              xs={12}
+            >
+              <FormControlLabel control={
+                <Checkbox
+                  checked={values.collect_user_info || false}
+                  onChange={handleChangeCheckbox}
+                  name="collect_user_info"
+                />
+              } label={<>
+                Solicit Contact Info
+                <InfoPopover
+                  id={'solicit-user-info'}
+                  infoText={'If this is checked then the chatbot will try to collect contact information from your customer.  Any information collected will be emailed to you and available on this Admin portal for you to review.'}
+                />
+              </>} />
+            </Grid>
           </Grid>
         </CardContent>
       </Card>
