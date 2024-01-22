@@ -18,7 +18,6 @@ const Page = () => {
   const [conversations, setConversations] = useState([]);
 
   useEffect(() => {
-    console.log('useEffect')
     const company = companiesByCompanyId[selectedCompanyId]
     if(company) {
       const convos = conversationsByCompanyId[selectedCompanyId] || []

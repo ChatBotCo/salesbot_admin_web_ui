@@ -79,7 +79,6 @@ export const ConversationsTable = (props) => {
                   <TableRow
                     hover
                     key={convo.id}
-                    onClick={()=>console.log('click row')}
                     sx={{cursor:'pointer'}}
                   >
                     <TableCell>

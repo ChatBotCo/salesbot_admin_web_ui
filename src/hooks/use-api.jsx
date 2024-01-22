@@ -484,6 +484,15 @@ export const ApiProvider = ({ children }) => {
     setSelectedCompanyId(window.localStorage.getItem('selectedCompanyId'))
   }, []);
 
+  useEffect(() => {
+    if(user && user.company_id && selectedCompanyId) {
+      if(user.company_id !== 'all' && user.company_id !== selectedCompanyId) {
+        // console.log()
+        setSelectedCompanyId(user.company_id)
+      }
+    }
+  },[user, selectedCompanyId]);
+
   const handleDismissSaveResults  = (event, reason) => {
     if (reason === 'clickaway') {
       return;
