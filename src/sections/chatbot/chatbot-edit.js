@@ -39,11 +39,13 @@ const llmModels = [
 
 const defaultValues = {
   llm_model: 'keli-35-turbo',
-  contact_link: '',
   greeting: '',
   redirect_prompts: [],
   answered_questions: [],
   show_call_to_action: false,
+  contact_link: '',
+  redirect_to_calendar: false,
+  calendar_link: '',
   collect_user_info: false,
 }
 
@@ -369,6 +371,44 @@ export const ChatbotEdit = (props) => {
               />
             </>} />
           </Grid>
+          <Grid
+            xs={12}
+            md={6}
+          >
+            <FormControlLabel control={
+              <Checkbox
+                checked={values.redirect_to_calendar || false}
+                onChange={handleChangeCheckbox}
+                name="redirect_to_calendar"
+              />
+            } label={<>
+              Redirect to Calendar App
+              <InfoPopover
+                id={'redirect_to_calendar-info'}
+                infoText={'If this is checked then the chatbot will try to redirect site visitors to your calendar app to schedule a call with a sales rep.'}
+              />
+            </>} />
+          </Grid>
+          <Grid
+            xs={12}
+            md={6}
+          >
+            <FormLabel id="redirect_to_calendar-label">
+              Link to your calendar app
+              <InfoPopover
+                infoText={'Where do you want to redirect users when they want to schedule a call with your sales rep?'}
+                id={'redirect_to_calendar-link'}
+              />
+            </FormLabel>
+            <TextField
+              aria-labelledby="redirect_to_calendar-label"
+              fullWidth
+              error={values.redirect_to_calendar && values.calendar_link === ''}
+              name="calendar_link"
+              onChange={handleChange}
+              value={values.calendar_link || ''}
+            />
+        </Grid>
         </Grid>
       </CollapseCard>
 
