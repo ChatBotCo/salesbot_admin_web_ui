@@ -263,7 +263,6 @@ export const ChatbotEdit = (props) => {
               >
                 <FormControlLabel value="headshot" control={<Radio />} label={<>Static headshot image <InfoPopover infoText={'Small image downloaded and no animation'} id={'headshot-info'}/></>} />
                 <FormControlLabel value="avatar" control={<Radio />} label={<>Animated 3D avatar <InfoPopover infoText={'~3MB download + life-like animation and lipsync w/ audio playback reading chatbot responses'} id={'avatar-info'}/></>} />
-                <FormControlLabel value="none" control={<Radio />} label={<>No avatar, text-only <InfoPopover infoText={'No avatar representation'} id={'none-info'}/></>} />
               </RadioGroup>
             </Grid>
             <Grid

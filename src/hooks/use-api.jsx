@@ -476,7 +476,7 @@ export const ApiProvider = ({ children }) => {
     setDebugging(localStorage.getItem('debugging')==='true')
     let _backendUrl = backendUrl
     if(localStorage.getItem('local_backend') === 'true') {
-      _backendUrl = "http://localhost:5000"
+      _backendUrl = "https://localhost:5001"
       setBackendUrl(_backendUrl)
     }
     setAuthBackendUrl(_backendUrl)
