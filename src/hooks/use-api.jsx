@@ -24,7 +24,6 @@ export const ApiProvider = ({ children }) => {
   const [backendUrl, setBackendUrl] = useState("https://salesbot-api-svc.azurewebsites.net")
 
   const [countPerDayByCompanyId, setCountPerDayByCompanyId] = useState({})
-  const [msgCountPerDayByCompanyId, setMsgCountPerDayByCompanyId] = useState({})
   const [companiesByCompanyId, setCompaniesByCompanyId] = useState({})
   const [chatbotsByCompanyId, setChatbotsByCompanyId] = useState({})
   const [linksById, setLinksById] = useState({})
@@ -32,6 +31,8 @@ export const ApiProvider = ({ children }) => {
   const [conversationsForBlackTie, setConversationsForBlackTie] = useState([])
   const [conversationsForEdge, setConversationsForEdge] = useState([])
   const [conversationsForSalesBot, setConversationsForSalesBot] = useState([])
+  const [msgsByConvoId, setMsgsByConvoId] = useState({})
+  const [msgCountPerDayByCompanyId, setMsgCountPerDayByCompanyId] = useState({})
   const [messagesForConvoId, setMessagesForConvoId] = useState([])
   const [messageCountsPerConvo, setMessageCountsPerConvo] = useState({})
   const [companyIdParam, setCompanyIdParam] = useState("")
@@ -199,13 +200,22 @@ export const ApiProvider = ({ children }) => {
           reloadLinks(),
           reloadConvos(),
 
-          fetchWithData(`${backendUrl}/api/messages?latest=true&`, {method: "GET"})
+          fetchWithData(`${backendUrl}/api/messages?latest=true`, {method: "GET"})
             .then(latestMsgs => {
+              // This is only used to populate the metrics
               const dayStartBuckets = getDayStartBuckets()
               const _countPerDayByCompanyId = transformDataForChart(latestMsgs, dayStartBuckets)
               setMsgCountPerDayByCompanyId(_countPerDayByCompanyId)
+
+              const _msgsByConvoId = latestMsgs.reduce((acc, obj) => {
+                acc[obj.conversation_id] = acc[obj.conversation_id] || []
+                acc[obj.conversation_id].push(obj)
+                return acc;
+              }, {})
+              setMsgsByConvoId(_msgsByConvoId)
             }),
 
+          // This is only used to display on the Conversations Table page
           fetchWithData(`${backendUrl}/api/messages/count_per_convo`, {method: "GET"})
             .then(msgCountsPerConvo => {
               let result = msgCountsPerConvo.reduce((acc, obj) => {
@@ -511,6 +521,7 @@ export const ApiProvider = ({ children }) => {
         conversationsForEdge,
         conversationsForSalesBot,
         messagesForConvoId,
+        msgsByConvoId,
         getDayStartBuckets,
         countPerDayByCompanyId,
         msgCountPerDayByCompanyId,

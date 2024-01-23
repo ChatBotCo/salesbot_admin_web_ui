@@ -8,6 +8,16 @@ export const MessagesTable = (props) => {
     items = [],
   } = props;
 
+  const sortedItems = items.sort((a, b) => {
+    if (a._ts < b._ts) {
+      return 1;
+    }
+    if (a._ts > b._ts) {
+      return -1;
+    }
+    return 0;
+  });
+
   return (
     <Card>
       <Scrollbar>
@@ -18,7 +28,7 @@ export const MessagesTable = (props) => {
                 <TableCell>
                 </TableCell>
                 <TableCell>
-                  Date Started
+                  Date/Time
                 </TableCell>
                 <TableCell>
                   User Question
@@ -26,10 +36,17 @@ export const MessagesTable = (props) => {
                 <TableCell>
                   ChatBot Response
                 </TableCell>
+                <TableCell>
+                  User Data Collected
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {items.map((msg, i) => {
+              {sortedItems.map((msg, i) => {
+                const userData = Object.entries(msg)
+                                       .filter(([key, value]) => key.startsWith('user_') && key !== 'user_msg' && (typeof value === 'string' || (typeof value === 'boolean' && value)))
+                                       .map(([key, value]) => `${key}: ${value}`)
+                                       .join(', ');
                 return (
                   <TableRow
                     hover
@@ -46,6 +63,9 @@ export const MessagesTable = (props) => {
                     </TableCell>
                     <TableCell>
                       {msg.assistant_response}
+                    </TableCell>
+                    <TableCell>
+                      {userData}
                     </TableCell>
                   </TableRow>
                 );

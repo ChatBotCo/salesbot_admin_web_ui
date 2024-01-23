@@ -9,18 +9,28 @@ import { useEffect, useState } from 'react';
 const Page = () => {
   const {
     conversationsByCompanyId,
+    msgsByConvoId,
     loading,
+    selectedCompanyId,
   } = useApi()
 
   const [conversationsWithUserData, setConversationsWithUserData] = useState([]);
 
   useEffect(() => {
     const allConvos = Object.values(conversationsByCompanyId).flat()
-    const convosWithUserData = allConvos.filter(convo => {
-      return convo.user_email || convo.user_phone_number
+    const convosForCompany = allConvos.filter(convo => convo.company_id === selectedCompanyId)
+    const convosWithUserData = convosForCompany.filter(convo => {
+      const messagesForConvo = msgsByConvoId[convo.id] || []
+      const someMsgsHaveUserData = messagesForConvo.filter(msg => {
+        return msg.user_email ||
+          msg.user_phone_number ||
+          msg.user_wants_to_schedule_call_with_sales_rep ||
+          msg.user_wants_to_be_contacted
+      })
+      return someMsgsHaveUserData.length > 0
     })
     setConversationsWithUserData(convosWithUserData)
-  },[conversationsByCompanyId]);
+  },[selectedCompanyId, conversationsByCompanyId, msgsByConvoId]);
 
   return (
     <>
