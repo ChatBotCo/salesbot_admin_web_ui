@@ -12,6 +12,7 @@ const Page = () => {
     msgsByConvoId,
     loading,
     selectedCompanyId,
+    convoHasUserData,
   } = useApi()
 
   const [conversationsWithUserData, setConversationsWithUserData] = useState([]);
@@ -19,16 +20,7 @@ const Page = () => {
   useEffect(() => {
     const allConvos = Object.values(conversationsByCompanyId).flat()
     const convosForCompany = allConvos.filter(convo => convo.company_id === selectedCompanyId)
-    const convosWithUserData = convosForCompany.filter(convo => {
-      const messagesForConvo = msgsByConvoId[convo.id] || []
-      const someMsgsHaveUserData = messagesForConvo.filter(msg => {
-        return msg.user_email ||
-          msg.user_phone_number ||
-          msg.user_wants_to_schedule_call_with_sales_rep ||
-          msg.user_wants_to_be_contacted
-      })
-      return someMsgsHaveUserData.length > 0
-    })
+    const convosWithUserData = convosForCompany.filter(convoHasUserData)
     setConversationsWithUserData(convosWithUserData)
   },[selectedCompanyId, conversationsByCompanyId, msgsByConvoId]);
 

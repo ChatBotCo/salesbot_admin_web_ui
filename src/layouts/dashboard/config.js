@@ -27,15 +27,15 @@ export const items = [
       </SvgIcon>
     )
   },
-  {
-    title: 'Generated Leads',
-    path: '/leads',
-    icon: (
-      <SvgIcon fontSize="small">
-        <StarIcon />
-      </SvgIcon>
-    )
-  },
+  // {
+  //   title: 'Generated Leads',
+  //   path: '/leads',
+  //   icon: (
+  //     <SvgIcon fontSize="small">
+  //       <StarIcon />
+  //     </SvgIcon>
+  //   )
+  // },
   {
     title: 'Customize Your Chatbot',
     path: '/chatbots',

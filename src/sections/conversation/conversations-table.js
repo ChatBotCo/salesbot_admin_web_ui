@@ -3,17 +3,17 @@ import { format } from 'date-fns';
 import {
   Box,
   Button,
-  Card,
+  Card, Stack,
   SvgIcon,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TableRow
+  TableRow, Typography
 } from '@mui/material';
 import { Scrollbar } from 'src/components/scrollbar';
 import NextLink from 'next/link';
-import { QueueListIcon } from '@heroicons/react/24/solid';
+import { CheckCircleIcon as CheckCircleIconSolid, QueueListIcon } from '@heroicons/react/24/solid';
 import {TrashIcon} from "@heroicons/react/24/outline";
 import {useAuth} from "../../hooks/use-auth";
 import {useApi} from "../../hooks/use-api";
@@ -30,6 +30,7 @@ export const ConversationsTable = (props) => {
 
   const {
     deleteConvo,
+    convoHasUserData,
   } = useApi()
 
   const sortedItems = items.sort((a, b) => {
@@ -74,7 +75,14 @@ export const ConversationsTable = (props) => {
             </TableHead>
             <TableBody>
               {filteredSortedItems.map((convo, i) => {
-                const leadGen = (convo.user_email || convo.user_phone_number) ? 'YES' : ''
+                const leadGen = convoHasUserData(convo) ? (
+                  <Stack direction={'row'} justifyContent={'center'}>
+                    <Typography variant='subtitle2'>YES</Typography>
+                    <SvgIcon fontSize="small" color={'success'}>
+                      <CheckCircleIconSolid />
+                    </SvgIcon>
+                  </Stack>
+                ) : ''
                 return (
                   <TableRow
                     hover
@@ -104,7 +112,11 @@ export const ConversationsTable = (props) => {
                         Messages
                       </Button>
                     </TableCell>
-                    <TableCell>{messageCountsPerConvo[convo.id]}</TableCell>
+                    <TableCell>
+                      <Stack direction={'row'} justifyContent={'center'}>
+                        {messageCountsPerConvo[convo.id]}
+                      </Stack>
+                    </TableCell>
                     <TableCell>{leadGen}</TableCell>
                     {
                       user && user.role === 'root' && (

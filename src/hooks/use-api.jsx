@@ -510,6 +510,17 @@ export const ApiProvider = ({ children }) => {
     setShowSaveResults(false);
   };
 
+  const convoHasUserData = convo => {
+    const messagesForConvo = msgsByConvoId[convo.id] || []
+    const someMsgsHaveUserData = messagesForConvo.filter(msg => {
+      return msg.user_email ||
+        msg.user_phone_number ||
+        msg.user_wants_to_schedule_call_with_sales_rep ||
+        msg.user_wants_to_be_contacted
+    })
+    return someMsgsHaveUserData.length > 0
+  }
+
   return (
     <ApiContext.Provider
       value={{
@@ -544,6 +555,7 @@ export const ApiProvider = ({ children }) => {
         userApprovalStatus,
         selectedCompanyId, setSelectedCompanyId,
         deleteConvo,
+        convoHasUserData,
       }}
     >
       {children}
