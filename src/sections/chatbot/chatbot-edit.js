@@ -1,10 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
   Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
   Checkbox,
   CircularProgress,
   FormControlLabel,
@@ -22,6 +18,13 @@ import { InfoPopover } from '../../components/info-popover';
 import { RedirectPromptRow } from './redirect-prompt-row';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { AnsweredQuestionRow } from './answered-question-row';
+import { CollapseCard } from '../../components/collapse-card';
+import {
+  ChatBubbleBottomCenterTextIcon,
+  ServerStackIcon,
+  UserCircleIcon,
+  PhoneIcon,
+} from '@heroicons/react/24/outline';
 
 const llmModels = [
   {
@@ -200,216 +203,178 @@ export const ChatbotEdit = (props) => {
         )}
       </Stack>
 
-      <Card sx={{mb:2}}>
-        <CardHeader title='AI Configuration' sx={{pb:0}}/>
-        <CardContent sx={{pt:1}}>
+      <CollapseCard
+        title={'AI Configuration'}
+        icon={<ServerStackIcon />}
+      >
+        <Grid
+          container
+        >
           <Grid
-            container
+            xs={12}
+            md={6}
           >
-            <Grid
-              xs={12}
-              md={6}
+            <FormLabel id="llm-model-picker">
+              <InfoPopover infoText={'LLM choice impacts speed and accuracy.  3.5 is fast but occasionally inaccurate.  4 is slower but much more effective and accurate.'} id={'models-info'} />
+              Which LLM model would you like to use?
+            </FormLabel>
+            <TextField
+              aria-labelledby="llm-model-picker"
+              fullWidth
+              label="LLM Model"
+              name="llm_model"
+              onChange={handleChange}
+              select
+              SelectProps={{ native: true }}
+              value={values.llm_model}
             >
-              <FormLabel id="llm-model-picker">
-                <InfoPopover infoText={'LLM choice impacts speed and accuracy.  3.5 is fast but occasionally inaccurate.  4 is slower but much more effective and accurate.'} id={'models-info'} />
-                Which LLM model would you like to use?
-              </FormLabel>
-              <TextField
-                aria-labelledby="llm-model-picker"
-                fullWidth
-                label="LLM Model"
-                name="llm_model"
-                onChange={handleChange}
-                select
-                SelectProps={{ native: true }}
-                value={values.llm_model}
-              >
-                {llmModels.map(option => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
-            </Grid>
+              {llmModels.map(option => (
+                <option
+                  key={option.value}
+                  value={option.value}
+                >
+                  {option.label}
+                </option>
+              ))}
+            </TextField>
           </Grid>
-        </CardContent>
-      </Card>
+        </Grid>
+      </CollapseCard>
 
-      <Card sx={{mb:2}}>
-        <CardHeader title='Avatar Character' sx={{pb:0}}/>
-        <CardContent sx={{pt:1}}>
+      <CollapseCard
+        title={'Avatar Character'}
+        icon={<UserCircleIcon/>}
+      >
+        <Grid
+          container
+        >
           <Grid
-            container
+            xs={12}
+            md={6}
           >
-            <Grid
-              xs={12}
-              md={6}
-            >
-              <FormLabel id="show-avatar-radio-buttons-group">
-                <InfoPopover
-                  infoText={'The chatbot character is simply an adornment and does not impact the quality of the chatbot response.'}
-                  id={'lead-info'}
-                />
-                Would you like to display the chatbot character?
-              </FormLabel>
-              <RadioGroup
-                aria-labelledby="show-avatar-radio-buttons-group"
-                name="avatar_view"
-                value={values.avatar_view || 'headshot'}
-                onChange={handleChange}
-              >
-                <FormControlLabel value="headshot" control={<Radio />} label={<>Static headshot image <InfoPopover infoText={'Small image downloaded and no animation'} id={'headshot-info'}/></>} />
-                <FormControlLabel value="avatar" control={<Radio />} label={<>Animated 3D avatar <InfoPopover infoText={'~3MB download + life-like animation and lipsync w/ audio playback reading chatbot responses'} id={'avatar-info'}/></>} />
-              </RadioGroup>
-            </Grid>
-            <Grid
-              xs={12}
-              md={6}
-            >
-              <img style={{width:'200px', marginLeft:'10px', marginBottom:'10px'}}
-                   src={getAvatarViewImage()}
+            <FormLabel id="show-avatar-radio-buttons-group">
+              <InfoPopover
+                infoText={'The chatbot character is simply an adornment and does not impact the quality of the chatbot response.'}
+                id={'lead-info'}
               />
-            </Grid>
+              Would you like to display the chatbot character?
+            </FormLabel>
+            <RadioGroup
+              aria-labelledby="show-avatar-radio-buttons-group"
+              name="avatar_view"
+              value={values.avatar_view || 'headshot'}
+              onChange={handleChange}
+            >
+              <FormControlLabel value="headshot" control={<Radio />} label={<>Static headshot image <InfoPopover infoText={'Small image downloaded and no animation'} id={'headshot-info'}/></>} />
+              <FormControlLabel value="avatar" control={<Radio />} label={<>Animated 3D avatar <InfoPopover infoText={'~3MB download + life-like animation and lipsync w/ audio playback reading chatbot responses'} id={'avatar-info'}/></>} />
+            </RadioGroup>
           </Grid>
-        </CardContent>
-      </Card>
+          <Grid
+            xs={12}
+            md={6}
+          >
+            <img style={{width:'200px', marginLeft:'10px', marginBottom:'10px'}}
+                 src={getAvatarViewImage()}
+            />
+          </Grid>
+        </Grid>
+      </CollapseCard>
 
-      <Card sx={{mb:2}}>
-        <CardHeader title='Default Greeting' sx={{pb:0}}/>
-        <CardContent sx={{pt:1}}>
+      <CollapseCard
+        title='Default Greeting'
+        icon={<ChatBubbleBottomCenterTextIcon/>}
+      >
+        <Grid
+          container
+        >
           <Grid
-            container
+            xs={12}
           >
-            <Grid
-              xs={12}
-            >
-              <FormLabel id="contact-radio-buttons-group">
-                <InfoPopover infoText={'This is the initial text that is displayed in a speech bubble that should entice your site visitors to engage with the chatbot.'} id={'greeting-info'} />
-                How should the chatbot greet visitors to your website?
-              </FormLabel>
-              <TextField
-                fullWidth
-                helperText="Provide the default greeting from your chatbot"
-                name="greeting"
-                onChange={handleChange}
-                required
-                value={values.greeting || ''}
-              />
-            </Grid>
+            <FormLabel id="contact-radio-buttons-group">
+              <InfoPopover infoText={'This is the initial text that is displayed in a speech bubble that should entice your site visitors to engage with the chatbot.'} id={'greeting-info'} />
+              How should the chatbot greet visitors to your website?
+            </FormLabel>
+            <TextField
+              fullWidth
+              helperText="Provide the default greeting from your chatbot"
+              name="greeting"
+              onChange={handleChange}
+              required
+              value={values.greeting || ''}
+            />
           </Grid>
-        </CardContent>
-      </Card>
+        </Grid>
+      </CollapseCard>
 
-      <Card sx={{mb:2}}>
-        <CardHeader title='How do you want to do generate leads?' sx={{pb:0}}/>
-        <CardContent sx={{pt:1}}>
+      <CollapseCard
+        title='How do you want to do generate leads?'
+        icon={<PhoneIcon/>}
+      >
+        <Grid
+          container
+          spacing={3}
+        >
           <Grid
-            container
-            spacing={3}
+            xs={12}
+            md={6}
           >
-            <Grid
-              xs={12}
-              md={6}
-            >
-              <FormControlLabel control={
-                <Checkbox
-                  checked={values.show_call_to_action || false}
-                  onChange={handleChangeCheckbox}
-                  name="show_call_to_action"
-                />
-              } label={<>
-                Call-to-action Button
-                <InfoPopover
-                  id={'contact-link'}
-                  extra={<img style={{width:'200px', margin:'5px'}} src='/assets/call-to-action-button.png'/>}
-                />
-              </>} />
-            </Grid>
-            <Grid
-              xs={12}
-              md={6}
-            >
-              <FormLabel id="contact-link-label">
-                Call-to-action redirect webpage
-                <InfoPopover
-                  infoText={'Where do you want to redirect users when they click on the call-to-action button?'}
-                  id={'contact-link'}
-                />
-              </FormLabel>
-              <TextField
-                aria-labelledby="contact-link-label"
-                fullWidth
-                error={values.show_call_to_action && values.contact_link === ''}
-                name="contact_link"
-                onChange={handleChange}
-                value={values.contact_link || ''}
+            <FormControlLabel control={
+              <Checkbox
+                checked={values.show_call_to_action || false}
+                onChange={handleChangeCheckbox}
+                name="show_call_to_action"
               />
-            </Grid>
-            <Grid
-              xs={12}
-            >
-              <FormControlLabel control={
-                <Checkbox
-                  checked={values.collect_user_info || false}
-                  onChange={handleChangeCheckbox}
-                  name="collect_user_info"
-                />
-              } label={<>
-                Solicit Contact Info
-                <InfoPopover
-                  id={'solicit-user-info'}
-                  infoText={'If this is checked then the chatbot will try to collect contact information from your customer.  Any information collected will be emailed to you and available on this Admin portal for you to review.'}
-                />
-              </>} />
-            </Grid>
+            } label={<>
+              Call-to-action Button
+              <InfoPopover
+                id={'contact-link'}
+                extra={<img style={{width:'200px', margin:'5px'}} src='/assets/call-to-action-button.png'/>}
+              />
+            </>} />
           </Grid>
-        </CardContent>
-      </Card>
+          <Grid
+            xs={12}
+            md={6}
+          >
+            <FormLabel id="contact-link-label">
+              Call-to-action redirect webpage
+              <InfoPopover
+                infoText={'Where do you want to redirect users when they click on the call-to-action button?'}
+                id={'contact-link'}
+              />
+            </FormLabel>
+            <TextField
+              aria-labelledby="contact-link-label"
+              fullWidth
+              error={values.show_call_to_action && values.contact_link === ''}
+              name="contact_link"
+              onChange={handleChange}
+              value={values.contact_link || ''}
+            />
+          </Grid>
+          <Grid
+            xs={12}
+          >
+            <FormControlLabel control={
+              <Checkbox
+                checked={values.collect_user_info || false}
+                onChange={handleChangeCheckbox}
+                name="collect_user_info"
+              />
+            } label={<>
+              Solicit Contact Info
+              <InfoPopover
+                id={'solicit-user-info'}
+                infoText={'If this is checked then the chatbot will try to collect contact information from your customer.  Any information collected will be emailed to you and available on this Admin portal for you to review.'}
+              />
+            </>} />
+          </Grid>
+        </Grid>
+      </CollapseCard>
 
-      <Card sx={{mb:2}}>
-        <CardHeader title='Redirect Actions' sx={{pb:0}}/>
-        <CardContent sx={{pt:1, pb:0}}>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid
-              xs={12}
-            >
-              <FormLabel id="redirect-prompts">
-                Instruct the chatbot to show a hyperlink to another webpage if the user asks for a specific type of information.
-              </FormLabel>
-            </Grid>
-            <Grid
-              xs={12}
-            >
-              <img style={{
-                width:'75%',
-                marginLeft:'10px',
-                opacity:'60%',
-                border:'1px dashed gray',
-              }}
-                   src={'/assets/redirect_prompt_row.png'}
-              />
-            </Grid>
-            <Grid
-              xs={12}
-            >
-              {values.redirect_prompts.map((rdp,i)=>
-                <RedirectPromptRow key={i}
-                                   rowData={{prompt:rdp.prompt||'', url:rdp.url||''}}
-                                   rowIndex={i}
-                                   handleDeleteRow={deleteRedirectPromptRow}
-                                   handleChange={handleChangeRedirectRow}
-                />
-              )}
-            </Grid>
-          </Grid>
-        </CardContent>
-        <CardActions sx={{pl:3, pb:3}}>
+      <CollapseCard
+        title='Redirect Actions'
+        actions={(
           <Button
             variant="contained"
             onClick={addRedirectPrompt}
@@ -421,50 +386,49 @@ export const ChatbotEdit = (props) => {
           >
             Add
           </Button>
-        </CardActions>
-      </Card>
-
-      <Card sx={{mb:2}}>
-        <CardHeader title='Questions & Answers' sx={{pb:0}}/>
-        <CardContent sx={{pt:1, pb:0}}>
+        )}
+      >
+        <Grid
+          container
+          spacing={3}
+        >
           <Grid
-            container
-            spacing={3}
+            xs={12}
           >
-            <Grid
-              xs={12}
-            >
-              <FormLabel id="redirect-prompts">
-                Sometimes the chatbot gets information a little wrong. Specify the answers to questions that your site visitors might have and that you find your chatbot getting wrong.
-              </FormLabel>
-            </Grid>
-            <Grid
-              xs={12}
-            >
-              <img style={{
-                width:'75%',
-                marginLeft:'10px',
-                opacity:'60%',
-                border:'1px dashed gray',
-              }}
-                   src={'/assets/answered-question-row.png'}
-              />
-            </Grid>
-            <Grid
-              xs={12}
-            >
-              {values.answered_questions.map((aq,i)=>
-                <AnsweredQuestionRow key={i}
-                                   rowData={{question:aq.question||'', answer:aq.answer||''}}
-                                   rowIndex={i}
-                                   handleDeleteRow={deleteAnsweredQuestionRow}
-                                   handleChange={handleAnsweredQuestionRow}
-                />
-              )}
-            </Grid>
+            <FormLabel id="redirect-prompts">
+              Instruct the chatbot to show a hyperlink to another webpage if the user asks for a specific type of information.
+            </FormLabel>
           </Grid>
-        </CardContent>
-        <CardActions sx={{pl:3, pb:3}}>
+          <Grid
+            xs={12}
+          >
+            <img style={{
+              width:'75%',
+              marginLeft:'10px',
+              opacity:'60%',
+              border:'1px dashed gray',
+            }}
+                 src={'/assets/redirect_prompt_row.png'}
+            />
+          </Grid>
+          <Grid
+            xs={12}
+          >
+            {values.redirect_prompts.map((rdp,i)=>
+              <RedirectPromptRow key={i}
+                                 rowData={{prompt:rdp.prompt||'', url:rdp.url||''}}
+                                 rowIndex={i}
+                                 handleDeleteRow={deleteRedirectPromptRow}
+                                 handleChange={handleChangeRedirectRow}
+              />
+            )}
+          </Grid>
+        </Grid>
+      </CollapseCard>
+
+      <CollapseCard
+        title='Questions & Answers'
+        actions={(
           <Button
             variant="contained"
             onClick={addAnsweredQuestion}
@@ -476,8 +440,45 @@ export const ChatbotEdit = (props) => {
           >
             Add
           </Button>
-        </CardActions>
-      </Card>
+        )}
+      >
+        <Grid
+          container
+          spacing={3}
+        >
+          <Grid
+            xs={12}
+          >
+            <FormLabel id="redirect-prompts">
+              Sometimes the chatbot gets information a little wrong. Specify the answers to questions that your site visitors might have and that you find your chatbot getting wrong.
+            </FormLabel>
+          </Grid>
+          <Grid
+            xs={12}
+          >
+            <img style={{
+              width:'75%',
+              marginLeft:'10px',
+              opacity:'60%',
+              border:'1px dashed gray',
+            }}
+                 src={'/assets/answered-question-row.png'}
+            />
+          </Grid>
+          <Grid
+            xs={12}
+          >
+            {values.answered_questions.map((aq,i)=>
+              <AnsweredQuestionRow key={i}
+                                 rowData={{question:aq.question||'', answer:aq.answer||''}}
+                                 rowIndex={i}
+                                 handleDeleteRow={deleteAnsweredQuestionRow}
+                                 handleChange={handleAnsweredQuestionRow}
+              />
+            )}
+          </Grid>
+        </Grid>
+      </CollapseCard>
     </form>
   );
 };
