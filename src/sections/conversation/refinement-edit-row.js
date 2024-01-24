@@ -2,8 +2,12 @@ import PropTypes from 'prop-types';
 import { Button, FormLabel, Stack, TableCell, TableRow, TextField } from '@mui/material';
 import { InfoPopover } from '../../components/info-popover';
 import { useCallback, useEffect, useState } from 'react';
+import { useApi } from '../../hooks/use-api';
 
-export const RefinementEditRow = ({refinement, msg}) => {
+export const RefinementEditRow = ({refinement}) => {
+  const {
+    updateRefinement,
+  } = useApi()
 
   const [answer, setAnswer] = useState('')
 
@@ -20,6 +24,12 @@ export const RefinementEditRow = ({refinement, msg}) => {
 
   const undoChanges = ()=> {
     setAnswer(refinement.answer)
+  }
+
+  const saveChanges = ()=> {
+    const _refinement = {...refinement}
+    _refinement.answer = answer
+    updateRefinement(_refinement)
   }
 
   if(refinement.is_positive) return <></>
@@ -42,6 +52,7 @@ export const RefinementEditRow = ({refinement, msg}) => {
           <Button
             disabled={answer === refinement.answer}
             variant='contained'
+            onClick={saveChanges}
           >
             Save
           </Button>
@@ -59,5 +70,4 @@ export const RefinementEditRow = ({refinement, msg}) => {
 
 RefinementEditRow.propTypes = {
   refinement: PropTypes.object,
-  msg: PropTypes.object,
 };

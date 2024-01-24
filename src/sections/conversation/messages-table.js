@@ -1,21 +1,8 @@
 import PropTypes from 'prop-types';
-import { format } from 'date-fns';
-import {
-  Box,
-  Button,
-  Card,
-  Stack,
-  SvgIcon,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow
-} from '@mui/material';
+import { Box, Card, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { Scrollbar } from 'src/components/scrollbar';
 import { useApi } from '../../hooks/use-api';
-import { HandThumbDownIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
-import { RefinementEditRow } from './refinement-edit-row';
+import { MessageRow } from './message-row';
 
 export const MessagesTable = (props) => {
   const {
@@ -65,60 +52,7 @@ export const MessagesTable = (props) => {
               {sortedItems.map((msg, i) => {
                 const refinement = refinements.find(r=>r.message_id===msg.id)
                 refinement && console.log(refinement)
-                let refineUp = false
-                let refineDown = false
-                if(refinement) {
-                  refineUp = refinement.is_positive
-                  refineDown = !refinement.is_positive
-                }
-                const userData = Object.entries(msg)
-                                       .filter(([key, value]) => key.startsWith('user_') && key !== 'user_msg' && (typeof value === 'string' || (typeof value === 'boolean' && value)))
-                                       .map(([key, value]) => `${key}: ${value}`)
-                                       .join(', ');
-                return (
-                  <>
-                  <TableRow
-                    key={msg.id}
-                  >
-                    <TableCell>
-                      {i+1}
-                    </TableCell>
-                    <TableCell>
-                      {format((msg._ts*1000), 'MM/dd/yyyy hh:mm pp')}
-                    </TableCell>
-                    <TableCell>
-                      {msg.user_msg}
-                    </TableCell>
-                    <TableCell>
-                      {msg.assistant_response}
-                    </TableCell>
-                    <TableCell>
-                      {userData}
-                    </TableCell>
-                    <TableCell>
-                      <Stack direction={'row'}>
-                        <Button
-                          variant={refineUp && 'contained'}
-                        >
-                          <SvgIcon fontSize="small">
-                            <HandThumbUpIcon />
-                          </SvgIcon>
-                        </Button>
-                        <Button
-                          variant={refineDown && 'contained'}
-                        >
-                          <SvgIcon fontSize="small">
-                            <HandThumbDownIcon />
-                          </SvgIcon>
-                        </Button>
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
-                  {
-                    refinement && (<RefinementEditRow refinement={refinement} msg={msg}/> )
-                  }
-                  </>
-                )
+                return <MessageRow refinement={refinement} msg={msg} rowIndex={i} key={i} />
               })}
             </TableBody>
           </Table>

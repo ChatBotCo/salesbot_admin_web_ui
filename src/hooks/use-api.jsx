@@ -469,7 +469,7 @@ export const ApiProvider = ({ children }) => {
     })
       .then(data=> {
         if(data.status === 204) {
-          setSaveResults('Conversation delete')
+          setSaveResults('Conversation deleted')
           setSaveResultsSeverity('success')
           setShowSaveResults(true)
           return reloadConvos()
@@ -480,6 +480,63 @@ export const ApiProvider = ({ children }) => {
         }
       })
       .finally(()=>setSaving(false))
+  }
+
+  const addRefinement = (msg, is_positive) => {
+    setSaving(true)
+    const body = {
+      message_id: msg.id,
+      convo_id: msg.conversation_id,
+      is_positive
+    }
+    fetchNoData(`${backendUrl}/api/refinements`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body)
+    })
+      .then(data=> {
+        if(data.status === 204) {
+          setSaveResults('Feedback added, thank you!')
+          setSaveResultsSeverity('success')
+          return reloadRefinements()
+        } else {
+          setSaveResults('There was an error adding your feedback')
+          setSaveResultsSeverity('error')
+          return reloadRefinements()
+        }
+      })
+      .finally(()=>{
+        setShowSaveResults(true)
+        setSaving(false)
+      })
+  }
+
+  const updateRefinement = refinement => {
+    setSaving(true)
+    fetchNoData(`${backendUrl}/api/refinements`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(refinement)
+    })
+      .then(data=> {
+        if(data.status === 204) {
+          setSaveResults('Feedback updated, thank you!')
+          setSaveResultsSeverity('success')
+          return reloadRefinements()
+        } else {
+          setSaveResults('There was an error updating your feedback')
+          setSaveResultsSeverity('error')
+          return reloadRefinements()
+        }
+      })
+      .finally(()=>{
+        setShowSaveResults(true)
+        setSaving(false)
+      })
   }
 
   // On User object update (auth change)
@@ -563,7 +620,7 @@ export const ApiProvider = ({ children }) => {
         selectedCompanyId, setSelectedCompanyId,
         deleteConvo,
         convoHasUserData,
-        refinements,
+        refinements, addRefinement, updateRefinement,
       }}
     >
       {children}
