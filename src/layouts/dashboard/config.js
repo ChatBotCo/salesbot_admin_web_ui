@@ -1,11 +1,12 @@
-import { SvgIcon } from '@mui/material';
+import {SvgIcon} from '@mui/material';
 import {
   AcademicCapIcon,
+  BeakerIcon,
   BuildingStorefrontIcon,
   ChartBarIcon,
-  ChatBubbleLeftRightIcon, CloudArrowDownIcon,
-  HandThumbUpIcon,
-  StarIcon
+  ChatBubbleLeftRightIcon,
+  CloudArrowDownIcon,
+  HandThumbUpIcon
 } from '@heroicons/react/24/solid';
 
 export const items = [
@@ -51,6 +52,15 @@ export const items = [
     icon: (
       <SvgIcon fontSize="small">
         <CloudArrowDownIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Test Your Chatbot',
+    path: '/playground',
+    icon: (
+      <SvgIcon fontSize="small">
+        <BeakerIcon />
       </SvgIcon>
     )
   },
