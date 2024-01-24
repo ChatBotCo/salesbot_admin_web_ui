@@ -39,6 +39,7 @@ export const ApiProvider = ({ children }) => {
   const [navToMsgsFromLeadsTable, setNavToMsgsFromLeadsTable] = useState(false)
   const [onboardingStep, setOnboardingStep] = useState(onboardingSteps.notReady)
   const [userApprovalStatus, setUserApprovalStatus] = useState('')
+  const [refinements, setRefinements] = useState([])
 
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -170,6 +171,11 @@ export const ApiProvider = ({ children }) => {
       })
   }
 
+  const reloadRefinements = () => {
+    return fetchWithData(`${backendUrl}/api/refinements`, {method: "GET"})
+      .then(setRefinements)
+  }
+
   const loadAllDataForAuthorizedUser = () => {
     if(user) {
       if(user.approval_status!=='approved') {
@@ -199,6 +205,7 @@ export const ApiProvider = ({ children }) => {
           reloadChatbots(),
           reloadLinks(),
           reloadConvos(),
+          reloadRefinements(),
 
           fetchWithData(`${backendUrl}/api/messages?latest=true`, {method: "GET"})
             .then(latestMsgs => {
@@ -556,6 +563,7 @@ export const ApiProvider = ({ children }) => {
         selectedCompanyId, setSelectedCompanyId,
         deleteConvo,
         convoHasUserData,
+        refinements,
       }}
     >
       {children}
