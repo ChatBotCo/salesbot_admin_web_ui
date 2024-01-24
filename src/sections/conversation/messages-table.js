@@ -41,9 +41,6 @@ export const MessagesTable = (props) => {
                   ChatBot Response
                 </TableCell>
                 <TableCell>
-                  User Data Collected
-                </TableCell>
-                <TableCell>
                   Feedback (optional)
                 </TableCell>
               </TableRow>
@@ -51,7 +48,6 @@ export const MessagesTable = (props) => {
             <TableBody>
               {sortedItems.map((msg, i) => {
                 const refinement = refinements.find(r=>r.message_id===msg.id)
-                refinement && console.log(refinement)
                 return <MessageRow refinement={refinement} msg={msg} rowIndex={i} key={i} />
               })}
             </TableBody>

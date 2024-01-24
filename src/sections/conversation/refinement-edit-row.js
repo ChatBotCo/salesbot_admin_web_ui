@@ -36,7 +36,7 @@ export const RefinementEditRow = ({refinement}) => {
 
   return (
     <TableRow sx={{borderTop:'2px white solid', borderLeft:'20px lightgray solid'}}>
-      <TableCell colSpan={5}>
+      <TableCell colSpan={4}>
         <FormLabel id="refinement-answer">
           <InfoPopover infoText={"You have indicated that you don't like how the chatbot responded to this question from the site visitor. Write exactly how the chatbot should have responded here and next time it will repeat your words almost exactly."} id={'refinement-answer-info'} />
           How should the chatbot respond instead?

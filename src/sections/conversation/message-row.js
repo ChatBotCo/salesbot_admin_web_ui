@@ -4,12 +4,16 @@ import { Button, Stack, SvgIcon, TableCell, TableRow } from '@mui/material';
 import { HandThumbDownIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
 import { RefinementEditRow } from './refinement-edit-row';
 import { useApi } from '../../hooks/use-api';
+import { MessageCollapsableRowData } from './message-collapsable-row-data';
+import { useState } from 'react';
 
 export const MessageRow = ({refinement, msg, rowIndex}) => {
   const {
     addRefinement,
     updateRefinement,
   } = useApi()
+
+  const [expanded, setExpanded] = useState(false);
 
   const onClickFeedback = (refinement, msg, is_positive)=>{
     if(refinement) {
@@ -27,15 +31,13 @@ export const MessageRow = ({refinement, msg, rowIndex}) => {
     refineUp = refinement.is_positive
     refineDown = !refinement.is_positive
   }
-  const userData = Object.entries(msg)
-                         .filter(([key, value]) => key.startsWith('user_') && key !== 'user_msg' && (typeof value === 'string' || (typeof value === 'boolean' && value)))
-                         .map(([key, value]) => `${key}: ${value}`)
-                         .join(', ');
-
   return (
     <>
       <TableRow
         key={rowIndex}
+        hover
+        sx={{cursor:'pointer', borderTop:'solid lightgray 2px'}}
+        onClick={()=>setExpanded(!expanded)}
       >
         <TableCell>
           {rowIndex+1}
@@ -48,9 +50,6 @@ export const MessageRow = ({refinement, msg, rowIndex}) => {
         </TableCell>
         <TableCell>
           {msg.assistant_response}
-        </TableCell>
-        <TableCell>
-          {userData}
         </TableCell>
         <TableCell>
           <Stack direction={'row'}>
@@ -76,6 +75,7 @@ export const MessageRow = ({refinement, msg, rowIndex}) => {
       {
         refinement && (<RefinementEditRow refinement={refinement}/> )
       }
+      <MessageCollapsableRowData msg={msg} expanded={expanded}/>
     </>
   );
 };

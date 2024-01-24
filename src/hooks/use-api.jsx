@@ -487,7 +487,9 @@ export const ApiProvider = ({ children }) => {
     const body = {
       message_id: msg.id,
       convo_id: msg.conversation_id,
-      is_positive
+      is_positive,
+      question: msg.user_msg,
+      answer: is_positive ? msg.assistant_response : null,
     }
     fetchNoData(`${backendUrl}/api/refinements`, {
       method: "POST",
