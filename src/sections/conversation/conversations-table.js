@@ -1,49 +1,89 @@
-import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import {
   Box,
   Button,
-  Card, Stack,
+  Card,
+  Stack,
   SvgIcon,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TableRow, Typography
+  TableRow,
+  Typography
 } from '@mui/material';
 import { Scrollbar } from 'src/components/scrollbar';
-import NextLink from 'next/link';
 import { CheckCircleIcon as CheckCircleIconSolid, QueueListIcon } from '@heroicons/react/24/solid';
-import {TrashIcon} from "@heroicons/react/24/outline";
-import {useAuth} from "../../hooks/use-auth";
-import {useApi} from "../../hooks/use-api";
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '../../hooks/use-auth';
+import { useApi } from '../../hooks/use-api';
+import { useEffect, useState } from 'react';
 
-export const ConversationsTable = (props) => {
-  const {
-    items = [],
-    messageCountsPerConvo = {},
-  } = props;
+export const ConversationsTable = () => {
 
   const {
     user,
   } = useAuth()
 
   const {
+    conversationsByCompanyId,
+    companiesByCompanyId,
+    selectedCompanyId,
     deleteConvo,
     convoHasUserData,
+    msgsByConvoId,
+    messageCountsPerConvo,
   } = useApi()
 
-  const sortedItems = items.sort((a, b) => {
-    if (a._ts < b._ts) {
-      return 1;
-    }
-    if (a._ts > b._ts) {
-      return -1;
-    }
-    return 0;
-  });
+  const [conversations, setConversations] = useState([]);
+  const [mostRecentMsgByConvoId, setMostRecentMsgByConvoId] = useState({});
 
-  const filteredSortedItems = sortedItems.filter(convo=>messageCountsPerConvo[convo.id])
+  const mostRecentMessageForConvo = convo=>{
+    const msgs = msgsByConvoId[convo.id] || []
+    const sortedMsgs = msgs.sort((a, b) => {
+      if (a._ts < b._ts) {
+        return 1;
+      }
+      if (a._ts > b._ts) {
+        return -1;
+      }
+      return 0;
+    });
+    if(sortedMsgs.length) {
+      return sortedMsgs[0]
+    } else {
+      return null
+    }
+  }
+
+  useEffect(() => {
+    const company = companiesByCompanyId[selectedCompanyId]
+    if(company) {
+      const convos = conversationsByCompanyId[selectedCompanyId] || []
+
+      let _mostRecentMsgByConvoId = convos.reduce((acc, convo) => {
+        acc[convo.id] = mostRecentMessageForConvo(convo)
+        return acc;
+      }, {});
+      setMostRecentMsgByConvoId(_mostRecentMsgByConvoId)
+
+      const sortedConvos = convos.sort((convoA, convoB) => {
+        const msgA = _mostRecentMsgByConvoId[convoA.id] || {_ts:0}
+        const msgB = _mostRecentMsgByConvoId[convoB.id] || {_ts:0}
+        if (msgA._ts < msgB._ts) {
+          return 1;
+        }
+        if (msgA._ts > msgB._ts) {
+          return -1;
+        }
+        return 0;
+      });
+      const filteredSortedItems = sortedConvos.filter(convo=>messageCountsPerConvo[convo.id])
+      setConversations(filteredSortedItems)
+    } else {
+      setConversations([])
+    }
+  },[selectedCompanyId, conversationsByCompanyId, companiesByCompanyId, msgsByConvoId]);
 
   const handleDeleteConvo = convoId => {
     if(window.confirm('Are you sure you want to delete this conversation permanently?')) {
@@ -60,11 +100,15 @@ export const ConversationsTable = (props) => {
               <TableRow>
                 <TableCell/>
                 <TableCell>
-                  Date Started
+                  Last Message
                 </TableCell>
-                <TableCell>
-                  ID
-                </TableCell>
+                {
+                  user.role==='root' && (
+                    <TableCell>
+                      Database ID
+                    </TableCell>
+                  )
+                }
                 <TableCell/>
                 <TableCell>Many Messages</TableCell>
                 <TableCell>Lead Generated?</TableCell>
@@ -74,7 +118,10 @@ export const ConversationsTable = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredSortedItems.map((convo, i) => {
+              {conversations.map((convo, i) => {
+                const msg = mostRecentMsgByConvoId[convo.id] || {_ts:0}
+                const dateStr = format((msg._ts*1000), 'MM/dd/yyyy')
+                const timeStr = format((msg._ts*1000), 'p')
                 const leadGen = convoHasUserData(convo) ? (
                   <Stack direction={'row'} justifyContent={'center'}>
                     <Typography variant='subtitle2'>YES</Typography>
@@ -93,11 +140,18 @@ export const ConversationsTable = (props) => {
                       {i+1}
                     </TableCell>
                     <TableCell>
-                      {format((convo._ts*1000), 'MM/dd/yyyy hh:mm pp')}
+                      <Stack direction={'column'} justifyContent={'center'}>
+                        <Typography variant={'subtitle2'} textAlign={'center'}>{dateStr}</Typography>
+                        <Typography variant={'subtitle2'} textAlign={'center'}>{timeStr}</Typography>
+                      </Stack>
                     </TableCell>
-                    <TableCell>
-                      {convo.id}
-                    </TableCell>
+                    {
+                      user.role==='root' && (
+                        <TableCell>
+                          {convo.id}
+                        </TableCell>
+                      )
+                    }
                     <TableCell>
                       <Button
                         href={`/messages?convo_id=${convo.id}`}
@@ -140,9 +194,4 @@ export const ConversationsTable = (props) => {
       </Scrollbar>
     </Card>
   );
-};
-
-ConversationsTable.propTypes = {
-  items: PropTypes.array,
-  messageCountsPerConvo: PropTypes.object,
 };
