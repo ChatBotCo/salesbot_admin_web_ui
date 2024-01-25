@@ -103,7 +103,7 @@ export const ConversationsTable = () => {
                   Last Message
                 </TableCell>
                 {
-                  user.role==='root' && (
+                  user && user.role==='root' && (
                     <TableCell>
                       Database ID
                     </TableCell>
@@ -146,7 +146,7 @@ export const ConversationsTable = () => {
                       </Stack>
                     </TableCell>
                     {
-                      user.role==='root' && (
+                      user && user.role==='root' && (
                         <TableCell>
                           {convo.id}
                         </TableCell>
