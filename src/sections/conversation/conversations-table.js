@@ -18,8 +18,10 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../../hooks/use-auth';
 import { useApi } from '../../hooks/use-api';
 import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { LeadsTable } from './leads-table';
 
-export const ConversationsTable = () => {
+export const ConversationsTable = ({conversations, setConversations}) => {
 
   const {
     user,
@@ -35,7 +37,6 @@ export const ConversationsTable = () => {
     messageCountsPerConvo,
   } = useApi()
 
-  const [conversations, setConversations] = useState([]);
   const [mostRecentMsgByConvoId, setMostRecentMsgByConvoId] = useState({});
 
   const mostRecentMessageForConvo = convo=>{
@@ -194,4 +195,9 @@ export const ConversationsTable = () => {
       </Scrollbar>
     </Card>
   );
+};
+
+ConversationsTable.propTypes = {
+  conversations: PropTypes.array,
+  setConversations: PropTypes.func,
 };

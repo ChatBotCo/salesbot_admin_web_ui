@@ -8,22 +8,18 @@ import { useApi } from '../hooks/use-api';
 const Page = () => {
   const {
     loading,
-    conversationsByCompanyId,
-    companiesByCompanyId,
-    selectedCompanyId,
   } = useApi()
 
+  const [conversations, setConversations] = useState([]);
   const [titleElement, setTitleElement] = useState('Conversations');
 
   useEffect(() => {
-    const company = companiesByCompanyId[selectedCompanyId]
-    if(company) {
-      const convos = conversationsByCompanyId[selectedCompanyId] || []
-      setTitleElement(`${convos.length} Conversations`)
+    if(conversations) {
+      setTitleElement(`${conversations.length} Conversations`)
     } else {
       setTitleElement('Conversations')
     }
-  },[selectedCompanyId, conversationsByCompanyId, companiesByCompanyId]);
+  },[conversations]);
 
   return (
     <>
@@ -52,7 +48,7 @@ const Page = () => {
                 </Typography>
               </Stack>
             </Stack>
-            <ConversationsTable />
+            <ConversationsTable conversations={conversations} setConversations={setConversations} />
           </Stack>
         </Container>
       </Box>
