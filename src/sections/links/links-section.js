@@ -22,6 +22,7 @@ export const LinksSection = () => {
   const hasIncompleteLinks = linksForSelectedCompany.filter(link=>link.status==='').length > 0
   const isCompanyTraining = selectedCompany.training
 
+  let isTraingingComplete = false
   let trainingHeaderEl
   if(!hasLinks) {
     trainingHeaderEl = <LinksInputCard selectedCompanyId={selectedCompanyId} />
@@ -32,6 +33,7 @@ export const LinksSection = () => {
     const manyCompleteLinks = linksForSelectedCompany.filter(link=>link.status!=='').length > 0
     trainingHeaderEl = <LinksTrainingProgress progress={Math.floor(manyCompleteLinks / manyLinks * 100)}/>
   } else {
+    isTraingingComplete = true
     trainingHeaderEl = <LinksTrainingComplete />
   }
 
@@ -51,7 +53,7 @@ export const LinksSection = () => {
             direction={'row'}
           >
             <Typography variant="h4">
-              Chatbot Training Results
+              {isTraingingComplete ? 'Chatbot Training Results' : 'Train Your Chatbot'}
               {loading && <CircularProgress />}
             </Typography>
           </Stack>

@@ -426,6 +426,32 @@ export const ApiProvider = ({ children }) => {
       .finally(()=>setSaving(false))
   }
 
+  const startTraining2 = (company_id, links) => {
+    setSaving(true)
+    fetchNoData(`${backendUrl}/api/links/start_training`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({links}),
+    })
+      .then(data=> {
+        if(data.status === 204) {
+          setSaveResults('Training started')
+          setSaveResultsSeverity('success')
+          setShowSaveResults(true)
+          window.location.reload()
+          // setPollLinks(company_id)
+          // return reloadCompanies()
+        } else {
+          setSaveResults('There was an error starting the training')
+          setSaveResultsSeverity('error')
+          setShowSaveResults(true)
+        }
+      })
+      .finally(()=>setSaving(false))
+  }
+
   const createCompany = (newCompany) => {
     setSaving(true)
     fetchNoData(`${backendUrl}/api/companies`, {
@@ -616,7 +642,7 @@ export const ApiProvider = ({ children }) => {
         linksById,
         saveLinkChanges,
         addLink,
-        startTraining,
+        startTraining, startTraining2,
         onboardingSteps, onboardingStep, setOnboardingStep,
         userApprovalStatus,
         selectedCompanyId, setSelectedCompanyId,
