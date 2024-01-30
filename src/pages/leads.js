@@ -1,7 +1,6 @@
 import Head from 'next/head';
-import { Box, CircularProgress, Container, Stack, Tab, Typography } from '@mui/material';
+import { Box, CircularProgress, Container, Stack, Typography } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { ConversationsTable } from '../sections/conversation/conversations-table';
 import { useApi } from '../hooks/use-api';
 import { LeadsTable } from '../sections/conversation/leads-table';
 import { useEffect, useState } from 'react';
