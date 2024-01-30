@@ -9,7 +9,7 @@ import {
   RadioGroup,
   Stack,
   SvgIcon,
-  TextField,
+  TextField, Typography,
   Unstable_Grid2 as Grid
 } from '@mui/material';
 import PropTypes from 'prop-types';
@@ -25,6 +25,8 @@ import {
   UserCircleIcon,
   PhoneIcon,
 } from '@heroicons/react/24/outline';
+import CurrencyDollarIcon from '@heroicons/react/24/solid/CurrencyDollarIcon';
+import { WrenchScrewdriverIcon } from '@heroicons/react/24/solid';
 
 const llmModels = [
   {
@@ -47,6 +49,8 @@ const defaultValues = {
   redirect_to_calendar: false,
   calendar_link: '',
   collect_user_info: false,
+  role_sales: false,
+  role_support: false,
 }
 
 export const ChatbotEdit = (props) => {
@@ -62,6 +66,7 @@ export const ChatbotEdit = (props) => {
 
   const [values, setValues] = useState(defaultValues);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [highlightRoles, setHighlightRoles] = useState(false);
 
   const handleChange = useCallback(
     (event) => {
@@ -111,6 +116,7 @@ export const ChatbotEdit = (props) => {
   }, [values, chatbot])
 
   const onClickSave = () => {
+    setHighlightRoles(false)
     const incompleteRedirectPrompt = values.redirect_prompts.find(rdp=>{
       return !rdp.prompt ||
         !rdp.url ||
@@ -118,7 +124,10 @@ export const ChatbotEdit = (props) => {
         !(rdp.url && rdp.url.trim())
     }) !== undefined
 
-    if(values.show_call_to_action && !values.contact_link) {
+    if(!values.role_sales && !values.role_support) {
+      setHighlightRoles(true)
+      alert('Chatbot needs to provide at least one role: sales, customer-support, or both')
+    } else if(values.show_call_to_action && !values.contact_link) {
       alert('Please provide a redirect webpage for the call-to-action button')
     } else if(values.show_call_to_action && !values.contact_link.startsWith('http')) {
       alert('Call-to-action URL needs to start with https://...')
@@ -309,13 +318,27 @@ export const ChatbotEdit = (props) => {
       </CollapseCard>
 
       <CollapseCard
-        title='How do you want to do generate leads?'
-        icon={<PhoneIcon/>}
+        title={<>
+          <span
+          style={highlightRoles ? {color:'red'}:{}}
+          >Do you want that chatbot to act as a sales rep?</span>
+          <Checkbox
+            checked={values.role_sales || false}
+            onChange={handleChangeCheckbox}
+            name="role_sales"
+          />
+        </>}
+        icon={<CurrencyDollarIcon/>}
       >
         <Grid
           container
           spacing={3}
         >
+          <Grid
+            xs={12}
+          >
+            How do you want to do generate leads?
+          </Grid>
           <Grid
             xs={12}
             md={6}
@@ -410,6 +433,21 @@ export const ChatbotEdit = (props) => {
             />
         </Grid>
         </Grid>
+      </CollapseCard>
+      <CollapseCard
+        title={<>
+          <span
+          style={highlightRoles ? {color:'red'}:{}}
+          >Do you want that chatbot to provide customer support?</span>
+          <Checkbox
+            checked={values.role_support || false}
+            onChange={handleChangeCheckbox}
+            name="role_support"
+          />
+        </>}
+        icon={<WrenchScrewdriverIcon/>}
+      >
+        (More configuration options for customer support role COMING SOON!
       </CollapseCard>
 
       <CollapseCard
