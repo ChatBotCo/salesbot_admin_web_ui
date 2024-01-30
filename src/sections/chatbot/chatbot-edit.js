@@ -337,7 +337,11 @@ export const ChatbotEdit = (props) => {
           <Grid
             xs={12}
           >
-            How do you want to do generate leads?
+            {
+              values.role_sales ?
+                <Typography variant={'h6'}>How do you want to do generate leads?</Typography> :
+                <span style={{color:'gray'}}>Chatbot will not function as a sales rep.</span>
+            }
           </Grid>
           <Grid
             xs={12}
@@ -348,6 +352,7 @@ export const ChatbotEdit = (props) => {
                 checked={values.show_call_to_action || false}
                 onChange={handleChangeCheckbox}
                 name="show_call_to_action"
+                disabled={!values.role_sales}
               />
             } label={<>
               Call-to-action Button
@@ -373,8 +378,11 @@ export const ChatbotEdit = (props) => {
               fullWidth
               error={values.show_call_to_action && values.contact_link === ''}
               name="contact_link"
-              onChange={handleChange}
+              onChange={e=>{
+                values.role_sales && handleChange(e)
+              }}
               value={values.contact_link || ''}
+              disabled={!values.role_sales}
             />
           </Grid>
           <Grid
@@ -385,6 +393,7 @@ export const ChatbotEdit = (props) => {
                 checked={values.collect_user_info || false}
                 onChange={handleChangeCheckbox}
                 name="collect_user_info"
+                disabled={!values.role_sales}
               />
             } label={<>
               Solicit Contact Info
@@ -403,6 +412,7 @@ export const ChatbotEdit = (props) => {
                 checked={values.redirect_to_calendar || false}
                 onChange={handleChangeCheckbox}
                 name="redirect_to_calendar"
+                disabled={!values.role_sales}
               />
             } label={<>
               Redirect to Calendar App
@@ -428,12 +438,16 @@ export const ChatbotEdit = (props) => {
               fullWidth
               error={values.redirect_to_calendar && values.calendar_link === ''}
               name="calendar_link"
-              onChange={handleChange}
+              onChange={e=>{
+                values.role_sales && handleChange(e)
+              }}
+              disabled={!values.role_sales}
               value={values.calendar_link || ''}
             />
         </Grid>
         </Grid>
       </CollapseCard>
+
       <CollapseCard
         title={<>
           <span
