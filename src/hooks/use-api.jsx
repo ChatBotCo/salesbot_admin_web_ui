@@ -567,6 +567,32 @@ export const ApiProvider = ({ children }) => {
       })
   }
 
+  const retrainLink = link => {
+    setSaving(true)
+    fetchNoData(`${backendUrl}/api/links/retrain`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(link)
+    })
+      .then(data=> {
+        if(data.status === 204) {
+          setSaveResults('Link training started')
+          setSaveResultsSeverity('success')
+          window.location.reload()
+        } else {
+          setSaveResults('There was an error trying to start retrain this link')
+          setSaveResultsSeverity('error')
+          // window.location.reload()
+        }
+      })
+      .finally(()=>{
+        setShowSaveResults(true)
+        setSaving(false)
+      })
+  }
+
   // On User object update (auth change)
   useEffect(() => {
     clearAllDataForAuthorizedUser()
@@ -639,9 +665,7 @@ export const ApiProvider = ({ children }) => {
         showSaveResults, saveResults, handleDismissSaveResults, saveResultsSeverity, saving,
         setSaveResults, setSaveResultsSeverity, setShowSaveResults, setSaving,
         createCompany,
-        linksById,
-        saveLinkChanges,
-        addLink,
+        linksById, saveLinkChanges, addLink, retrainLink,
         startTraining, startTraining2,
         onboardingSteps, onboardingStep, setOnboardingStep,
         userApprovalStatus,

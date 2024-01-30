@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import {
-  Box,
+  Box, Button,
   Card,
   SvgIcon,
   Table,
@@ -10,8 +10,10 @@ import {
   TableRow
 } from '@mui/material';
 import { Scrollbar } from 'src/components/scrollbar';
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
+import { EyeIcon, EyeSlashIcon, QueueListIcon } from '@heroicons/react/24/solid';
 import { useApi } from '../../hooks/use-api';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import ArrowPathIcon from '@heroicons/react/24/solid/ArrowPathIcon';
 
 export const LinksTable = (props) => {
   const {
@@ -19,7 +21,7 @@ export const LinksTable = (props) => {
   } = props;
 
   const {
-    saveLinkChanges,
+    retrainLink,
   } = useApi()
 
   const sortedItems = items.sort((a, b) => {
@@ -31,14 +33,6 @@ export const LinksTable = (props) => {
     }
     return 0;
   });
-
-  const toggleIgnore = link => {
-    return () =>{
-      const updatedLink = {...link}
-      updatedLink.status = link.status === 'ignore' ? '' : 'ignore'
-      saveLinkChanges(updatedLink)
-    }
-  }
 
   return (
     <Card>
@@ -57,6 +51,7 @@ export const LinksTable = (props) => {
                 <TableCell>
                   Result
                 </TableCell>
+                <TableCell/>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -76,6 +71,24 @@ export const LinksTable = (props) => {
                     </TableCell>
                     <TableCell>
                       {link.result}
+                    </TableCell>
+                    <TableCell>
+                      {
+                        link.status && (
+                          <Button
+                            onClick={()=>retrainLink(link)}
+                            startIcon={(
+                              <SvgIcon fontSize="small">
+                                <ArrowPathIcon />
+                              </SvgIcon>
+                            )}
+                            sx={{ mt: 3 }}
+                            variant="contained"
+                          >
+                            Retrain
+                          </Button>
+                        )
+                      }
                     </TableCell>
                   </TableRow>
                 );
