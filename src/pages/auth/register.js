@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import {Alert, Box, Button, Link, Snackbar, Stack, TextField, Typography} from '@mui/material';
 import { useAuth } from 'src/hooks/use-auth';
 import { Layout as AuthLayout } from 'src/layouts/auth/layout';
+import { useState } from 'react';
 
 const Page = () => {
   const router = useRouter();
@@ -13,6 +14,8 @@ const Page = () => {
     signUp,
     showAuthResults, authResults, authResultsSeverity,handleDismissAuthResults,
   } = useAuth();
+
+  const [isEmailError, setIsEmailError] = useState(false)
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -31,15 +34,30 @@ const Page = () => {
         .required('Password is required')
     }),
     onSubmit: async (values, helpers) => {
-      try {
-        if(await signUp(values.email, values.password)) window.location.replace("/")
-      } catch (err) {
+      const isAllowed = isEmailAllowed(values.email)
+      if(isAllowed) {
+        try {
+          if(await signUp(values.email, values.password)) window.location.replace("/")
+        } catch (err) {
+          helpers.setStatus({ success: false });
+          helpers.setErrors({ submit: err.message });
+          helpers.setSubmitting(false);
+        }
+      } else {
+        setIsEmailError(true)
         helpers.setStatus({ success: false });
-        helpers.setErrors({ submit: err.message });
+        helpers.setErrors({ submit: "Anonymous email addresses are not allowed.  Please use an email from your organization." });
         helpers.setSubmitting(false);
       }
     }
   });
+
+  function isEmailAllowed(email) {
+    const blacklistedDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
+    const domain = email.split('@')[1];
+    return !blacklistedDomains.includes(domain);
+  }
+
 
   return (
     <>
@@ -94,13 +112,16 @@ const Page = () => {
             >
               <Stack spacing={3}>
                 <TextField
-                  error={!!(formik.touched.email && formik.errors.email)}
+                  error={(!!(formik.touched.email && formik.errors.email)) || isEmailError}
                   fullWidth
                   helperText={formik.touched.email && formik.errors.email}
                   label="Email Address"
                   name="email"
                   onBlur={formik.handleBlur}
-                  onChange={formik.handleChange}
+                  onChange={e=>{
+                    setIsEmailError(false)
+                    formik.handleChange(e)
+                  }}
                   type="email"
                   value={formik.values.email}
                 />
