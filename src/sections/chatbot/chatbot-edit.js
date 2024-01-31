@@ -51,6 +51,7 @@ const defaultValues = {
   collect_user_info: false,
   role_sales: true,
   role_support: false,
+  chatbot_mode: 'mode-both'
 }
 
 export const ChatbotEdit = (props) => {
@@ -65,8 +66,6 @@ export const ChatbotEdit = (props) => {
   } = useApi()
 
   const [values, setValues] = useState(defaultValues);
-  const [unsavedChanges, setUnsavedChanges] = useState(false);
-  const [highlightRoles, setHighlightRoles] = useState(false);
 
   const handleChange = useCallback(
     (event) => {
@@ -99,24 +98,19 @@ export const ChatbotEdit = (props) => {
     const _values = chatbot || defaultValues
     if(!_values.redirect_prompts) _values.redirect_prompts = []
     if(!_values.answered_questions) _values.answered_questions = []
+    if(chatbot) {
+      if(chatbot.role_sales && chatbot.role_support) {
+        _values.chatbot_mode = 'mode-both'
+      } else if(chatbot.role_sales) {
+        _values.chatbot_mode = 'mode-sales'
+      } else {
+        _values.chatbot_mode = 'mode-support'
+      }
+    }
     setValues(_values)
   }, [chatbot])
 
-  useEffect(() => {
-    if(chatbot) {
-      let changes = false;
-      for (let key in defaultValues) {
-        if (values[key] !== chatbot[key]) {
-          changes = true;
-          break;
-        }
-      }
-      setUnsavedChanges(changes);
-    }
-  }, [values, chatbot])
-
   const onClickSave = () => {
-    setHighlightRoles(false)
     const incompleteRedirectPrompt = values.redirect_prompts.find(rdp=>{
       return !rdp.prompt ||
         !rdp.url ||
@@ -124,10 +118,18 @@ export const ChatbotEdit = (props) => {
         !(rdp.url && rdp.url.trim())
     }) !== undefined
 
-    if(!values.role_sales && !values.role_support) {
-      setHighlightRoles(true)
-      alert('Chatbot needs to provide at least one role: sales, customer-support, or both')
-    } else if(values.show_call_to_action && !values.contact_link) {
+    if(values.chatbot_mode==='mode-both') {
+      values.role_sales = true
+      values.role_support = true
+    } else if(values.chatbot_mode==='mode-sales') {
+      values.role_sales = true
+      values.role_support = false
+    } else {
+      values.role_sales = false
+      values.role_support = true
+    }
+
+    if(values.show_call_to_action && !values.contact_link) {
       alert('Please provide a redirect webpage for the call-to-action button')
     } else if(values.show_call_to_action && !values.contact_link.startsWith('http')) {
       alert('Call-to-action URL needs to start with https://...')
@@ -317,152 +319,160 @@ export const ChatbotEdit = (props) => {
         </Grid>
       </CollapseCard>
 
-      <CollapseCard
-        title={<>
-          <span
-          style={highlightRoles ? {color:'red'}:{}}
-          >Do you want that chatbot to act as a sales rep?</span>
-          <Checkbox
-            checked={values.role_sales || false}
-            onChange={handleChangeCheckbox}
-            name="role_sales"
-          />
-        </>}
-        icon={<CurrencyDollarIcon/>}
+      <TextField
+        name="chatbot_mode"
+        label={'Choose your chatbot mode'}
+        onChange={handleChange}
+        select
+        SelectProps={{ native: true }}
+        value={values.chatbot_mode || 'mode-both'}
+        sx={{mb:2, minWidth:300}}
       >
-        <Grid
-          container
-          spacing={3}
+        <option
+          key='mode-sales'
+          value='mode-sales'
         >
-          <Grid
-            xs={12}
-          >
-            {
-              values.role_sales ?
-                <Typography variant={'h6'}>How do you want to do generate leads?</Typography> :
-                <span style={{color:'gray'}}>Chatbot will not function as a sales rep.</span>
-            }
-          </Grid>
-          <Grid
-            xs={12}
-            md={6}
-          >
-            <FormControlLabel control={
-              <Checkbox
-                checked={values.show_call_to_action || false}
-                onChange={handleChangeCheckbox}
-                name="show_call_to_action"
-                disabled={!values.role_sales}
-              />
-            } label={<>
-              Call-to-action Button
-              <InfoPopover
-                id={'contact-link'}
-                extra={<img style={{width:'200px', margin:'5px'}} src='/assets/call-to-action-button.png'/>}
-              />
-            </>} />
-          </Grid>
-          <Grid
-            xs={12}
-            md={6}
-          >
-            <FormLabel id="contact-link-label">
-              Call-to-action redirect webpage
-              <InfoPopover
-                infoText={'Where do you want to redirect users when they click on the call-to-action button?'}
-                id={'contact-link'}
-              />
-            </FormLabel>
-            <TextField
-              aria-labelledby="contact-link-label"
-              fullWidth
-              error={values.show_call_to_action && values.contact_link === ''}
-              name="contact_link"
-              onChange={e=>{
-                values.role_sales && handleChange(e)
-              }}
-              value={values.contact_link || ''}
-              disabled={!values.role_sales}
-            />
-          </Grid>
-          <Grid
-            xs={12}
-          >
-            <FormControlLabel control={
-              <Checkbox
-                checked={values.collect_user_info || false}
-                onChange={handleChangeCheckbox}
-                name="collect_user_info"
-                disabled={!values.role_sales}
-              />
-            } label={<>
-              Solicit Contact Info
-              <InfoPopover
-                id={'solicit-user-info'}
-                infoText={'If this is checked then the chatbot will try to collect contact information from your customer.  Any information collected will be emailed to you and available on this Admin portal for you to review.'}
-              />
-            </>} />
-          </Grid>
-          <Grid
-            xs={12}
-            md={6}
-          >
-            <FormControlLabel control={
-              <Checkbox
-                checked={values.redirect_to_calendar || false}
-                onChange={handleChangeCheckbox}
-                name="redirect_to_calendar"
-                disabled={!values.role_sales}
-              />
-            } label={<>
-              Redirect to Calendar App
-              <InfoPopover
-                id={'redirect_to_calendar-info'}
-                infoText={'If this is checked then the chatbot will try to redirect site visitors to your calendar app to schedule a call with a sales rep.'}
-              />
-            </>} />
-          </Grid>
-          <Grid
-            xs={12}
-            md={6}
-          >
-            <FormLabel id="redirect_to_calendar-label">
-              Link to your calendar app
-              <InfoPopover
-                infoText={'Where do you want to redirect users when they want to schedule a call with your sales rep?'}
-                id={'redirect_to_calendar-link'}
-              />
-            </FormLabel>
-            <TextField
-              aria-labelledby="redirect_to_calendar-label"
-              fullWidth
-              error={values.redirect_to_calendar && values.calendar_link === ''}
-              name="calendar_link"
-              onChange={e=>{
-                values.role_sales && handleChange(e)
-              }}
-              disabled={!values.role_sales}
-              value={values.calendar_link || ''}
-            />
-        </Grid>
-        </Grid>
-      </CollapseCard>
+          Sales
+        </option>
+        <option
+          key='mode-support'
+          value='mode-support'
+        >
+          Support
+        </option>
+        <option
+          key='mode-both'
+          value='mode-both'
+        >
+          Both
+        </option>
+      </TextField>
 
-      <CollapseCard
-        title={<>
-          <span
-          style={highlightRoles ? {color:'red'}:{}}
-          >Do you want that chatbot to provide customer support?</span>
-          <Checkbox
-            checked={values.role_support || false}
-            onChange={handleChangeCheckbox}
-            name="role_support"
-          />
-        </>}
-        icon={<WrenchScrewdriverIcon/>}
-      >
-        (More configuration options for customer support role COMING SOON!
-      </CollapseCard>
+      {
+        (values.chatbot_mode==='mode-sales' || values.chatbot_mode==='mode-both') && (
+          <CollapseCard
+            title='Sales Mode Options'
+            icon={<CurrencyDollarIcon/>}
+          >
+            <Grid
+              container
+              spacing={3}
+            >
+              <Grid
+                xs={12}
+              >
+                {
+                  values.role_sales ?
+                    <Typography variant={'h6'}>How do you want to do generate leads?</Typography> :
+                    <span style={{color:'gray'}}>Chatbot will not function as a sales rep.</span>
+                }
+              </Grid>
+              <Grid
+                xs={12}
+                md={6}
+              >
+                <FormControlLabel control={
+                  <Checkbox
+                    checked={values.show_call_to_action || false}
+                    onChange={handleChangeCheckbox}
+                    name="show_call_to_action"
+                    disabled={!values.role_sales}
+                  />
+                } label={<>
+                  Call-to-action Button
+                  <InfoPopover
+                    id={'contact-link'}
+                    extra={<img style={{width:'200px', margin:'5px'}} src='/assets/call-to-action-button.png'/>}
+                  />
+                </>} />
+              </Grid>
+              <Grid
+                xs={12}
+                md={6}
+              >
+                <FormLabel id="contact-link-label">
+                  Call-to-action redirect webpage
+                  <InfoPopover
+                    infoText={'Where do you want to redirect users when they click on the call-to-action button?'}
+                    id={'contact-link'}
+                  />
+                </FormLabel>
+                <TextField
+                  aria-labelledby="contact-link-label"
+                  fullWidth
+                  error={values.show_call_to_action && values.contact_link === ''}
+                  name="contact_link"
+                  onChange={e=>{
+                    values.role_sales && handleChange(e)
+                  }}
+                  value={values.contact_link || ''}
+                  disabled={!values.role_sales}
+                />
+              </Grid>
+              <Grid
+                xs={12}
+              >
+                <FormControlLabel control={
+                  <Checkbox
+                    checked={values.collect_user_info || false}
+                    onChange={handleChangeCheckbox}
+                    name="collect_user_info"
+                    disabled={!values.role_sales}
+                  />
+                } label={<>
+                  Solicit Contact Info
+                  <InfoPopover
+                    id={'solicit-user-info'}
+                    infoText={'If this is checked then the chatbot will try to collect contact information from your customer.  Any information collected will be emailed to you and available on this Admin portal for you to review.'}
+                  />
+                </>} />
+              </Grid>
+              <Grid
+                xs={12}
+                md={6}
+              >
+                <FormControlLabel control={
+                  <Checkbox
+                    checked={values.redirect_to_calendar || false}
+                    onChange={handleChangeCheckbox}
+                    name="redirect_to_calendar"
+                    disabled={!values.role_sales}
+                  />
+                } label={<>
+                  Redirect to Calendar App
+                  <InfoPopover
+                    id={'redirect_to_calendar-info'}
+                    infoText={'If this is checked then the chatbot will try to redirect site visitors to your calendar app to schedule a call with a sales rep.'}
+                  />
+                </>} />
+              </Grid>
+              <Grid
+                xs={12}
+                md={6}
+              >
+                <FormLabel id="redirect_to_calendar-label">
+                  Link to your calendar app
+                  <InfoPopover
+                    infoText={'Where do you want to redirect users when they want to schedule a call with your sales rep?'}
+                    id={'redirect_to_calendar-link'}
+                  />
+                </FormLabel>
+                <TextField
+                  aria-labelledby="redirect_to_calendar-label"
+                  fullWidth
+                  error={values.redirect_to_calendar && values.calendar_link === ''}
+                  name="calendar_link"
+                  onChange={e=>{
+                    values.role_sales && handleChange(e)
+                  }}
+                  disabled={!values.role_sales}
+                  value={values.calendar_link || ''}
+                />
+              </Grid>
+            </Grid>
+          </CollapseCard>
+        )
+      }
 
       <CollapseCard
         title='Redirect Actions'
