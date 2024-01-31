@@ -49,7 +49,7 @@ const defaultValues = {
   redirect_to_calendar: false,
   calendar_link: '',
   collect_user_info: false,
-  role_sales: false,
+  role_sales: true,
   role_support: false,
 }
 
