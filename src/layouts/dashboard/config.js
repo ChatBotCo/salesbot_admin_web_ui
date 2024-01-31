@@ -55,16 +55,15 @@ export const items = [
       </SvgIcon>
     )
   },
-  // TODO: Need to find a way to set the company_id in the HTML (see playground.js)
-  // {
-  //   title: 'Test Your Chatbot',
-  //   path: '/playground',
-  //   icon: (
-  //     <SvgIcon fontSize="small">
-  //       <BeakerIcon />
-  //     </SvgIcon>
-  //   )
-  // },
+  {
+    title: 'Test Your Chatbot',
+    path: '/playground',
+    icon: (
+      <SvgIcon fontSize="small">
+        <BeakerIcon />
+      </SvgIcon>
+    )
+  },
   {
     title: 'Training Results',
     path: '/links',

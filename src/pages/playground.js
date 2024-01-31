@@ -69,9 +69,8 @@ const Page = () => {
               Your chatbot should appear in the lower right corner of this page.  Try it out!  All changes should take effect immediately.
             </Typography>
           </Stack>
-          {/* TODO: This HTML doesn't set the company_id */}
           <iframe
-            src="https://kelichatbot2.blob.core.windows.net/salesbot-assets/index_testing.html"
+            src={`https://kelichatbot2.blob.core.windows.net/salesbot-assets/index_testing_query.html?company_id=${selectedCompanyId}`}
             width="100%"
             style={{
               border: "none",
