@@ -30,12 +30,12 @@ import { WrenchScrewdriverIcon } from '@heroicons/react/24/solid';
 
 const llmModels = [
   {
-    value: 'salesbot-gpt-4-1106-preview',
-    label: 'Slow and accurate (GPT v4)'
+    value: 'gpt-4-0125-preview',
+    label: 'Slow and accurate (GPT-4-0125-preview)'
   },
   {
-    value: 'keli-35-turbo',
-    label: 'Fast and slightly-less-accurate (GPT v3.5)'
+    value: 'gpt-3.5-turbo-1106',
+    label: 'Fast and slightly-less-accurate (GPT-3.5-Turbo-1106)'
   },
 ];
 
