@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { ChatBotSection } from '../sections/chatbot/chatbots_section';
+import { ColorPicker } from '../components/color-picker';
 
 const Page = () => {
   return (
@@ -10,6 +11,7 @@ const Page = () => {
           Chatbot
         </title>
       </Head>
+      {/*<ColorPicker/>*/}
       <ChatBotSection />
     </>
   )
