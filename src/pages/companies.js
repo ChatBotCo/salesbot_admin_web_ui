@@ -23,8 +23,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Company
-          {loading && <CircularProgress />}
+          Keli.AI
         </title>
       </Head>
       <Box

@@ -25,7 +25,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Conversations
+          Keli.AI
         </title>
       </Head>
       <Box

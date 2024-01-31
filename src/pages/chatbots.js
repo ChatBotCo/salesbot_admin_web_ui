@@ -8,7 +8,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Chatbot
+          Keli.AI
         </title>
       </Head>
       {/*<ColorPicker/>*/}

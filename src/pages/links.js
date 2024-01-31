@@ -7,7 +7,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Training
+          Keli.AI
         </title>
       </Head>
       <LinksSection />

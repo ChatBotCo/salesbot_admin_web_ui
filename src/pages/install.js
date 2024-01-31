@@ -34,7 +34,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Installation
+          Keli.AI
         </title>
       </Head>
       <Box

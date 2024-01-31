@@ -7,7 +7,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Users Admin
+          Keli.AI
         </title>
       </Head>
       <UsersTable />

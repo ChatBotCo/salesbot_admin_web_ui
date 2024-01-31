@@ -45,7 +45,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Sales Chatbot
+          Keli.AI
         </title>
       </Head>
       <Box

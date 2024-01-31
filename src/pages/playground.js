@@ -46,7 +46,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Playground
+          Keli.AI
         </title>
       </Head>
       <Box

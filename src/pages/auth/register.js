@@ -63,7 +63,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Register | Devias Kit
+          Keli.AI
         </title>
       </Head>
       <Box

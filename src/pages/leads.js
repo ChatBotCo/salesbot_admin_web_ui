@@ -27,7 +27,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Leads
+          Keli.AI
         </title>
       </Head>
       <Box

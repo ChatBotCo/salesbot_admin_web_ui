@@ -85,7 +85,7 @@ export const Layout = (props) => {
                 sx={{ color: 'white' }}
                 target="_blank"
               >
-                Sales Chatbot
+                Keli.AI
               </Box>
             </Typography>
             <Typography
@@ -93,7 +93,7 @@ export const Layout = (props) => {
               sx={{ mb: 3 }}
               variant="subtitle1"
             >
-              Engage your website visitors with an AI-powered chatbot and boost sales effortlessly.
+             Admin Portal
             </Typography>
             <img
               alt=""
