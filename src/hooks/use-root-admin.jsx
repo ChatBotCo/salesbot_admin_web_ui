@@ -69,9 +69,32 @@ export const RootAdminProvider = ({ children }) => {
       .finally(()=>setSaving(false))
   }
 
+  const [loadingLogs, setLoadingLogs] = useState(false);
+  const [logMsgs, setLogMsgs] = useState([]);
+  const [logsPage, setLogsPage] = useState(0);
+  const [logsRowsPerPage, setLogsRowsPerPage] = useState(10);
+  const [logsManyTotal, setLogsManyTotal] = useState(0);
+  const loadLogs = (_logsPage, _logsRowsPerPage) => {
+    setLoadingLogs(true)
+    const offset = _logsPage * _logsRowsPerPage
+    const promises = [
+      fetchWithData(`${backendUrl}/api/logs?limit=${_logsRowsPerPage}&offset=${offset}`, {method: "GET"})
+        .then(_logMsgs => {
+          setLogMsgs(_logMsgs)
+        }),
+      fetchWithData(`${backendUrl}/api/logs/count`, {method: "GET"})
+        .then(setLogsManyTotal),
+    ]
+    Promise.all(promises)
+      .finally(()=>setLoadingLogs(false))
+  }
+
   return (
     <RootAdminContext.Provider
       value={{
+        loadingLogs, logMsgs, loadLogs, logsManyTotal,
+        logsPage, setLogsPage,
+        logsRowsPerPage, setLogsRowsPerPage,
         allUsers,
         updateUserApproval,
       }}
