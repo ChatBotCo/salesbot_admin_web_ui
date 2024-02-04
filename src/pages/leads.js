@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { Box, CircularProgress, Container, Stack, Typography } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { useApi } from '../hooks/use-api';
-import { LeadsTable } from '../sections/conversation/leads-table';
+import { LeadsTable } from '../sections/leads/leads-table';
 import { useEffect, useState } from 'react';
 
 const Page = () => {

@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import {format} from 'date-fns';
 import {
   Box,
   Button,
@@ -12,14 +12,13 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { Scrollbar } from 'src/components/scrollbar';
-import { CheckCircleIcon as CheckCircleIconSolid, QueueListIcon } from '@heroicons/react/24/solid';
-import { TrashIcon } from '@heroicons/react/24/outline';
-import { useAuth } from '../../hooks/use-auth';
-import { useApi } from '../../hooks/use-api';
-import { useEffect, useState } from 'react';
+import {Scrollbar} from 'src/components/scrollbar';
+import {CheckCircleIcon as CheckCircleIconSolid, QueueListIcon} from '@heroicons/react/24/solid';
+import {TrashIcon} from '@heroicons/react/24/outline';
+import {useAuth} from '../../hooks/use-auth';
+import {useApi} from '../../hooks/use-api';
+import {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import { LeadsTable } from './leads-table';
 
 export const ConversationsTable = ({conversations, setConversations}) => {
 

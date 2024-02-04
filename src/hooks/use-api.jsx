@@ -632,11 +632,20 @@ export const ApiProvider = ({ children }) => {
     const messagesForConvo = msgsByConvoId[convo.id] || []
     const someMsgsHaveUserData = messagesForConvo.filter(msg => {
       return msg.user_email ||
-        msg.user_phone_number ||
-        msg.user_wants_to_schedule_call_with_sales_rep ||
-        msg.user_wants_to_be_contacted
+        msg.user_phone_number
     })
     return someMsgsHaveUserData.length > 0
+  }
+
+  const getUserDataFromConvoMsgs = convo => {
+    const messagesForConvo = msgsByConvoId[convo.id] || []
+    return messagesForConvo.reduce((acc, msg) => {
+      acc.user_email = acc.user_email || msg.user_email
+      acc.user_phone_number = acc.user_phone_number || msg.user_phone_number
+      acc.user_first_name = acc.user_first_name || msg.user_first_name
+      acc.user_last_name = acc.user_last_name || msg.user_last_name
+      return acc;
+    }, {})
   }
 
   return (
@@ -671,7 +680,7 @@ export const ApiProvider = ({ children }) => {
         userApprovalStatus,
         selectedCompanyId, setSelectedCompanyId,
         deleteConvo,
-        convoHasUserData,
+        convoHasUserData, getUserDataFromConvoMsgs,
         refinements, addRefinement, updateRefinement,
       }}
     >

@@ -188,7 +188,7 @@ export const SideNav = (props) => {
             }}
           >
             {navMenuButtons}
-            {integrationNavMenuButtons}
+            {/*{integrationNavMenuButtons}*/}
             {rootAdminMenuButtons}
           </Stack>
         </Box>
