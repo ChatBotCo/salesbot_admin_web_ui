@@ -5,6 +5,7 @@ import {Box, Divider, Drawer, Stack, SvgIcon, Typography, useMediaQuery} from '@
 import {Logo} from 'src/components/logo';
 import {Scrollbar} from 'src/components/scrollbar';
 import {items} from './config';
+import {integrationItems} from './integrations-config';
 import {rootItems} from './root-config';
 import {SideNavItem} from './side-nav-item';
 import {AcademicCapIcon, BuildingStorefrontIcon, HandThumbUpIcon} from '@heroicons/react/24/solid';
@@ -28,6 +29,7 @@ export const SideNav = (props) => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
 
   let navMenuButtons = <></>
+  let integrationNavMenuButtons = <></>
   if(userApprovalStatus !== 'approved') navMenuButtons = <></>
   else if(onboardingStep === onboardingSteps.done) {
     navMenuButtons = (
@@ -46,6 +48,29 @@ export const SideNav = (props) => {
         );
       })
     )
+    integrationNavMenuButtons = [
+      <Divider key={'divider'}/>,
+      <Typography key={'integrations-header'}>
+        Integrations
+      </Typography>
+    ]
+    integrationNavMenuButtons.push(
+      integrationItems.map((item) => {
+        const active = item.path ? (pathname === item.path) : false;
+        return (
+          <SideNavItem
+            active={active}
+            disabled={item.disabled}
+            external={item.external}
+            icon={item.icon}
+            key={item.title}
+            path={item.path}
+            title={item.title}
+          />
+        );
+      })
+    )
+
   } else {
     navMenuButtons = [
         <SideNavItem
@@ -163,6 +188,7 @@ export const SideNav = (props) => {
             }}
           >
             {navMenuButtons}
+            {integrationNavMenuButtons}
             {rootAdminMenuButtons}
           </Stack>
         </Box>
