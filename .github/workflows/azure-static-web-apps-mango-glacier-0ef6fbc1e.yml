@@ -3,7 +3,7 @@ name: Azure Static Web Apps CI/CD
 on:
   push:
     branches:
-      - main
+      - main, auth0
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
@@ -34,6 +34,7 @@ jobs:
           ###### End of Repository/Build Configurations ######
         env: # Put a node version on the following line
           NODE_VERSION: 18.17.1
+          FOO_API_KEY: ${{ secrets.FOO_API_KEY }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
