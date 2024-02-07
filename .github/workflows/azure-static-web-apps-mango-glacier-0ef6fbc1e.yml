@@ -3,7 +3,8 @@ name: Azure Static Web Apps CI/CD
 on:
   push:
     branches:
-      - main, auth0
+      - main
+      - auth0
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
