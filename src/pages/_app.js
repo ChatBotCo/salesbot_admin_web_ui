@@ -30,7 +30,7 @@ const App = (props) => {
     <CacheProvider value={emotionCache}>
       <Head>
         <title>
-          Keli.AI
+          Greeter.Bot
         </title>
         <meta
           name="viewport"

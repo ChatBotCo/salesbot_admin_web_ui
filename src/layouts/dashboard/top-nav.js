@@ -92,7 +92,7 @@ export const TopNav = (props) => {
                 height: 40,
                 width: 40
               }}
-              src="/assets/headshot-keli.png"
+              src="/assets/greeter-bot-logo-black-margin.png"
             />
           </Stack>
         </Stack>

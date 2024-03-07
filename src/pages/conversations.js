@@ -25,7 +25,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Keli.AI
+          Greeter.Bot
         </title>
       </Head>
       <Box

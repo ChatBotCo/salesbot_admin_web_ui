@@ -1,17 +1,19 @@
-import NextLink from 'next/link';
-import {usePathname} from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import PropTypes from 'prop-types';
-import {Box, Divider, Drawer, Stack, SvgIcon, Typography, useMediaQuery} from '@mui/material';
-import {Logo} from 'src/components/logo';
-import {Scrollbar} from 'src/components/scrollbar';
-import {items} from './config';
-import {integrationItems} from './integrations-config';
-import {rootItems} from './root-config';
-import {SideNavItem} from './side-nav-item';
-import {AcademicCapIcon, BuildingStorefrontIcon, HandThumbUpIcon} from '@heroicons/react/24/solid';
-import {useApi} from '../../hooks/use-api';
-import {useAuth} from "../../hooks/use-auth";
-import {CompaniesDropDown} from "../../components/companies-dropdown";
+import { Box, Divider, Drawer, Stack, SvgIcon, Typography, useMediaQuery } from '@mui/material';
+import { Scrollbar } from 'src/components/scrollbar';
+import { items } from './config';
+import { integrationItems } from './integrations-config';
+import { rootItems } from './root-config';
+import { SideNavItem } from './side-nav-item';
+import {
+  AcademicCapIcon,
+  BuildingStorefrontIcon,
+  HandThumbUpIcon
+} from '@heroicons/react/24/solid';
+import { useApi } from '../../hooks/use-api';
+import { useAuth } from '../../hooks/use-auth';
+import { CompaniesDropDown } from '../../components/companies-dropdown';
 
 export const SideNav = (props) => {
   const {
@@ -157,19 +159,6 @@ export const SideNav = (props) => {
           height: '100%'
         }}
       >
-        <Box sx={{ p: 3 }}>
-          <Box
-            component={NextLink}
-            href="/"
-            sx={{
-              display: 'inline-flex',
-              height: 32,
-              width: 32
-            }}
-          >
-            <Logo />
-          </Box>
-        </Box>
         <Box
           component="nav"
           sx={{

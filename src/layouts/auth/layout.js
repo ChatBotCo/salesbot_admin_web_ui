@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import NextLink from 'next/link';
 import { Box, Typography, Unstable_Grid2 as Grid } from '@mui/material';
-import { Logo } from 'src/components/logo';
 
 // TODO: Change subtitle text
 
@@ -30,28 +28,6 @@ export const Layout = (props) => {
             position: 'relative'
           }}
         >
-          <Box
-            component="header"
-            sx={{
-              left: 0,
-              p: 3,
-              position: 'fixed',
-              top: 0,
-              width: '100%'
-            }}
-          >
-            <Box
-              component={NextLink}
-              href="/"
-              sx={{
-                display: 'inline-flex',
-                height: 32,
-                width: 32
-              }}
-            >
-              <Logo />
-            </Box>
-          </Box>
           {children}
         </Grid>
         <Grid
@@ -68,7 +44,12 @@ export const Layout = (props) => {
             }
           }}
         >
-          <Box sx={{ p: 3 }}>
+          <Box sx={{ p: 3, textAlign:'center' }}>
+            <img
+              alt=""
+              src="/assets/greeter-bot-logo-white-transparent.png"
+              width='100px'
+            />
             <Typography
               align="center"
               color="inherit"
@@ -85,7 +66,7 @@ export const Layout = (props) => {
                 sx={{ color: 'white' }}
                 target="_blank"
               >
-                Keli.AI
+                Greeter.Bot
               </Box>
             </Typography>
             <Typography
@@ -95,10 +76,6 @@ export const Layout = (props) => {
             >
              Admin Portal
             </Typography>
-            <img
-              alt=""
-              src="/assets/keli.png"
-            />
           </Box>
         </Grid>
       </Grid>
