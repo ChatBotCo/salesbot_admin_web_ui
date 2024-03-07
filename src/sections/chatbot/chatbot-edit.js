@@ -40,7 +40,7 @@ const llmModels = [
 ];
 
 const defaultValues = {
-  llm_model: 'keli-35-turbo',
+  llm_model: 'gpt-3.5-turbo-1106',
   greeting: '',
   redirect_prompts: [],
   answered_questions: [],

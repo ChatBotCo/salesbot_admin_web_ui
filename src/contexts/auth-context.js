@@ -113,7 +113,7 @@ export const AuthProvider = (props) => {
     if (isAuthenticated && authorizeUserdata) {
       const user = {
         ... authorizeUserdata,
-        avatar: '/assets/headshot-keli.png',
+        avatar: '/assets/greeter-bot-logo.png',
         name: authorizeUserdata.user_name,
         email: authorizeUserdata.user_name,
         company_id: authorizeUserdata.company_id === 'XXX' ? null : authorizeUserdata.company_id,
@@ -165,7 +165,7 @@ export const AuthProvider = (props) => {
 
           const user = {
             ...authorizeUserdata,
-            avatar: '/assets/headshot-keli.png',
+            avatar: '/assets/greeter-bot-logo.png',
             name: authorizeUserdata.user_name,
             email: authorizeUserdata.user_name,
             company_id: authorizeUserdata.company_id === 'XXX' ? null : authorizeUserdata.company_id,

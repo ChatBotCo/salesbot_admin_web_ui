@@ -23,7 +23,7 @@ export const ApprovalStatusSection = () => {
           <Typography variant={'h4'} color={'primary'}>Request Denied</Typography>
         </Stack>
         <Typography variant={'subtitle1'}>Site administrators have rejected the request for this account.</Typography>
-        <Typography variant={'subtitle1'}>Please contact hello@saleschat.bot.</Typography>
+        <Typography variant={'subtitle1'}>Please contact hello@greeter.bot.</Typography>
       </Grid>
     )
   } else {
@@ -38,7 +38,7 @@ export const ApprovalStatusSection = () => {
           <Typography variant={'h4'} color={'primary'}>Approval Pending</Typography>
         </Stack>
         <Typography variant={'subtitle1'}>This account is pending approval by site administrators</Typography>
-        <Typography variant={'subtitle1'}>Please contact hello@saleschat.bot to inquire about status.</Typography>
+        <Typography variant={'subtitle1'}>Please contact hello@greeter.bot to inquire about status.</Typography>
       </Grid>
     )
   }
