@@ -70,7 +70,7 @@ export const ApiProvider = ({ children }) => {
           if(convo._ts>=dayStartTs && convo._ts<dayEndTs) {
             countPerDay[dayStartTs] = countPerDay[dayStartTs] + 1
           } else if(!dayEndTs) {
-            countPerDay[dayStartTs] = countPerDay[dayStartTs] + 1
+            // countPerDay[dayStartTs] = countPerDay[dayStartTs] + 1
           }
         }
       })
