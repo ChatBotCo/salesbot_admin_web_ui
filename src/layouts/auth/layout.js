@@ -66,7 +66,7 @@ export const Layout = (props) => {
                 sx={{ color: 'white' }}
                 target="_blank"
               >
-                Greeter.Bot
+                GreeterBot
               </Box>
             </Typography>
             <Typography

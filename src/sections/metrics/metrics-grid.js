@@ -32,17 +32,6 @@ export const MetricsGrid = (props) => {
           container
           spacing={3}
         >
-          {/*<Grid*/}
-          {/*  xs={12}*/}
-          {/*  lg={8}*/}
-          {/*>*/}
-
-          {/*  <OverviewConversationsByDate*/}
-          {/*    chartSeries={seriesData}*/}
-          {/*    sx={{ height: '100%' }}*/}
-          {/*    title={'New Conversations per Date'}*/}
-          {/*  />*/}
-          {/*</Grid>*/}
           <Grid
             xs={12}
             lg={8}

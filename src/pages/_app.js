@@ -30,7 +30,7 @@ const App = (props) => {
     <CacheProvider value={emotionCache}>
       <Head>
         <title>
-          Greeter.Bot
+          GreeterBot
         </title>
         <meta
           name="viewport"

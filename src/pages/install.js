@@ -34,7 +34,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Greeter.Bot
+          GreeterBot
         </title>
       </Head>
       <Box
