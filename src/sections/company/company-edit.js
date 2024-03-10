@@ -125,7 +125,7 @@ export const CompanyEdit = (props) => {
               </FormLabel>
               <TextField
                 fullWidth
-                helperText="What is the name of your company?"
+                helperText="Provide a brief (1-2 sentences) description of what your company does or sells."
                 name="description"
                 onChange={handleChange}
                 required

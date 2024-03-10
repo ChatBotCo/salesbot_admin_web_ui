@@ -20,7 +20,7 @@ const Page = () => {
     }
   }
 
-  const scriptElementText = `<script id="sales_chatbot_script" src="https://kelichatbot2.blob.core.windows.net/salesbot-assets/sales_chatbot.js" data-company-id="${selectedCompanyId}"></script>`
+  const scriptElementText = `<script id="greeterbot_root" src="https://greeterbot.blob.core.windows.net/greeterbot-public/sales_chatbot.js" data-company-id="${selectedCompanyId}"></script>`
 
   const copyScriptToClipboard = () =>{
     navigator.clipboard.writeText(scriptElementText).then(() => {

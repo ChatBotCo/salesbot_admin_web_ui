@@ -34,13 +34,13 @@ const llmModels = [
     label: 'Slow and accurate (GPT-4-0125-preview)'
   },
   {
-    value: 'gpt-3.5-turbo-1106',
+    value: 'gpt-3.5-turbo-0125',
     label: 'Fast and slightly-less-accurate (GPT-3.5-Turbo-1106)'
   },
 ];
 
 const defaultValues = {
-  llm_model: 'gpt-3.5-turbo-1106',
+  llm_model: 'gpt-3.5-turbo-0125',
   greeting: '',
   redirect_prompts: [],
   answered_questions: [],
