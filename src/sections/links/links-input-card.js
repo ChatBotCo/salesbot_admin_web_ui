@@ -60,7 +60,7 @@ export const LinksInputCard = ({ selectedCompanyId }) => {
   return (
     <Card>
       <CardHeader
-        title={'Add links to teach your chatbot about your company'}
+        title={'Add each page of your website that you want GreeterBot to become familiar with'}
         subheader={'This is necessary so that the chatbot understands your products or services...'}
         action={(
           <Button
