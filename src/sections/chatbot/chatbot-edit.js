@@ -35,7 +35,7 @@ const llmModels = [
   },
   {
     value: 'gpt-3.5-turbo-0125',
-    label: 'Fast and slightly-less-accurate (GPT-3.5-Turbo-1106)'
+    label: 'Fast and slightly-less-accurate (GPT-3.5-Turbo-0125)'
   },
 ];
 
@@ -216,82 +216,82 @@ export const ChatbotEdit = (props) => {
         )}
       </Stack>
 
-      <CollapseCard
-        title={'AI Configuration'}
-        icon={<ServerStackIcon />}
-      >
-        <Grid
-          container
-        >
-          <Grid
-            xs={12}
-            md={6}
-          >
-            <FormLabel id="llm-model-picker">
-              <InfoPopover infoText={'LLM choice impacts speed and accuracy.  3.5 is fast but occasionally inaccurate.  4 is slower but much more effective and accurate.'} id={'models-info'} />
-              Which LLM model would you like to use?
-            </FormLabel>
-            <TextField
-              aria-labelledby="llm-model-picker"
-              fullWidth
-              label="LLM Model"
-              name="llm_model"
-              onChange={handleChange}
-              select
-              SelectProps={{ native: true }}
-              value={values.llm_model}
-            >
-              {llmModels.map(option => (
-                <option
-                  key={option.value}
-                  value={option.value}
-                >
-                  {option.label}
-                </option>
-              ))}
-            </TextField>
-          </Grid>
-        </Grid>
-      </CollapseCard>
+      {/*<CollapseCard*/}
+      {/*  title={'AI Configuration'}*/}
+      {/*  icon={<ServerStackIcon />}*/}
+      {/*>*/}
+      {/*  <Grid*/}
+      {/*    container*/}
+      {/*  >*/}
+      {/*    <Grid*/}
+      {/*      xs={12}*/}
+      {/*      md={6}*/}
+      {/*    >*/}
+      {/*      <FormLabel id="llm-model-picker">*/}
+      {/*        <InfoPopover infoText={'LLM choice impacts speed and accuracy.  3.5 is fast but occasionally inaccurate.  4 is slower but much more effective and accurate.'} id={'models-info'} />*/}
+      {/*        Which LLM model would you like to use?*/}
+      {/*      </FormLabel>*/}
+      {/*      <TextField*/}
+      {/*        aria-labelledby="llm-model-picker"*/}
+      {/*        fullWidth*/}
+      {/*        label="LLM Model"*/}
+      {/*        name="llm_model"*/}
+      {/*        onChange={handleChange}*/}
+      {/*        select*/}
+      {/*        SelectProps={{ native: true }}*/}
+      {/*        value={values.llm_model}*/}
+      {/*      >*/}
+      {/*        {llmModels.map(option => (*/}
+      {/*          <option*/}
+      {/*            key={option.value}*/}
+      {/*            value={option.value}*/}
+      {/*          >*/}
+      {/*            {option.label}*/}
+      {/*          </option>*/}
+      {/*        ))}*/}
+      {/*      </TextField>*/}
+      {/*    </Grid>*/}
+      {/*  </Grid>*/}
+      {/*</CollapseCard>*/}
 
-      <CollapseCard
-        title={'Avatar Character'}
-        icon={<UserCircleIcon/>}
-      >
-        <Grid
-          container
-        >
-          <Grid
-            xs={12}
-            md={6}
-          >
-            <FormLabel id="show-avatar-radio-buttons-group">
-              <InfoPopover
-                infoText={'The chatbot character is simply an adornment and does not impact the quality of the chatbot response.'}
-                id={'lead-info'}
-              />
-              Would you like to display the chatbot character?
-            </FormLabel>
-            <RadioGroup
-              aria-labelledby="show-avatar-radio-buttons-group"
-              name="avatar_view"
-              value={values.avatar_view || 'headshot'}
-              onChange={handleChange}
-            >
-              <FormControlLabel value="headshot" control={<Radio />} label={<>Static headshot image <InfoPopover infoText={'Small image downloaded and no animation'} id={'headshot-info'}/></>} />
-              <FormControlLabel value="avatar" control={<Radio />} label={<>Animated 3D avatar <InfoPopover infoText={'~3MB download + life-like animation and lipsync w/ audio playback reading chatbot responses'} id={'avatar-info'}/></>} />
-            </RadioGroup>
-          </Grid>
-          <Grid
-            xs={12}
-            md={6}
-          >
-            <img style={{width:'200px', marginLeft:'10px', marginBottom:'10px'}}
-                 src={getAvatarViewImage()}
-            />
-          </Grid>
-        </Grid>
-      </CollapseCard>
+      {/*<CollapseCard*/}
+      {/*  title={'Avatar Character'}*/}
+      {/*  icon={<UserCircleIcon/>}*/}
+      {/*>*/}
+      {/*  <Grid*/}
+      {/*    container*/}
+      {/*  >*/}
+      {/*    <Grid*/}
+      {/*      xs={12}*/}
+      {/*      md={6}*/}
+      {/*    >*/}
+      {/*      <FormLabel id="show-avatar-radio-buttons-group">*/}
+      {/*        <InfoPopover*/}
+      {/*          infoText={'The chatbot character is simply an adornment and does not impact the quality of the chatbot response.'}*/}
+      {/*          id={'lead-info'}*/}
+      {/*        />*/}
+      {/*        Would you like to display the chatbot character?*/}
+      {/*      </FormLabel>*/}
+      {/*      <RadioGroup*/}
+      {/*        aria-labelledby="show-avatar-radio-buttons-group"*/}
+      {/*        name="avatar_view"*/}
+      {/*        value={values.avatar_view || 'headshot'}*/}
+      {/*        onChange={handleChange}*/}
+      {/*      >*/}
+      {/*        <FormControlLabel value="headshot" control={<Radio />} label={<>Static headshot image <InfoPopover infoText={'Small image downloaded and no animation'} id={'headshot-info'}/></>} />*/}
+      {/*        <FormControlLabel value="avatar" control={<Radio />} label={<>Animated 3D avatar <InfoPopover infoText={'~3MB download + life-like animation and lipsync w/ audio playback reading chatbot responses'} id={'avatar-info'}/></>} />*/}
+      {/*      </RadioGroup>*/}
+      {/*    </Grid>*/}
+      {/*    <Grid*/}
+      {/*      xs={12}*/}
+      {/*      md={6}*/}
+      {/*    >*/}
+      {/*      <img style={{width:'200px', marginLeft:'10px', marginBottom:'10px'}}*/}
+      {/*           src={getAvatarViewImage()}*/}
+      {/*      />*/}
+      {/*    </Grid>*/}
+      {/*  </Grid>*/}
+      {/*</CollapseCard>*/}
 
       <CollapseCard
         title='Default Greeting'
@@ -379,7 +379,7 @@ export const ChatbotEdit = (props) => {
                     disabled={!values.role_sales}
                   />
                 } label={<>
-                  Call-to-action Button
+                  Contact Us Button
                   <InfoPopover
                     id={'contact-link'}
                     extra={<img style={{width:'200px', margin:'5px'}} src='/assets/call-to-action-button.png'/>}
