@@ -126,7 +126,7 @@ export const AuthProvider = (props) => {
     } else {
       if(window.location.pathname !== '/auth/login' && window.location.pathname !== '/auth/register') {
         signOut()
-        window.location.replace('/auth/login')
+        window.location.replace('/auth/register')
       }
       dispatch({
         type: HANDLERS.INITIALIZE

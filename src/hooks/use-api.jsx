@@ -110,7 +110,7 @@ export const ApiProvider = ({ children }) => {
         .then(data => {
           if (data.status === 401) {
             signOut()
-            window.location.replace('/auth/login')
+            window.location.replace('/auth/register')
           }
           return data
         })
