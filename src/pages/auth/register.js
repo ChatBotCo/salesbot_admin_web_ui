@@ -1,24 +1,24 @@
 import Head from 'next/head';
 import NextLink from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {Alert, Box, Button, Link, Snackbar, Stack, TextField, Typography} from '@mui/material';
+import { Alert, Box, Button, Link, Snackbar, Stack, TextField, Typography } from '@mui/material';
 import { useAuth } from 'src/hooks/use-auth';
 import { Layout as AuthLayout } from 'src/layouts/auth/layout';
 import { useState } from 'react';
 
 const Page = () => {
-  const router = useRouter();
   const {
     signUp,
     showAuthResults, authResults, authResultsSeverity,handleDismissAuthResults,
   } = useAuth();
 
   const [isEmailError, setIsEmailError] = useState(false)
+  const [isEmailVerifError, setIsEmailVerifError] = useState(false)
   const formik = useFormik({
     initialValues: {
       email: '',
+      emailVerif: '',
       password: '',
       submit: null
     },
@@ -28,6 +28,10 @@ const Page = () => {
         .email('Must be a valid email')
         .max(255)
         .required('Email is required'),
+      emailVerif: Yup
+        .string()
+        .email('Must be a valid email')
+        .required('Please confirm your email address'),
       password: Yup
         .string()
         .max(255)
@@ -36,11 +40,18 @@ const Page = () => {
     onSubmit: async (values, helpers) => {
       const isAllowed = isEmailAllowed(values.email)
       if(isAllowed) {
-        try {
-          if(await signUp(values.email, values.password)) window.location.replace("/")
-        } catch (err) {
+        if(values.email === values.emailVerif) {
+          try {
+            if(await signUp(values.email, values.password)) window.location.replace("/")
+          } catch (err) {
+            helpers.setStatus({ success: false });
+            helpers.setErrors({ submit: err.message });
+            helpers.setSubmitting(false);
+          }
+        } else {
+          setIsEmailVerifError(true)
           helpers.setStatus({ success: false });
-          helpers.setErrors({ submit: err.message });
+          helpers.setErrors({ submit: "Please verify your email" });
           helpers.setSubmitting(false);
         }
       } else {
@@ -120,10 +131,26 @@ const Page = () => {
                   onBlur={formik.handleBlur}
                   onChange={e=>{
                     setIsEmailError(false)
+                    setIsEmailVerifError(false)
+                    // formik.setFieldValue('emailVerif', null)
                     formik.handleChange(e)
                   }}
                   type="email"
                   value={formik.values.email}
+                />
+                <TextField
+                  error={(!!(formik.touched.emailVerif && formik.errors.emailVerif)) || isEmailVerifError}
+                  fullWidth
+                  helperText={formik.touched.emailVerif && formik.errors.emailVerif}
+                  label="Confirm Email Address"
+                  name="emailVerif"
+                  onBlur={formik.handleBlur}
+                  onChange={e=>{
+                    setIsEmailVerifError(false)
+                    formik.handleChange(e)
+                  }}
+                  type="emailVerif"
+                  value={formik.values.emailVerif}
                 />
                 <TextField
                   error={!!(formik.touched.password && formik.errors.password)}
