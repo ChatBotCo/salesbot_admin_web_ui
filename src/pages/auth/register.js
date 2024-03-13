@@ -42,7 +42,7 @@ const Page = () => {
       if(isAllowed) {
         if(values.email === values.emailVerif) {
           try {
-            if(await signUp(values.email, values.password)) window.location.replace("/")
+            if(await signUp(values.email, values.password)) window.location.replace("/auth/login")
           } catch (err) {
             helpers.setStatus({ success: false });
             helpers.setErrors({ submit: err.message });
